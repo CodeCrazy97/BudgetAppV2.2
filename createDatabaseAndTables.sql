@@ -16,19 +16,6 @@
 CREATE DATABASE IF NOT EXISTS `budget` /*!40100 DEFAULT CHARACTER SET latin1 */;
 USE `budget`;
 
--- Dumping structure for table budget.endofyeartaxation
-CREATE TABLE IF NOT EXISTS `endofyeartaxation` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `taxYear` int(4) NOT NULL,
-  `amount` double NOT NULL,
-  `description` varchar(1000) DEFAULT NULL,
-  `taxType` varchar(20) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `taxType_fk2` (`taxType`),
-  CONSTRAINT `taxType_fk2` FOREIGN KEY (`taxType`) REFERENCES `taxtypes` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
-
--- Data exporting was unselected.
 -- Dumping structure for table budget.expenses
 CREATE TABLE IF NOT EXISTS `expenses` (
   `trans_date` date NOT NULL,
@@ -39,7 +26,7 @@ CREATE TABLE IF NOT EXISTS `expenses` (
   PRIMARY KEY (`transid`),
   KEY `expensetype_fk` (`expensetype`),
   CONSTRAINT `expensetype_fk` FOREIGN KEY (`expensetype`) REFERENCES `expensetypes` (`typeName`)
-) ENGINE=InnoDB AUTO_INCREMENT=237 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=238 DEFAULT CHARSET=latin1;
 
 -- Data exporting was unselected.
 -- Dumping structure for table budget.expensetypes
@@ -57,16 +44,6 @@ CREATE TABLE IF NOT EXISTS `grosswages` (
   PRIMARY KEY (`wageYear`,`job`),
   KEY `job_fk2` (`job`),
   CONSTRAINT `job_fk2` FOREIGN KEY (`job`) REFERENCES `jobs` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- Data exporting was unselected.
--- Dumping structure for table budget.investing
-CREATE TABLE IF NOT EXISTS `investing` (
-  `fundName` varchar(30) NOT NULL,
-  `investmentYear` int(4) NOT NULL,
-  `amount` double NOT NULL,
-  `comments` varchar(1000) DEFAULT NULL,
-  PRIMARY KEY (`fundName`,`investmentYear`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- Data exporting was unselected.
@@ -100,6 +77,32 @@ CREATE TABLE IF NOT EXISTS `taxation` (
   CONSTRAINT `job_fk` FOREIGN KEY (`job`) REFERENCES `jobs` (`name`),
   CONSTRAINT `taxTypeName_fk` FOREIGN KEY (`taxTypeName`) REFERENCES `taxtypes` (`name`)
 ) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=latin1;
+
+-- Data exporting was unselected.
+-- Dumping structure for table budget.taxliability
+CREATE TABLE IF NOT EXISTS `taxliability` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `taxYear` int(4) NOT NULL,
+  `amount` double NOT NULL,
+  `description` varchar(1000) DEFAULT NULL,
+  `taxType` varchar(20) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `taxType_fk3` (`taxType`),
+  CONSTRAINT `taxType_fk3` FOREIGN KEY (`taxType`) REFERENCES `taxtypes` (`name`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
+
+-- Data exporting was unselected.
+-- Dumping structure for table budget.taxreturn
+CREATE TABLE IF NOT EXISTS `taxreturn` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `taxYear` int(4) NOT NULL,
+  `amount` double NOT NULL,
+  `description` varchar(1000) DEFAULT NULL,
+  `taxType` varchar(20) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `taxType_fk2` (`taxType`),
+  CONSTRAINT `taxType_fk2` FOREIGN KEY (`taxType`) REFERENCES `taxtypes` (`name`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
 
 -- Data exporting was unselected.
 -- Dumping structure for table budget.taxtypes
