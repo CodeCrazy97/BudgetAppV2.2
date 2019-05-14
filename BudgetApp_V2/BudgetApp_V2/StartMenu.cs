@@ -4,7 +4,8 @@
  * By Ethan Vaughan
  * 
  * 02/14/2019 - Added functionality to allow user to place a transaction after viewing report form.
- * 
+ * 05/13/2019 - Simplified app to only report expenditures. Use database once a year to record gross wages.
+ * 05/14/2019 - Added README file.
  */
 
 using MySql.Data.MySqlClient;
