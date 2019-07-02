@@ -6,6 +6,7 @@
  * 02/14/2019 - Added functionality to allow user to place a transaction after viewing report form.
  * 05/13/2019 - Simplified app to only report expenditures. Use database once a year to record gross wages.
  * 05/14/2019 - Added README file.
+ * 07/01/2019 - Maximized the start screen. Disabled the process that deletes aria log file.
  */
 
 using MySql.Data.MySqlClient;
@@ -29,8 +30,9 @@ namespace BudgetApp_V2
             //Start mysqld
             if (!isMysqldRunning())
             {
-                var deleteAriaLogFile = Process.Start("C:\\Users\\Ethan_2\\Documents\\Projects\\Batch\\remove_aria_log_file.bat");
-                
+                // The below line of code may not be needed, as some users do not experience database connectivity issues due to the aria log file.
+                //var deleteAriaLogFile = Process.Start("C:\\Users\\Ethan\\Documents\\Projects\\Batch\\remove_aria_log_file.bat");
+
                 try  //Try to start mysqld.exe
                 {
                     var mysqld = Process.Start("C:\\xampp\\mysql\\bin\\mysqld.exe");
@@ -50,8 +52,8 @@ namespace BudgetApp_V2
 
         private void StartMenu_Load(object sender, EventArgs e)
         {
-            this.Text = "Budget App, Version 2.2";
-
+            this.Text = "Budget App, Version 2.3";
+            WindowState = FormWindowState.Maximized;
             categories = new MySQLConnection().GetCategories();
 
             //Fill combo box with the categories.
@@ -63,7 +65,7 @@ namespace BudgetApp_V2
             categoryComboBox.Items.Add("Other Earnings");
 
             //Set the width of the grid view columns.
-            dataGridView1.Columns[0].Width = 90;  
+            dataGridView1.Columns[0].Width = 90;
             dataGridView1.Columns[1].Width = 450;
             dataGridView1.Columns[1].Width = dataGridView1.Width - dataGridView1.Columns[0].Width - dataGridView1.Columns[0].Width;
 
@@ -162,7 +164,7 @@ namespace BudgetApp_V2
                     {
                         Console.WriteLine(ex.ToString());
                     }
-                    
+
                     connection.Close();
                 }
                 else
