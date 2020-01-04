@@ -36,3 +36,15 @@ C:\Users\Ethan\Documents\Projects\Github\BudgetApp\BudgetApp_V2\BudgetApp_V2\obj
 C:\Users\Ethan\Documents\Projects\Github\BudgetApp\BudgetApp_V2\BudgetApp_V2\obj\Debug\BudgetApp_V2.csproj.CopyComplete
 C:\Users\Ethan\Documents\Projects\Github\BudgetApp\BudgetApp_V2\BudgetApp_V2\obj\Debug\BudgetApp_V2.exe
 C:\Users\Ethan\Documents\Projects\Github\BudgetApp\BudgetApp_V2\BudgetApp_V2\obj\Debug\BudgetApp_V2.pdb
+C:\Users\Ethan\Documents\Projects\C#\BudgetApp\BudgetApp_V2\BudgetApp_V2\bin\Debug\BudgetApp_V2.exe
+C:\Users\Ethan\Documents\Projects\C#\BudgetApp\BudgetApp_V2\BudgetApp_V2\bin\Debug\BudgetApp_V2.pdb
+C:\Users\Ethan\Documents\Projects\C#\BudgetApp\BudgetApp_V2\BudgetApp_V2\bin\Debug\MySql.Data.xml
+C:\Users\Ethan\Documents\Projects\C#\BudgetApp\BudgetApp_V2\BudgetApp_V2\obj\Debug\BudgetApp_V2.csprojAssemblyReference.cache
+C:\Users\Ethan\Documents\Projects\C#\BudgetApp\BudgetApp_V2\BudgetApp_V2\obj\Debug\BudgetApp_V2.Properties.Resources.resources
+C:\Users\Ethan\Documents\Projects\C#\BudgetApp\BudgetApp_V2\BudgetApp_V2\obj\Debug\BudgetApp_V2.ReportForm.resources
+C:\Users\Ethan\Documents\Projects\C#\BudgetApp\BudgetApp_V2\BudgetApp_V2\obj\Debug\BudgetApp_V2.StartMenu.resources
+C:\Users\Ethan\Documents\Projects\C#\BudgetApp\BudgetApp_V2\BudgetApp_V2\obj\Debug\BudgetApp_V2.csproj.GenerateResource.cache
+C:\Users\Ethan\Documents\Projects\C#\BudgetApp\BudgetApp_V2\BudgetApp_V2\obj\Debug\BudgetApp_V2.csproj.CoreCompileInputs.cache
+C:\Users\Ethan\Documents\Projects\C#\BudgetApp\BudgetApp_V2\BudgetApp_V2\obj\Debug\BudgetApp_V2.csproj.CopyComplete
+C:\Users\Ethan\Documents\Projects\C#\BudgetApp\BudgetApp_V2\BudgetApp_V2\obj\Debug\BudgetApp_V2.exe
+C:\Users\Ethan\Documents\Projects\C#\BudgetApp\BudgetApp_V2\BudgetApp_V2\obj\Debug\BudgetApp_V2.pdb

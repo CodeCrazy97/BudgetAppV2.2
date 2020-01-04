@@ -7,6 +7,8 @@
  * 05/13/2019 - Simplified app to only report expenditures. Use database once a year to record gross wages.
  * 05/14/2019 - Added README file.
  * 07/01/2019 - Maximized the start screen. Disabled the process that deletes aria log file.
+ * 01/03/2020 - Displays "NA" for total amount spent when invalid dates are selected.
+ * 01/04/2020 - Starts MySQL correctly on my new computer. 
  */
 
 using MySql.Data.MySqlClient;
@@ -35,8 +37,8 @@ namespace BudgetApp_V2
 
                 try  //Try to start mysqld.exe
                 {
-                    var mysqld = Process.Start("C:\\xampp\\mysql\\bin\\mysqld.exe");
-                    Thread.Sleep(6500);  //Give mysqld.exe time to start.
+                    var mysqld = Process.Start("C:\\xampp\\mysql_start2.bat");
+                    Thread.Sleep(2000);  //Give mysqld.exe time to start.
                 }
                 catch (System.ComponentModel.Win32Exception ex3)  //Unable to start the process (could be that the executable is located in a different folder path).
                 {
