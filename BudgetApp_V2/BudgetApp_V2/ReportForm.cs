@@ -160,6 +160,7 @@ namespace BudgetApp_V2
 
         private void monthCalendar1_DateChanged(object sender, DateRangeEventArgs e)
         {
+            totalSpentLabel.Text = "N/A";
             DisplayTransactionsSummary();
         }
 
