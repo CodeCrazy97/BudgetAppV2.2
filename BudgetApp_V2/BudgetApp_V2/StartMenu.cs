@@ -9,6 +9,7 @@
  * 07/01/2019 - Maximized the start screen. Disabled the process that deletes aria log file.
  * 01/03/2020 - Displays "NA" for total amount spent when invalid dates are selected.
  * 01/04/2020 - Starts MySQL correctly on my new computer. 
+ * 01/05/2020 - Resize data grid view on report form based on number of expense types returned.
  */
 
 using MySql.Data.MySqlClient;
@@ -143,7 +144,6 @@ namespace BudgetApp_V2
                     amt = Math.Abs(amt);  // make a positive number. The old version insisted that expenses be negative; however, under the new design, it is implied that anything in the expense table is negative
 
                     //Build the INSERT string. Place each possible category into it.
-                    Console.WriteLine("selected item = " + categoryComboBox.SelectedItem);
                     string sql = "";
                     if (String.Equals(categoryComboBox.SelectedItem.ToString(), "Other Earnings"))
                     {
@@ -153,14 +153,12 @@ namespace BudgetApp_V2
                     {
                         sql = "INSERT INTO expenses (trans_date, description, amount, expensetype) VALUES ('" + date + "', '" + description + "', " + amt + ", '" + categoryComboBox.SelectedItem.ToString().ToLower() + "');";
                     }
-                    Console.WriteLine("sql: " + sql);
                     connection = new MySqlConnection(connStr);    //create the new connection using the parameters of connStr
                     try
                     {
                         connection.Open();                            //open the connection
                         var cmd = new MySqlCommand(sql, connection);  //create an executable command
                         var reader = cmd.ExecuteNonQuery();             //execute the command
-                        Console.WriteLine("working!!");
                     }
                     catch (Exception ex)
                     {
@@ -203,7 +201,7 @@ namespace BudgetApp_V2
         {
             ReportForm reportForm = new ReportForm();
             reportForm.FormClosed += new FormClosedEventHandler(startMenuFormClosed);
-            reportForm.categories = categories;
+            reportForm.categories = categories;  // the report will show spending based on the different categories of spending
             reportForm.Text = "Report";
             reportForm.Show();
             categories = new MySQLConnection().GetCategories();  // Reset the categories. This gets reset to zero after viewing the report form.

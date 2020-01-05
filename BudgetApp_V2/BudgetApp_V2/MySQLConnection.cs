@@ -90,7 +90,6 @@ namespace BudgetApp_V2
                 while (reader.Read())
                 {
                     string currentCategory = reader.GetString(0);
-                    Console.WriteLine(currentCategory);
                     currentCategory = currentCategory.Substring(0, 1).ToUpper() + currentCategory.Substring(1); //Make the first character of the category in upper case.
                     categories.AddLast(currentCategory);
                 }

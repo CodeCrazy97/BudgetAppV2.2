@@ -57,39 +57,6 @@ namespace BudgetApp_V2
             {
                 warningLabel.Visible = false;
 
-                //First, get the totals for Other.
-                
-                //Now for Other...
-                string connStr3 = new MySQLConnection().connection;
-                MySqlConnection conn3 = new MySqlConnection(connStr3);
-                try
-                {
-                    conn3.Open();
-
-                    //Other will be defined as a spending transaction that does not fit in any of the categories.
-                    string sql3 = "SELECT expensetype, SUM(amount) FROM expenses trans_date BETWEEN '" + date1 + "' AND '" + date2 + "' GROUP BY expensetype ORDRE BY expensetype;";
-                    
-                    sql3 += "; ";  //Add the ending character to the sql string.
-                    MySqlCommand cmd = new MySqlCommand(sql3, conn3);
-                    var reader = cmd.ExecuteReader();             //execute the command
-                    while (reader.Read())
-                    {
-                        if (reader.IsDBNull(0))
-                        {
-                            totals.AddLast(0);
-                        }
-                        else
-                        {
-                            totals.AddLast(Math.Abs(reader.GetDouble(0)));
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.ToString());
-                }
-                conn3.Close();
-
                 string connStr = new MySQLConnection().connection;
                 MySqlConnection conn = new MySqlConnection(connStr);
                 try
@@ -119,7 +86,8 @@ namespace BudgetApp_V2
                     Console.WriteLine(ex.ToString());
                 }
                 conn.Close();
-
+                                
+                
                 //Get the total amount spent.
                 double total = 0.0;
                 for (int i = 0; i < totals.Count; i++)
@@ -152,6 +120,18 @@ namespace BudgetApp_V2
             {
                 warningLabel.Visible = true;
             }
+
+            // Dynamically resize the data grid view, based on how many rows are in it (we don't want there to be unnecessary extra whitespace)
+            if (dataGridView1.RowCount > 3) // Need a smaller base multiple to make a larger number of rows fit better in the data grid view.
+            {
+                dataGridView1.SetBounds(260, 408, dataGridView1.Width, 23 * dataGridView1.RowCount);
+            } else
+            {
+                dataGridView1.SetBounds(260, 408, dataGridView1.Width, 25 * dataGridView1.RowCount);
+            }
+            
+            
+            
 
             //Sort the transactions according to amount, in descending order.
             this.dataGridView1.Sort(dataGridView1.Columns[1], ListSortDirection.Descending);
