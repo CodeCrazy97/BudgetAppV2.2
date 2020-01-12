@@ -70,6 +70,60 @@ namespace BudgetApp_V2
             return transactions;
         }
 
+        public void ModifyCharityBalance(double amount)
+        {
+            //Place the transaction in the database.
+            string connStr = new MySQLConnection().connection;
+
+            string sql = "";
+            //Build the INSERT string.
+            sql = "UPDATE charity_balance SET amount = amount + " + amount + ";";
+            MySqlConnection connection = new MySqlConnection(connStr);    //create the new connection using the parameters of connStr
+            try
+            {
+                connection.Open();                            //open the connection
+                var cmd = new MySqlCommand(sql, connection);  //create an executable command
+                var reader = cmd.ExecuteNonQuery();             //execute the command
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+
+            connection.Close();
+        }
+
+        public double GetCharityBalance()
+        {
+            string connStr = new MySQLConnection().connection;
+
+            MySqlConnection connection = new MySqlConnection(connStr);
+
+            string sql = "SELECT amount FROM charity_balance; ";
+
+            connection = new MySqlConnection(connStr);    //create the new connection using the parameters of connStr
+            try
+            {
+                connection.Open();                            //open the connection
+                var cmd = new MySqlCommand(sql, connection);  //create an executable command
+                var reader = cmd.ExecuteReader();             //execute the command
+
+                while (reader.Read())
+                {
+                    return reader.GetDouble(0);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+            finally
+            {
+                connection.Close();
+            }
+            throw new Exception("Could not fetch amount from charity_balance.");
+        }
+
         public LinkedList<string> GetCategories()
         {
             LinkedList<string> categories = new LinkedList<string>();

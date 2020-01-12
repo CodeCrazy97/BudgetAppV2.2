@@ -10,6 +10,7 @@
  * 01/03/2020 - Displays "NA" for total amount spent when invalid dates are selected.
  * 01/04/2020 - Starts MySQL correctly on my new computer. 
  * 01/05/2020 - Resize data grid view on report form based on number of expense types returned.
+ * 01/12/2020 - Show charity balance on Start Menu. Also, increase/decrease balance accoring to contributions and earnings.
  */
 
 using MySql.Data.MySqlClient;
@@ -64,7 +65,7 @@ namespace BudgetApp_V2
             {
                 categoryComboBox.Items.Add(categories.ElementAt(i));
             }
-            // add the other earnings category
+            // add the other earnings and charity categories (these are not in the database
             categoryComboBox.Items.Add("Other Earnings");
 
             //Set the width of the grid view columns.
@@ -80,6 +81,9 @@ namespace BudgetApp_V2
 
             //Set the cursor to blinking in the text box.
             transactionDescriptionTextBox.Select();
+
+            displayCharityBalanceMessage();
+                        
         }
 
         private void SetLastFiveTransactions()
@@ -129,9 +133,6 @@ namespace BudgetApp_V2
                 //Place the transaction in the database.
                 string connStr = new MySQLConnection().connection;
 
-                //Step 2: Create a connection.       
-                MySqlConnection connection = new MySqlConnection(connStr);
-
                 //Step 3: Create the SQL statement that deletes the notice.
                 string date = transactionDateTimePicker.Value.Year + "-" + transactionDateTimePicker.Value.Month + "-" + transactionDateTimePicker.Value.Day;
                 string description = new MySQLConnection().FixStringForMySQL(transactionDescriptionTextBox.Text);
@@ -148,12 +149,28 @@ namespace BudgetApp_V2
                     if (String.Equals(categoryComboBox.SelectedItem.ToString(), "Other Earnings"))
                     {
                         sql = "INSERT INTO otherearnings (earning_date, description, amount) VALUES ('" + date + "', '" + description + "', " + amt + ");";
+
+                        // Check if user wants to apply 10% (rounded up) towards charity balance.   
+                        if (tenPercentToCharityCheckBox.Checked)
+                        {
+                            double amount = Math.Ceiling(amt * 0.1);
+                            new MySQLConnection().ModifyCharityBalance(amount);
+                            // Now, update the charity balance:
+                            displayCharityBalanceMessage();
+                        }
                     }
                     else
                     {
+                        if (String.Equals(categoryComboBox.SelectedItem.ToString(), "Charity"))
+                        {
+                            // Will need to decrease charity balance, since used some of the charity.
+                            new MySQLConnection().ModifyCharityBalance(-amt); // turn amount into a negative (decrease in charity balance)
+                            // Update charity balance message:
+                            displayCharityBalanceMessage();
+                        }
                         sql = "INSERT INTO expenses (trans_date, description, amount, expensetype) VALUES ('" + date + "', '" + description + "', " + amt + ", '" + categoryComboBox.SelectedItem.ToString().ToLower() + "');";
                     }
-                    connection = new MySqlConnection(connStr);    //create the new connection using the parameters of connStr
+                    MySqlConnection connection = new MySqlConnection(connStr);    //create the new connection using the parameters of connStr
                     try
                     {
                         connection.Open();                            //open the connection
@@ -182,6 +199,21 @@ namespace BudgetApp_V2
             }
         }
 
+        // Show what the charity balance is.
+        private void displayCharityBalanceMessage()
+        {
+            try
+            {
+                // Show the charity budget.
+                double charityBalance = new MySQLConnection().GetCharityBalance();
+                charityBalanceLabel.Text = "Charity balance: $" + charityBalance;
+            }
+            catch (Exception e2)
+            {
+                Console.WriteLine(e2);
+            }
+        }
+
         private void clearButton_Click(object sender, EventArgs e)
         {
             Clear();
@@ -195,6 +227,9 @@ namespace BudgetApp_V2
             categoryComboBox.SelectedIndex = 0;
             confirmLabel.Visible = false;
             submitButton.Text = "Submit";
+            tenPercentToCharityCheckBox.Checked = false;
+            tenPercentToCharityCheckBox.Visible = false;
+            categoryComboBox.SelectedIndex = 0;
         }
 
         private void budgetReportButton_Click(object sender, EventArgs e)
@@ -224,5 +259,22 @@ namespace BudgetApp_V2
             return false;
         }
 
+        private void CategoryComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (categoryComboBox.SelectedItem.ToString().Equals("Other Earnings"))
+            {
+                tenPercentToCharityCheckBox.Visible = true;
+                tenPercentToCharityCheckBox.Checked = false;
+
+                submitButton.SetBounds(submitButton.Location.X, 425, submitButton.Width, submitButton.Height);
+                clearButton.SetBounds(clearButton.Location.X, 425, clearButton.Width, clearButton.Height);
+            }
+            else
+            {
+                tenPercentToCharityCheckBox.Visible = false;
+                submitButton.SetBounds(submitButton.Location.X, 400, submitButton.Width, submitButton.Height);
+                clearButton.SetBounds(clearButton.Location.X, 400, clearButton.Width, clearButton.Height);
+            }
+        }
     }
 }

@@ -50,15 +50,18 @@
             this.Column3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.label1 = new System.Windows.Forms.Label();
+            this.tenPercentToCharityCheckBox = new System.Windows.Forms.CheckBox();
+            this.charityBalanceLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
             // budgetReportButton
             // 
             this.budgetReportButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.budgetReportButton.Location = new System.Drawing.Point(209, 77);
+            this.budgetReportButton.Location = new System.Drawing.Point(235, 96);
+            this.budgetReportButton.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.budgetReportButton.Name = "budgetReportButton";
-            this.budgetReportButton.Size = new System.Drawing.Size(198, 46);
+            this.budgetReportButton.Size = new System.Drawing.Size(223, 58);
             this.budgetReportButton.TabIndex = 4;
             this.budgetReportButton.Text = "Budget Report";
             this.budgetReportButton.UseVisualStyleBackColor = true;
@@ -67,9 +70,10 @@
             // exitButton
             // 
             this.exitButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.exitButton.Location = new System.Drawing.Point(471, 77);
+            this.exitButton.Location = new System.Drawing.Point(530, 96);
+            this.exitButton.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.exitButton.Name = "exitButton";
-            this.exitButton.Size = new System.Drawing.Size(198, 46);
+            this.exitButton.Size = new System.Drawing.Size(223, 58);
             this.exitButton.TabIndex = 7;
             this.exitButton.Text = "Exit";
             this.exitButton.UseVisualStyleBackColor = true;
@@ -81,9 +85,9 @@
             this.confirmLabel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
             this.confirmLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.confirmLabel.ForeColor = System.Drawing.Color.Black;
-            this.confirmLabel.Location = new System.Drawing.Point(356, 596);
+            this.confirmLabel.Location = new System.Drawing.Point(409, 747);
             this.confirmLabel.Name = "confirmLabel";
-            this.confirmLabel.Size = new System.Drawing.Size(113, 25);
+            this.confirmLabel.Size = new System.Drawing.Size(137, 29);
             this.confirmLabel.TabIndex = 23;
             this.confirmLabel.Text = "Click again.";
             this.confirmLabel.Visible = false;
@@ -91,9 +95,10 @@
             // clearButton
             // 
             this.clearButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.clearButton.Location = new System.Drawing.Point(489, 524);
+            this.clearButton.Location = new System.Drawing.Point(479, 651);
+            this.clearButton.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.clearButton.Name = "clearButton";
-            this.clearButton.Size = new System.Drawing.Size(101, 37);
+            this.clearButton.Size = new System.Drawing.Size(114, 46);
             this.clearButton.TabIndex = 21;
             this.clearButton.Text = "Clear";
             this.clearButton.UseVisualStyleBackColor = true;
@@ -102,9 +107,10 @@
             // submitButton
             // 
             this.submitButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.submitButton.Location = new System.Drawing.Point(359, 524);
+            this.submitButton.Location = new System.Drawing.Point(359, 651);
+            this.submitButton.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.submitButton.Name = "submitButton";
-            this.submitButton.Size = new System.Drawing.Size(101, 37);
+            this.submitButton.Size = new System.Drawing.Size(114, 46);
             this.submitButton.TabIndex = 20;
             this.submitButton.Text = "Submit";
             this.submitButton.UseVisualStyleBackColor = true;
@@ -114,9 +120,9 @@
             // 
             this.categoryLabel.AutoSize = true;
             this.categoryLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.categoryLabel.Location = new System.Drawing.Point(190, 431);
+            this.categoryLabel.Location = new System.Drawing.Point(214, 539);
             this.categoryLabel.Name = "categoryLabel";
-            this.categoryLabel.Size = new System.Drawing.Size(81, 20);
+            this.categoryLabel.Size = new System.Drawing.Size(105, 25);
             this.categoryLabel.TabIndex = 19;
             this.categoryLabel.Text = "Category:";
             // 
@@ -124,9 +130,9 @@
             // 
             this.amountLabel.AutoSize = true;
             this.amountLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.amountLabel.Location = new System.Drawing.Point(190, 377);
+            this.amountLabel.Location = new System.Drawing.Point(214, 471);
             this.amountLabel.Name = "amountLabel";
-            this.amountLabel.Size = new System.Drawing.Size(169, 20);
+            this.amountLabel.Size = new System.Drawing.Size(216, 25);
             this.amountLabel.TabIndex = 18;
             this.amountLabel.Text = "Transaction Amount: ";
             // 
@@ -134,9 +140,9 @@
             // 
             this.descriptionLabel.AutoSize = true;
             this.descriptionLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.descriptionLabel.Location = new System.Drawing.Point(190, 317);
+            this.descriptionLabel.Location = new System.Drawing.Point(214, 396);
             this.descriptionLabel.Name = "descriptionLabel";
-            this.descriptionLabel.Size = new System.Drawing.Size(100, 20);
+            this.descriptionLabel.Size = new System.Drawing.Size(126, 25);
             this.descriptionLabel.TabIndex = 17;
             this.descriptionLabel.Text = "Description:";
             // 
@@ -144,9 +150,9 @@
             // 
             this.transDateLabel.AutoSize = true;
             this.transDateLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.transDateLabel.Location = new System.Drawing.Point(190, 258);
+            this.transDateLabel.Location = new System.Drawing.Point(214, 322);
             this.transDateLabel.Name = "transDateLabel";
-            this.transDateLabel.Size = new System.Drawing.Size(162, 20);
+            this.transDateLabel.Size = new System.Drawing.Size(206, 25);
             this.transDateLabel.TabIndex = 16;
             this.transDateLabel.Text = "Date of Transaction:";
             // 
@@ -155,33 +161,39 @@
             this.categoryComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.categoryComboBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.categoryComboBox.FormattingEnabled = true;
-            this.categoryComboBox.Location = new System.Drawing.Point(417, 431);
+            this.categoryComboBox.Location = new System.Drawing.Point(469, 539);
+            this.categoryComboBox.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.categoryComboBox.Name = "categoryComboBox";
-            this.categoryComboBox.Size = new System.Drawing.Size(316, 28);
+            this.categoryComboBox.Size = new System.Drawing.Size(355, 33);
+            this.categoryComboBox.Sorted = true;
             this.categoryComboBox.TabIndex = 15;
+            this.categoryComboBox.SelectedIndexChanged += new System.EventHandler(this.CategoryComboBox_SelectedIndexChanged);
             // 
             // transactionAmountTextBox
             // 
             this.transactionAmountTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.transactionAmountTextBox.Location = new System.Drawing.Point(417, 377);
+            this.transactionAmountTextBox.Location = new System.Drawing.Point(469, 471);
+            this.transactionAmountTextBox.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.transactionAmountTextBox.Name = "transactionAmountTextBox";
-            this.transactionAmountTextBox.Size = new System.Drawing.Size(316, 27);
+            this.transactionAmountTextBox.Size = new System.Drawing.Size(355, 31);
             this.transactionAmountTextBox.TabIndex = 14;
             // 
             // transactionDescriptionTextBox
             // 
             this.transactionDescriptionTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.transactionDescriptionTextBox.Location = new System.Drawing.Point(417, 314);
+            this.transactionDescriptionTextBox.Location = new System.Drawing.Point(469, 392);
+            this.transactionDescriptionTextBox.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.transactionDescriptionTextBox.Name = "transactionDescriptionTextBox";
-            this.transactionDescriptionTextBox.Size = new System.Drawing.Size(316, 27);
+            this.transactionDescriptionTextBox.Size = new System.Drawing.Size(355, 31);
             this.transactionDescriptionTextBox.TabIndex = 13;
             // 
             // transactionDateTimePicker
             // 
             this.transactionDateTimePicker.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.transactionDateTimePicker.Location = new System.Drawing.Point(417, 256);
+            this.transactionDateTimePicker.Location = new System.Drawing.Point(469, 320);
+            this.transactionDateTimePicker.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.transactionDateTimePicker.Name = "transactionDateTimePicker";
-            this.transactionDateTimePicker.Size = new System.Drawing.Size(316, 27);
+            this.transactionDateTimePicker.Size = new System.Drawing.Size(355, 31);
             this.transactionDateTimePicker.TabIndex = 12;
             // 
             // dataGridView1
@@ -203,32 +215,37 @@
             this.Column1,
             this.Column3,
             this.Column2});
-            this.dataGridView1.Location = new System.Drawing.Point(831, 269);
+            this.dataGridView1.Location = new System.Drawing.Point(935, 336);
+            this.dataGridView1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.ReadOnly = true;
             this.dataGridView1.RowHeadersVisible = false;
+            this.dataGridView1.RowHeadersWidth = 62;
             dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.dataGridView1.RowsDefaultCellStyle = dataGridViewCellStyle3;
             this.dataGridView1.RowTemplate.Height = 24;
             this.dataGridView1.ScrollBars = System.Windows.Forms.ScrollBars.None;
-            this.dataGridView1.Size = new System.Drawing.Size(627, 166);
+            this.dataGridView1.Size = new System.Drawing.Size(705, 208);
             this.dataGridView1.TabIndex = 24;
             // 
             // Column1
             // 
             this.Column1.HeaderText = "Date";
+            this.Column1.MinimumWidth = 8;
             this.Column1.Name = "Column1";
             this.Column1.ReadOnly = true;
             // 
             // Column3
             // 
             this.Column3.HeaderText = "Description";
+            this.Column3.MinimumWidth = 8;
             this.Column3.Name = "Column3";
             this.Column3.ReadOnly = true;
             // 
             // Column2
             // 
             this.Column2.HeaderText = "Amount";
+            this.Column2.MinimumWidth = 8;
             this.Column2.Name = "Column2";
             this.Column2.ReadOnly = true;
             // 
@@ -236,18 +253,41 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(1041, 225);
+            this.label1.Location = new System.Drawing.Point(1171, 281);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(231, 25);
+            this.label1.Size = new System.Drawing.Size(275, 29);
             this.label1.TabIndex = 25;
             this.label1.Text = "Last Five Transactions";
             // 
+            // tenPercentToCharityCheckBox
+            // 
+            this.tenPercentToCharityCheckBox.AutoSize = true;
+            this.tenPercentToCharityCheckBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tenPercentToCharityCheckBox.Location = new System.Drawing.Point(303, 598);
+            this.tenPercentToCharityCheckBox.Name = "tenPercentToCharityCheckBox";
+            this.tenPercentToCharityCheckBox.Size = new System.Drawing.Size(402, 30);
+            this.tenPercentToCharityCheckBox.TabIndex = 29;
+            this.tenPercentToCharityCheckBox.Text = "Apply 10+% towards charity balance?";
+            this.tenPercentToCharityCheckBox.UseVisualStyleBackColor = true;
+            this.tenPercentToCharityCheckBox.Visible = false;
+            // 
+            // charityBalanceLabel
+            // 
+            this.charityBalanceLabel.AutoSize = true;
+            this.charityBalanceLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.charityBalanceLabel.Location = new System.Drawing.Point(55, 834);
+            this.charityBalanceLabel.Name = "charityBalanceLabel";
+            this.charityBalanceLabel.Size = new System.Drawing.Size(0, 25);
+            this.charityBalanceLabel.TabIndex = 30;
+            // 
             // StartMenu
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.ClientSize = new System.Drawing.Size(1626, 715);
+            this.ClientSize = new System.Drawing.Size(1829, 894);
+            this.Controls.Add(this.charityBalanceLabel);
+            this.Controls.Add(this.tenPercentToCharityCheckBox);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.confirmLabel);
@@ -264,6 +304,7 @@
             this.Controls.Add(this.exitButton);
             this.Controls.Add(this.budgetReportButton);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.Name = "StartMenu";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.StartMenu_Load);
@@ -292,6 +333,8 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Column3;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column2;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.CheckBox tenPercentToCharityCheckBox;
+        private System.Windows.Forms.Label charityBalanceLabel;
     }
 }
 
