@@ -37,7 +37,7 @@ namespace BudgetApp_V2
         {
             LinkedList<String[]> transactions = new LinkedList<String[]>();
 
-            
+
             string connStr = new MySQLConnection().connection;
 
             MySqlConnection connection = new MySqlConnection(connStr);
@@ -133,6 +133,39 @@ namespace BudgetApp_V2
             MySqlConnection connection = new MySqlConnection(connStr);
 
             string sql = "SELECT typeName FROM expensetypes ORDER BY typeName; ";
+
+            connection = new MySqlConnection(connStr);    //create the new connection using the parameters of connStr
+            try
+            {
+                connection.Open();                            //open the connection
+                var cmd = new MySqlCommand(sql, connection);  //create an executable command
+                var reader = cmd.ExecuteReader();             //execute the command
+
+                while (reader.Read())
+                {
+                    string currentCategory = reader.GetString(0);
+                    currentCategory = currentCategory.Substring(0, 1).ToUpper() + currentCategory.Substring(1); //Make the first character of the category in upper case.
+                    categories.AddLast(currentCategory);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+            connection.Close();
+            return categories;
+        }
+
+
+        public LinkedList<string> GetBudgetReportCategories()
+        {
+            LinkedList<string> categories = new LinkedList<string>();
+
+            string connStr = new MySQLConnection().connection;
+
+            MySqlConnection connection = new MySqlConnection(connStr);
+
+            string sql = "SELECT typeName FROM expensetypes WHERE typeName != 'charity' ORDER BY typeName; ";
 
             connection = new MySqlConnection(connStr);    //create the new connection using the parameters of connStr
             try

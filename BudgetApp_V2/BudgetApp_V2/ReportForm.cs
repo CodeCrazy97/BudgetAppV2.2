@@ -37,7 +37,7 @@ namespace BudgetApp_V2
         private void DisplayTransactionsSummary()
         {
             categories.Clear();
-            categories = new MySQLConnection().GetCategories();
+            categories = new MySQLConnection().GetBudgetReportCategories();
             totals.Clear();
             dataGridView1.Rows.Clear();
 
@@ -81,6 +81,7 @@ namespace BudgetApp_V2
                         reader.Close();
                     }
                 }
+                
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex.ToString());
@@ -94,6 +95,9 @@ namespace BudgetApp_V2
                 {
                     total += totals.ElementAt(i);
                 }
+
+                Console.WriteLine("categories count: " + categories.Count);
+                Console.WriteLine("totals: " + totals.Count);
 
                 //Finally, display total amounts spent for each category on the gridview.
                 for (int i = 0; i < categories.Count; i++)
