@@ -50,8 +50,7 @@
             this.Column3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.label1 = new System.Windows.Forms.Label();
-            this.tenPercentToCharityCheckBox = new System.Windows.Forms.CheckBox();
-            this.charityBalanceLabel = new System.Windows.Forms.Label();
+            this.checkBox = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -259,26 +258,17 @@
             this.label1.TabIndex = 25;
             this.label1.Text = "Last Five Transactions";
             // 
-            // tenPercentToCharityCheckBox
+            // checkBox
             // 
-            this.tenPercentToCharityCheckBox.AutoSize = true;
-            this.tenPercentToCharityCheckBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tenPercentToCharityCheckBox.Location = new System.Drawing.Point(303, 598);
-            this.tenPercentToCharityCheckBox.Name = "tenPercentToCharityCheckBox";
-            this.tenPercentToCharityCheckBox.Size = new System.Drawing.Size(402, 30);
-            this.tenPercentToCharityCheckBox.TabIndex = 29;
-            this.tenPercentToCharityCheckBox.Text = "Apply 10+% towards charity balance?";
-            this.tenPercentToCharityCheckBox.UseVisualStyleBackColor = true;
-            this.tenPercentToCharityCheckBox.Visible = false;
-            // 
-            // charityBalanceLabel
-            // 
-            this.charityBalanceLabel.AutoSize = true;
-            this.charityBalanceLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.charityBalanceLabel.Location = new System.Drawing.Point(55, 834);
-            this.charityBalanceLabel.Name = "charityBalanceLabel";
-            this.charityBalanceLabel.Size = new System.Drawing.Size(0, 25);
-            this.charityBalanceLabel.TabIndex = 30;
+            this.checkBox.AutoSize = true;
+            this.checkBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.checkBox.Location = new System.Drawing.Point(303, 598);
+            this.checkBox.Name = "checkBox";
+            this.checkBox.Size = new System.Drawing.Size(402, 30);
+            this.checkBox.TabIndex = 29;
+            this.checkBox.Text = "Apply 10+% towards charity balance?";
+            this.checkBox.UseVisualStyleBackColor = true;
+            this.checkBox.Visible = false;
             // 
             // StartMenu
             // 
@@ -286,8 +276,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.ClientSize = new System.Drawing.Size(1829, 894);
-            this.Controls.Add(this.charityBalanceLabel);
-            this.Controls.Add(this.tenPercentToCharityCheckBox);
+            this.Controls.Add(this.checkBox);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.confirmLabel);
@@ -333,8 +322,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Column3;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column2;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.CheckBox tenPercentToCharityCheckBox;
-        private System.Windows.Forms.Label charityBalanceLabel;
+        private System.Windows.Forms.CheckBox checkBox;
     }
 }
 

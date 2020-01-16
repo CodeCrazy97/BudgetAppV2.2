@@ -81,8 +81,6 @@ namespace BudgetApp_V2
 
             //Set the cursor to blinking in the text box.
             transactionDescriptionTextBox.Select();
-
-            displayCharityBalanceMessage();
                         
         }
 
@@ -151,23 +149,23 @@ namespace BudgetApp_V2
                         sql = "INSERT INTO otherearnings (earning_date, description, amount) VALUES ('" + date + "', '" + description + "', " + amt + ");";
 
                         // Check if user wants to apply 10% (rounded up) towards charity balance.   
-                        if (tenPercentToCharityCheckBox.Checked)
+                        if (checkBox.Checked)
                         {
                             double amount = Math.Ceiling(amt * 0.1);
                             new MySQLConnection().ModifyCharityBalance(amount);
-                            // Now, update the charity balance:
-                            displayCharityBalanceMessage();
                         }
                     }
                     else
                     {
                         if (String.Equals(categoryComboBox.SelectedItem.ToString(), "Charity"))
                         {
+                            if (!checkBox.Checked)
+                            {
+                                amt = -amt;  //make negative
+                            } 
                             // Will need to decrease charity balance, since used some of the charity.
-                            new MySQLConnection().ModifyCharityBalance(-amt); // turn amount into a negative (decrease in charity balance)
-                            // Update charity balance message:
-                            displayCharityBalanceMessage();
-                        }
+                            new MySQLConnection().ModifyCharityBalance(amt); // turn amount into a negative (decrease in charity balance)
+                        } 
                         sql = "INSERT INTO expenses (trans_date, description, amount, expensetype) VALUES ('" + date + "', '" + description + "', " + amt + ", '" + categoryComboBox.SelectedItem.ToString().ToLower() + "');";
                     }
                     MySqlConnection connection = new MySqlConnection(connStr);    //create the new connection using the parameters of connStr
@@ -199,20 +197,7 @@ namespace BudgetApp_V2
             }
         }
 
-        // Show what the charity balance is.
-        private void displayCharityBalanceMessage()
-        {
-            try
-            {
-                // Show the charity budget.
-                double charityBalance = new MySQLConnection().GetCharityBalance();
-                charityBalanceLabel.Text = "Charity balance: $" + charityBalance;
-            }
-            catch (Exception e2)
-            {
-                Console.WriteLine(e2);
-            }
-        }
+        
 
         private void clearButton_Click(object sender, EventArgs e)
         {
@@ -227,8 +212,7 @@ namespace BudgetApp_V2
             categoryComboBox.SelectedIndex = 0;
             confirmLabel.Visible = false;
             submitButton.Text = "Submit";
-            tenPercentToCharityCheckBox.Checked = false;
-            tenPercentToCharityCheckBox.Visible = false;
+            checkBox.Checked = false;
             categoryComboBox.SelectedIndex = 0;
         }
 
@@ -261,17 +245,25 @@ namespace BudgetApp_V2
 
         private void CategoryComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (categoryComboBox.SelectedItem.ToString().Equals("Other Earnings"))
+            if (categoryComboBox.SelectedItem.ToString().Equals("Other Earnings")|| categoryComboBox.SelectedItem.ToString().Equals("Charity"))
             {
-                tenPercentToCharityCheckBox.Visible = true;
-                tenPercentToCharityCheckBox.Checked = false;
+                checkBox.Visible = true;
+                checkBox.Checked = false;
 
                 submitButton.SetBounds(submitButton.Location.X, 425, submitButton.Width, submitButton.Height);
                 clearButton.SetBounds(clearButton.Location.X, 425, clearButton.Width, clearButton.Height);
+                if (categoryComboBox.SelectedItem.ToString().Equals("Other Earnings"))
+                {
+                    checkBox.Text = "Apply 10+% towards charity balance?";
+                }
+                else
+                {
+                    checkBox.Text = "Select if this was a charity balance INCREASE";
+                }
             }
             else
             {
-                tenPercentToCharityCheckBox.Visible = false;
+                checkBox.Visible = false;
                 submitButton.SetBounds(submitButton.Location.X, 400, submitButton.Width, submitButton.Height);
                 clearButton.SetBounds(clearButton.Location.X, 400, clearButton.Width, clearButton.Height);
             }

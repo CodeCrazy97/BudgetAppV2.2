@@ -27,6 +27,24 @@ namespace BudgetApp_V2
             // Display the dates as text.
             date1Label.Text = "1/1/" + DateTime.Today.Year;
             date2Label.Text = DateTime.Today.Month + "/" + DateTime.Today.Day + "/" + DateTime.Today.Year;
+
+            // show the charity balance
+            displayCharityBalanceMessage();
+        }
+
+        // Show what the charity balance is.
+        private void displayCharityBalanceMessage()
+        {
+            try
+            {
+                // Show the charity budget.
+                double charityBalance = new MySQLConnection().GetCharityBalance();
+                charityBalanceLabel.Text = "Current charity balance: $" + charityBalance;
+            }
+            catch (Exception e2)
+            {
+                Console.WriteLine(e2);
+            }
         }
 
         private void exitButton_Click(object sender, EventArgs e)
@@ -95,9 +113,6 @@ namespace BudgetApp_V2
                 {
                     total += totals.ElementAt(i);
                 }
-
-                Console.WriteLine("categories count: " + categories.Count);
-                Console.WriteLine("totals: " + totals.Count);
 
                 //Finally, display total amounts spent for each category on the gridview.
                 for (int i = 0; i < categories.Count; i++)
