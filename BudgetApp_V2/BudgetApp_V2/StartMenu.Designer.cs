@@ -215,7 +215,7 @@
             this.Column1,
             this.Column3,
             this.Column2});
-            this.dataGridView1.Location = new System.Drawing.Point(935, 336);
+            this.dataGridView1.Location = new System.Drawing.Point(932, 122);
             this.dataGridView1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.ReadOnly = true;
@@ -253,11 +253,11 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(1171, 281);
+            this.label1.Location = new System.Drawing.Point(1072, 68);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(275, 29);
+            this.label1.Size = new System.Drawing.Size(352, 29);
             this.label1.TabIndex = 25;
-            this.label1.Text = "Last Five Transactions";
+            this.label1.Text = "Current Month\'s Transactions";
             // 
             // checkBox
             // 

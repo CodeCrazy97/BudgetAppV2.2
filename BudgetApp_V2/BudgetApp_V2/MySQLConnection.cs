@@ -33,7 +33,7 @@ namespace BudgetApp_V2
             return newStr;
         }
 
-        public LinkedList<String[]> GetLastFiveTransactions()
+        public LinkedList<String[]> GetCurrentMonthsTransactions()
         {
             LinkedList<String[]> transactions = new LinkedList<String[]>();
 
@@ -42,7 +42,7 @@ namespace BudgetApp_V2
 
             MySqlConnection connection = new MySqlConnection(connStr);
 
-            string sql = "SELECT trans_date, description, amount FROM expenses ORDER BY trans_date DESC LIMIT 5; ";
+            string sql = "SELECT trans_date, description, amount FROM expenses WHERE YEAR(trans_date) = YEAR(NOW()) AND MONTH(trans_date) = MONTH(NOW()) ORDER BY trans_date; ";
 
             connection = new MySqlConnection(connStr);    //create the new connection using the parameters of connStr
             try

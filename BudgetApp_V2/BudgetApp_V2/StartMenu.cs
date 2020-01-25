@@ -73,8 +73,8 @@ namespace BudgetApp_V2
             dataGridView1.Columns[1].Width = 450;
             dataGridView1.Columns[1].Width = dataGridView1.Width - dataGridView1.Columns[0].Width - dataGridView1.Columns[0].Width;
 
-            //Show the last five transactions that were recorded.
-            SetLastFiveTransactions();
+            //Show the current month's transactions.
+            DisplayMonthTransactions();
 
             //Select the first item in the combobox.
             categoryComboBox.SelectedIndex = 0;
@@ -89,16 +89,29 @@ namespace BudgetApp_V2
             }
         }
 
-        private void SetLastFiveTransactions()
+        private void DisplayMonthTransactions()
         {
-            //Remove the previous showing of the last five transactions (necessary because this method could be called after submitting a new transaction, which would then need to be added to the last five transactions list)
+            //Remove the previous showing of this month's transactions (necessary because this method could be called after submitting a new transaction, which would then need to be added to the transactions list)
             dataGridView1.Rows.Clear();
 
-            LinkedList<String[]> lastFiveTransactions = new MySQLConnection().GetLastFiveTransactions();
+            LinkedList<String[]> monthsTransactions = new MySQLConnection().GetCurrentMonthsTransactions();
 
-            for (int i = 0; i < lastFiveTransactions.Count; i++)  //Even though there should be five transactions in the linked list, there might not be if the database has been swiped of data.
+            if(monthsTransactions.Count == 0)  // No transactions for the current month.
             {
-                dataGridView1.Rows.Add(lastFiveTransactions.ElementAt(i)[0], lastFiveTransactions.ElementAt(i)[1], lastFiveTransactions.ElementAt(i)[2]);
+                dataGridView1.Visible = false;
+                label1.Visible = false;
+            }
+            else
+            {
+                dataGridView1.Visible = true;
+                label1.Visible = true;
+            }
+
+            dataGridView1.Height = 28;
+            dataGridView1.Height += monthsTransactions.Count * 21;
+            for (int i = 0; i < monthsTransactions.Count; i++)  //Even though there should be five transactions in the linked list, there might not be if the database has been swiped of data.
+            {
+                dataGridView1.Rows.Add(monthsTransactions.ElementAt(i)[0], monthsTransactions.ElementAt(i)[1], monthsTransactions.ElementAt(i)[2]);
             }
         }
 
@@ -198,7 +211,7 @@ namespace BudgetApp_V2
                 transactionDescriptionTextBox.Select();
 
                 //Add this item to the last five transactions.
-                SetLastFiveTransactions();
+                DisplayMonthTransactions();
 
                 if (categoryComboBox.SelectedItem.Equals("Charity") || categoryComboBox.SelectedItem.Equals("Other Earnings"))
                 {
