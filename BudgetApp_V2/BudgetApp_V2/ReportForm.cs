@@ -28,24 +28,7 @@ namespace BudgetApp_V2
             date1Label.Text = "1/1/" + DateTime.Today.Year;
             date2Label.Text = DateTime.Today.Month + "/" + DateTime.Today.Day + "/" + DateTime.Today.Year;
 
-            // show the charity balance
-            displayCharityBalanceMessage();
-        }
-
-        // Show what the charity balance is.
-        private void displayCharityBalanceMessage()
-        {
-            try
-            {
-                // Show the charity budget.
-                double charityBalance = new MySQLConnection().GetCharityBalance();
-                charityBalanceLabel.Text = "Current charity balance: $" + charityBalance;
-            }
-            catch (Exception e2)
-            {
-                Console.WriteLine(e2);
-            }
-        }
+        }        
 
         private void exitButton_Click(object sender, EventArgs e)
         {

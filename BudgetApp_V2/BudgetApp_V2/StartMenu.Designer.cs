@@ -51,6 +51,7 @@
             this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.label1 = new System.Windows.Forms.Label();
             this.checkBox = new System.Windows.Forms.CheckBox();
+            this.charityBalanceLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -84,7 +85,7 @@
             this.confirmLabel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
             this.confirmLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.confirmLabel.ForeColor = System.Drawing.Color.Black;
-            this.confirmLabel.Location = new System.Drawing.Point(409, 747);
+            this.confirmLabel.Location = new System.Drawing.Point(409, 716);
             this.confirmLabel.Name = "confirmLabel";
             this.confirmLabel.Size = new System.Drawing.Size(137, 29);
             this.confirmLabel.TabIndex = 23;
@@ -94,7 +95,7 @@
             // clearButton
             // 
             this.clearButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.clearButton.Location = new System.Drawing.Point(479, 651);
+            this.clearButton.Location = new System.Drawing.Point(481, 654);
             this.clearButton.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.clearButton.Name = "clearButton";
             this.clearButton.Size = new System.Drawing.Size(114, 46);
@@ -106,7 +107,7 @@
             // submitButton
             // 
             this.submitButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.submitButton.Location = new System.Drawing.Point(359, 651);
+            this.submitButton.Location = new System.Drawing.Point(361, 654);
             this.submitButton.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.submitButton.Name = "submitButton";
             this.submitButton.Size = new System.Drawing.Size(114, 46);
@@ -270,12 +271,23 @@
             this.checkBox.UseVisualStyleBackColor = true;
             this.checkBox.Visible = false;
             // 
+            // charityBalanceLabel
+            // 
+            this.charityBalanceLabel.AutoSize = true;
+            this.charityBalanceLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.charityBalanceLabel.Location = new System.Drawing.Point(356, 764);
+            this.charityBalanceLabel.Name = "charityBalanceLabel";
+            this.charityBalanceLabel.Size = new System.Drawing.Size(70, 26);
+            this.charityBalanceLabel.TabIndex = 30;
+            this.charityBalanceLabel.Text = "label2";
+            // 
             // StartMenu
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.ClientSize = new System.Drawing.Size(1829, 894);
+            this.Controls.Add(this.charityBalanceLabel);
             this.Controls.Add(this.checkBox);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.dataGridView1);
@@ -323,6 +335,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Column2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.CheckBox checkBox;
+        private System.Windows.Forms.Label charityBalanceLabel;
     }
 }
 

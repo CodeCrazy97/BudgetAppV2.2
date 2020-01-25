@@ -81,7 +81,12 @@ namespace BudgetApp_V2
 
             //Set the cursor to blinking in the text box.
             transactionDescriptionTextBox.Select();
-                        
+            
+            // don't want to display charity balance when program starts (privacy concern)
+            if (categoryComboBox.Items.Count > 1 && categoryComboBox.SelectedItem.Equals("Charity"))
+            {
+                categoryComboBox.SelectedIndex = 1;
+            }
         }
 
         private void SetLastFiveTransactions()
@@ -194,6 +199,11 @@ namespace BudgetApp_V2
 
                 //Add this item to the last five transactions.
                 SetLastFiveTransactions();
+
+                if (categoryComboBox.SelectedItem.Equals("Charity") || categoryComboBox.SelectedItem.Equals("Other Earnings"))
+                {
+                    displayCharityBalanceMessage();
+                }
             }
         }
 
@@ -214,6 +224,15 @@ namespace BudgetApp_V2
             submitButton.Text = "Submit";
             checkBox.Checked = false;
             categoryComboBox.SelectedIndex = 0;
+
+            // don't want to display charity balance when program starts (privacy concern)
+            if (categoryComboBox.Items.Count > 1 && categoryComboBox.SelectedItem.Equals("Charity"))
+            {
+                categoryComboBox.SelectedIndex = 1;
+            }
+
+            //Set the cursor to blinking in the text box.
+            transactionDescriptionTextBox.Select();
         }
 
         private void budgetReportButton_Click(object sender, EventArgs e)
@@ -243,12 +262,29 @@ namespace BudgetApp_V2
             return false;
         }
 
+        // Show what the charity balance is.
+        private void displayCharityBalanceMessage()
+        {
+            try
+            {
+                // Show the charity budget.
+                double charityBalance = new MySQLConnection().GetCharityBalance();
+                charityBalanceLabel.Text = "Current charity balance: $" + charityBalance;
+            }
+            catch (Exception e2)
+            {
+                Console.WriteLine(e2);
+            }
+        }
+
         private void CategoryComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (categoryComboBox.SelectedItem.ToString().Equals("Other Earnings")|| categoryComboBox.SelectedItem.ToString().Equals("Charity"))
             {
                 checkBox.Visible = true;
                 checkBox.Checked = false;
+                charityBalanceLabel.Visible = true;
+                displayCharityBalanceMessage();
 
                 submitButton.SetBounds(submitButton.Location.X, 425, submitButton.Width, submitButton.Height);
                 clearButton.SetBounds(clearButton.Location.X, 425, clearButton.Width, clearButton.Height);
@@ -264,6 +300,7 @@ namespace BudgetApp_V2
             else
             {
                 checkBox.Visible = false;
+                charityBalanceLabel.Visible = false;
                 submitButton.SetBounds(submitButton.Location.X, 400, submitButton.Width, submitButton.Height);
                 clearButton.SetBounds(clearButton.Location.X, 400, clearButton.Width, clearButton.Height);
             }
