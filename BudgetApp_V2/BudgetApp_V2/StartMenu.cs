@@ -61,6 +61,7 @@ namespace BudgetApp_V2
             WindowState = FormWindowState.Maximized;
             categories = new MySQLConnection().GetCategories();
 
+            categoryComboBox.Items.Add("Charity");
             //Fill combo box with the categories.
             for (int i = 0; i < categories.Count; i++)
             {
@@ -68,7 +69,7 @@ namespace BudgetApp_V2
             }
             // add the other earnings and charity categories (these are not in the database
             categoryComboBox.Items.Add("Other Earnings");
-
+            
             //Set the width of the grid view columns.
             dataGridView1.Columns[0].Width = 90;
             dataGridView1.Columns[1].Width = 450;
@@ -154,71 +155,79 @@ namespace BudgetApp_V2
                 string date = transactionDateTimePicker.Value.Year + "-" + transactionDateTimePicker.Value.Month + "-" + transactionDateTimePicker.Value.Day;
                 string description = new MySQLConnection().FixStringForMySQL(transactionDescriptionTextBox.Text);
 
-                double amt = Convert.ToDouble(new MySQLConnection().FixStringForMySQL(transactionAmountTextBox.Text));
-                if (amt != 0.0)
+                double amount = Convert.ToDouble(new MySQLConnection().FixStringForMySQL(transactionAmountTextBox.Text));
+                if (amount != 0.0)
                 {
                     //Figure out which category this transaction fits in.
                     bool[] vals = new bool[categories.Count];
-                    amt = Math.Abs(amt);  // make a positive number. The old version insisted that expenses be negative; however, under the new design, it is implied that anything in the expense table is negative
+                    amount = Math.Abs(amount);  // make a positive number. The old version insisted that expenses be negative; however, under the new design, it is implied that anything in the expense table is negative
 
                     //Build the INSERT string. Place each possible category into it.
                     string sql = "";
-                    if (String.Equals(categoryComboBox.SelectedItem.ToString(), "Other Earnings"))
+                    if (String.Equals(categoryComboBox.SelectedItem.ToString(), "Other Earnings"))  // Type = Other Earnings
                     {
-                        sql = "INSERT INTO otherearnings (earning_date, description, amount) VALUES ('" + date + "', '" + description + "', " + amt + ");";
+                        sql = "INSERT INTO other_earnings (earning_date, description, amount) VALUES ('" + date + "', '" + description + "', " + amount + ");";
 
                         // Check if user wants to apply 10% (rounded up) towards charity balance.   
                         if (checkBox.Checked)
                         {
-                            double amount = Math.Ceiling(amt * 0.1);
-                            new MySQLConnection().ModifyCharityBalance(amount);
+                            amount = Math.Ceiling(amount * 0.1);
+                            new MySQLConnection().ModifyCharityBalance(date, description + " (10+% applied to charity)", amount);
                         }
+
+                        executeSql(sql);
                     }
-                    else
+                    else if (String.Equals(categoryComboBox.SelectedItem.ToString(), "Charity"))  // Type = Charity
                     {
-                        if (String.Equals(categoryComboBox.SelectedItem.ToString(), "Charity"))
+                        if (!checkBox.Checked)  // This is a decrease to the charity balance.
                         {
-                            if (!checkBox.Checked)
-                            {
-                                amt = -amt;  //make negative
-                            } 
-                            // Will need to decrease charity balance, since used some of the charity.
-                            new MySQLConnection().ModifyCharityBalance(amt); // turn amount into a negative (decrease in charity balance)
-                        } 
-                        sql = "INSERT INTO expenses (trans_date, description, amount, expensetype) VALUES ('" + date + "', '" + description + "', " + amt + ", '" + categoryComboBox.SelectedItem.ToString().ToLower() + "');";
+                            amount = -amount;  //make negative
+                        }
+                        // Will need to decrease charity balance, since used some of the charity.
+                        new MySQLConnection().ModifyCharityBalance(date, description, amount); // turn amount into a negative (decrease in charity balance)
                     }
-                    MySqlConnection connection = new MySqlConnection(connStr);    //create the new connection using the parameters of connStr
-                    try
+                    else  // Some other expense type
                     {
-                        connection.Open();                            //open the connection
-                        var cmd = new MySqlCommand(sql, connection);  //create an executable command
-                        var reader = cmd.ExecuteNonQuery();             //execute the command
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine(ex.ToString());
+                        sql = "INSERT INTO expenses (trans_date, description, amount, expense_type) VALUES ('" + date + "', '" + description + "', " + amount + ", '" + categoryComboBox.SelectedItem.ToString().ToLower() + "');";
+
+                        executeSql(sql);
                     }
 
-                    connection.Close();
+                    //Reset items.
+                    Clear();
+
+                    //Set cursor to blinking in the description text box.
+                    transactionDescriptionTextBox.Select();
+
+                    //Add this item to the last five transactions.
+                    DisplayMonthTransactions();
+
+                    if (categoryComboBox.SelectedItem.Equals("Charity") || categoryComboBox.SelectedItem.Equals("Other Earnings"))
+                    {
+                        displayCharityBalanceMessage();
+                    }
                 }
                 else
                 {
                     MessageBox.Show("Amount must be nonzero.");
-                }
-                //Reset items.
-                Clear();
-
-                //Set cursor to blinking in the description text box.
-                transactionDescriptionTextBox.Select();
-
-                //Add this item to the last five transactions.
-                DisplayMonthTransactions();
-
-                if (categoryComboBox.SelectedItem.Equals("Charity") || categoryComboBox.SelectedItem.Equals("Other Earnings"))
-                {
-                    displayCharityBalanceMessage();
-                }
+                }                
             }
+        }
+
+        private void executeSql(string sql)
+        {
+            MySqlConnection connection = new MySqlConnection(connStr);    //create the new connection using the parameters of connStr
+            try
+            {
+                connection.Open();                            //open the connection
+                var cmd = new MySqlCommand(sql, connection);  //create an executable command
+                var reader = cmd.ExecuteNonQuery();             //execute the command
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+            connection.Close();
         }
 
         

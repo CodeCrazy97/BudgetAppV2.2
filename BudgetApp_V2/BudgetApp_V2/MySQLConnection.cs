@@ -70,14 +70,15 @@ namespace BudgetApp_V2
             return transactions;
         }
 
-        public void ModifyCharityBalance(double amount)
+        
+        public void ModifyCharityBalance(string transDate, string description, double amount)
         {
             //Place the transaction in the database.
             string connStr = new MySQLConnection().connection;
 
             string sql = "";
             //Build the INSERT string.
-            sql = "UPDATE charity_balance SET amount = amount + " + amount + ";";
+            sql = "INSERT INTO charity (trans_date, description, amount) VALUES ('" + transDate + "', '" + description + "', " + amount + ");";
             MySqlConnection connection = new MySqlConnection(connStr);    //create the new connection using the parameters of connStr
             try
             {
@@ -92,6 +93,7 @@ namespace BudgetApp_V2
 
             connection.Close();
         }
+        
 
         public double GetCharityBalance()
         {
@@ -99,7 +101,7 @@ namespace BudgetApp_V2
 
             MySqlConnection connection = new MySqlConnection(connStr);
 
-            string sql = "SELECT amount FROM charity_balance; ";
+            string sql = "SELECT SUM(amount) FROM charity; ";
 
             connection = new MySqlConnection(connStr);    //create the new connection using the parameters of connStr
             try
@@ -121,7 +123,7 @@ namespace BudgetApp_V2
             {
                 connection.Close();
             }
-            throw new Exception("Could not fetch amount from charity_balance.");
+            throw new Exception("Could not fetch amount from charity.");
         }
 
         public LinkedList<string> GetCategories()
@@ -132,7 +134,7 @@ namespace BudgetApp_V2
 
             MySqlConnection connection = new MySqlConnection(connStr);
 
-            string sql = "SELECT typeName FROM expensetypes ORDER BY typeName; ";
+            string sql = "SELECT type_name FROM expense_types ORDER BY type_name; ";
 
             connection = new MySqlConnection(connStr);    //create the new connection using the parameters of connStr
             try
@@ -165,7 +167,7 @@ namespace BudgetApp_V2
 
             MySqlConnection connection = new MySqlConnection(connStr);
 
-            string sql = "SELECT typeName FROM expensetypes WHERE typeName != 'charity' ORDER BY typeName; ";
+            string sql = "SELECT type_name FROM expense_types ORDER BY type_name; ";
 
             connection = new MySqlConnection(connStr);    //create the new connection using the parameters of connStr
             try

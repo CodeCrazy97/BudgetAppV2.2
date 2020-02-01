@@ -65,7 +65,7 @@ namespace BudgetApp_V2
                     conn.Open();
                     for (int i = 0; i < categories.Count; i++)  //Loop through all categories, getting totals for each.
                     {
-                        string sql = "SELECT SUM(amount) FROM expenses WHERE expensetype = '" + categories.ElementAt(i) + "' AND trans_date BETWEEN '" + date1 + "' AND '" + date2 + "'; ";
+                        string sql = "SELECT SUM(amount) FROM expenses WHERE expense_type = '" + categories.ElementAt(i) + "' AND trans_date BETWEEN '" + date1 + "' AND '" + date2 + "'; ";
                         MySqlCommand cmd = new MySqlCommand(sql, conn);
                         var reader = cmd.ExecuteReader();             //execute the command
                         while (reader.Read())
