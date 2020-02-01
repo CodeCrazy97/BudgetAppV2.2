@@ -13,6 +13,7 @@
  * 01/12/2020 - Show charity balance on Start Menu. Also, increase/decrease balance accoring to contributions and earnings.
  * 01/25/2020 - Display current month's transactions on start screen; hide charity balance message except when selected transactions as charity/other earnings.
  * 02/01/2020 - Using charity table; display expenses descending.
+ * 02/01/2020 - Hide current month's expenses on start menu load (will unhide if anything exists for current month).
  */
 
 using MySql.Data.MySqlClient;
@@ -58,6 +59,8 @@ namespace BudgetApp_V2
 
         private void StartMenu_Load(object sender, EventArgs e)
         {
+            dataGridView1.Visible = false;
+            label1.Visible = false;
             this.Text = "Budget App, Version 2.3";
             WindowState = FormWindowState.Maximized;
             categories = new MySQLConnection().GetCategories();
