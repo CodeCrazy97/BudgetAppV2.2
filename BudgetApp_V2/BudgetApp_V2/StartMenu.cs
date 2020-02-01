@@ -12,6 +12,7 @@
  * 01/05/2020 - Resize data grid view on report form based on number of expense types returned.
  * 01/12/2020 - Show charity balance on Start Menu. Also, increase/decrease balance accoring to contributions and earnings.
  * 01/25/2020 - Display current month's transactions on start screen; hide charity balance message except when selected transactions as charity/other earnings.
+ * 02/01/2020 - Using charity table; display expenses descending.
  */
 
 using MySql.Data.MySqlClient;
