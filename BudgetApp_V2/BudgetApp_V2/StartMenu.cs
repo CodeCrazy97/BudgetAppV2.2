@@ -199,7 +199,7 @@ namespace BudgetApp_V2
                     //Set cursor to blinking in the description text box.
                     transactionDescriptionTextBox.Select();
 
-                    //Add this item to the last five transactions.
+                    //Add this item to the last five transactions.                    
                     DisplayMonthTransactions();
 
                     if (categoryComboBox.SelectedItem.Equals("Charity") || categoryComboBox.SelectedItem.Equals("Other Earnings"))

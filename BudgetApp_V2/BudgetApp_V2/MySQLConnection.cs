@@ -42,7 +42,7 @@ namespace BudgetApp_V2
 
             MySqlConnection connection = new MySqlConnection(connStr);
 
-            string sql = "SELECT trans_date, description, amount FROM expenses WHERE YEAR(trans_date) = YEAR(NOW()) AND MONTH(trans_date) = MONTH(NOW()) ORDER BY trans_date; ";
+            string sql = "SELECT trans_date, description, amount FROM expenses WHERE YEAR(trans_date) = YEAR(NOW()) AND MONTH(trans_date) = MONTH(NOW()) ORDER BY trans_date DESC; ";
 
             connection = new MySqlConnection(connStr);    //create the new connection using the parameters of connStr
             try
