@@ -14,8 +14,10 @@
  * 01/25/2020 - Display current month's transactions on start screen; hide charity balance message except when selected transactions as charity/other earnings.
  * 02/01/2020 - Using charity table; display expenses descending.
  * 02/01/2020 - Hide current month's expenses on start menu load (will unhide if anything exists for current month).
+ * 02/19/2020 - System can now calculate math expressions for the amount.
  */
 
+using System.Data;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
@@ -131,6 +133,14 @@ namespace BudgetApp_V2
             Application.Exit();
         }
 
+        private double getAmount()
+        {
+            // Calculate math expressions for the amount given. For example: users can enter 12.34+.87. The amount in this case would equal $13.21.
+            DataTable dt = new DataTable();
+            double amount = Convert.ToDouble(dt.Compute(transactionAmountTextBox.Text, ""));
+            return amount;
+        }
+
         private void submitButton_Click(object sender, EventArgs e)
         {
             if (submitButton.Text.Equals("Submit"))
@@ -138,7 +148,7 @@ namespace BudgetApp_V2
                 try
                 {
                     //Make sure the amount entered is valid.
-                    double amt = Convert.ToDouble(new MySQLConnection().FixStringForMySQL(transactionAmountTextBox.Text));
+                    double amount = getAmount();
 
                     confirmLabel.Visible = true;
                     submitButton.Text = "Confirm";
@@ -159,7 +169,9 @@ namespace BudgetApp_V2
                 string date = transactionDateTimePicker.Value.Year + "-" + transactionDateTimePicker.Value.Month + "-" + transactionDateTimePicker.Value.Day;
                 string description = new MySQLConnection().FixStringForMySQL(transactionDescriptionTextBox.Text);
 
-                double amount = Convert.ToDouble(new MySQLConnection().FixStringForMySQL(transactionAmountTextBox.Text));
+                // Calculate math expressions for the amount given. For example: users can enter 12.34+.87. The amount in this case would equal $13.21.
+                double amount = getAmount();
+                Console.WriteLine(amount);
                 if (amount != 0.0)
                 {
                     //Figure out which category this transaction fits in.
