@@ -15,6 +15,7 @@
  * 02/01/2020 - Using charity table; display expenses descending.
  * 02/01/2020 - Hide current month's expenses on start menu load (will unhide if anything exists for current month).
  * 02/19/2020 - System can now calculate math expressions for the amount.
+ * 03/02/2020 - Math.Ceiling for charity balance increase.
  */
 
 using System.Data;
@@ -198,6 +199,11 @@ namespace BudgetApp_V2
                         if (!checkBox.Checked)  // This is a decrease to the charity balance.
                         {
                             amount = -amount;  //make negative
+                        }
+                        // Increase to charity balance.
+                        else
+                        {
+                            amount = Math.Ceiling(amount);
                         }
                         // Will need to decrease charity balance, since used some of the charity.
                         new MySQLConnection().ModifyCharityBalance(date, description, amount); // turn amount into a negative (decrease in charity balance)
