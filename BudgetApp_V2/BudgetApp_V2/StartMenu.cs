@@ -16,6 +16,7 @@
  * 02/01/2020 - Hide current month's expenses on start menu load (will unhide if anything exists for current month).
  * 02/19/2020 - System can now calculate math expressions for the amount.
  * 03/02/2020 - Math.Ceiling for charity balance increase.
+ * 03/28/2020 - Rounds to two decimal places for amount.
  */
 
 using System.Data;
@@ -138,7 +139,7 @@ namespace BudgetApp_V2
         {
             // Calculate math expressions for the amount given. For example: users can enter 12.34+.87. The amount in this case would equal $13.21.
             DataTable dt = new DataTable();
-            double amount = Convert.ToDouble(dt.Compute(transactionAmountTextBox.Text, ""));
+            double amount = Math.Round(Convert.ToDouble(dt.Compute(transactionAmountTextBox.Text, "")), 2);  // Round to two decimal places. Don't want an amount such as $4.5061 in the database. Would instead have $4.51.
             return amount;
         }
 
