@@ -17,6 +17,7 @@
  * 02/19/2020 - System can now calculate math expressions for the amount.
  * 03/02/2020 - Math.Ceiling for charity balance increase.
  * 03/28/2020 - Rounds to two decimal places for amount.
+ * 04/05/2020 - Charity balance rounded to two decimal places.
  */
 
 using System.Data;
@@ -315,7 +316,7 @@ namespace BudgetApp_V2
             {
                 // Show the charity budget.
                 double charityBalance = new MySQLConnection().GetCharityBalance();
-                charityBalanceLabel.Text = "Current charity balance: $" + charityBalance;
+                charityBalanceLabel.Text = "Current charity balance: $" + Math.Round(charityBalance, 2);
             }
             catch (Exception e2)
             {
