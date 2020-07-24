@@ -52,6 +52,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.checkBox = new System.Windows.Forms.CheckBox();
             this.charityBalanceLabel = new System.Windows.Forms.Label();
+            this.amountCalculatedLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -177,6 +178,7 @@
             this.transactionAmountTextBox.Name = "transactionAmountTextBox";
             this.transactionAmountTextBox.Size = new System.Drawing.Size(355, 31);
             this.transactionAmountTextBox.TabIndex = 14;
+            this.transactionAmountTextBox.TextChanged += new System.EventHandler(this.transactionAmountTextBox_TextChanged);
             // 
             // transactionDescriptionTextBox
             // 
@@ -281,12 +283,23 @@
             this.charityBalanceLabel.TabIndex = 30;
             this.charityBalanceLabel.Text = "label2";
             // 
+            // amountCalculatedLabel
+            // 
+            this.amountCalculatedLabel.AutoSize = true;
+            this.amountCalculatedLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.amountCalculatedLabel.Location = new System.Drawing.Point(831, 471);
+            this.amountCalculatedLabel.Name = "amountCalculatedLabel";
+            this.amountCalculatedLabel.Size = new System.Drawing.Size(51, 20);
+            this.amountCalculatedLabel.TabIndex = 31;
+            this.amountCalculatedLabel.Text = "label2";
+            // 
             // StartMenu
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.ClientSize = new System.Drawing.Size(1829, 894);
+            this.Controls.Add(this.amountCalculatedLabel);
             this.Controls.Add(this.charityBalanceLabel);
             this.Controls.Add(this.checkBox);
             this.Controls.Add(this.label1);
@@ -336,6 +349,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.CheckBox checkBox;
         private System.Windows.Forms.Label charityBalanceLabel;
+        private System.Windows.Forms.Label amountCalculatedLabel;
     }
 }
 

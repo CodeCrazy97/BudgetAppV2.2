@@ -18,6 +18,7 @@
  * 03/02/2020 - Math.Ceiling for charity balance increase.
  * 03/28/2020 - Rounds to two decimal places for amount.
  * 04/05/2020 - Charity balance rounded to two decimal places.
+ * 07/24/2020 - Calculate the amount in the amount text field if using mathematical expressions and display beside text field.
  */
 
 using System.Data;
@@ -66,6 +67,7 @@ namespace BudgetApp_V2
         {
             dataGridView1.Visible = false;
             label1.Visible = false;
+            amountCalculatedLabel.Visible = false;
             this.Text = "Budget App, Version 2.3";
             WindowState = FormWindowState.Maximized;
             categories = new MySQLConnection().GetCategories();
@@ -174,7 +176,6 @@ namespace BudgetApp_V2
 
                 // Calculate math expressions for the amount given. For example: users can enter 12.34+.87. The amount in this case would equal $13.21.
                 double amount = getAmount();
-                Console.WriteLine(amount);
                 if (amount != 0.0)
                 {
                     //Figure out which category this transaction fits in.
@@ -263,6 +264,8 @@ namespace BudgetApp_V2
 
         public void Clear()
         {
+            amountCalculatedLabel.Text = "";
+            amountCalculatedLabel.Visible = false;
             transactionDateTimePicker.Value = DateTime.Today;
             transactionDescriptionTextBox.Text = "";
             transactionAmountTextBox.Text = "";
@@ -350,6 +353,34 @@ namespace BudgetApp_V2
                 charityBalanceLabel.Visible = false;
                 submitButton.SetBounds(submitButton.Location.X, 400, submitButton.Width, submitButton.Height);
                 clearButton.SetBounds(clearButton.Location.X, 400, clearButton.Width, clearButton.Height);
+            }
+        }
+
+        private void transactionAmountTextBox_TextChanged(object sender, EventArgs e)
+        {
+            if (transactionAmountTextBox.Text.IndexOfAny("*/+-".ToCharArray()) != -1)  // if we're using some sort of math expression in the amount text field, then calculate it and display it
+            {
+                try
+                {
+                    if (checkBox.Checked)
+                    {
+                        amountCalculatedLabel.Text = "$" + Math.Ceiling(getAmount());
+
+                    }
+                    else
+                    {
+                        amountCalculatedLabel.Text = "$" + getAmount();
+                    }
+                    amountCalculatedLabel.Visible = true;
+                }
+                catch (Exception e2)
+                {
+                    amountCalculatedLabel.Visible = false;
+                    Console.WriteLine(e2);
+                }
+            } else // not using any math expressions in text field - no point in displaying the amount, as user already sees it in the text field
+            {
+                amountCalculatedLabel.Visible = false;
             }
         }
     }
