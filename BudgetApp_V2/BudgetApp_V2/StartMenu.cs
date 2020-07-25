@@ -19,6 +19,7 @@
  * 03/28/2020 - Rounds to two decimal places for amount.
  * 04/05/2020 - Charity balance rounded to two decimal places.
  * 07/24/2020 - Calculate the amount in the amount text field if using mathematical expressions and display beside text field.
+ * 07/25/2020 - Added tax and wage overview form.
  */
 
 using System.Data;
