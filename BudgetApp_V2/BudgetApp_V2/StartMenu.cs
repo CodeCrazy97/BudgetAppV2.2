@@ -383,5 +383,16 @@ namespace BudgetApp_V2
                 amountCalculatedLabel.Visible = false;
             }
         }
+
+        private void wagesAndTaxesButton_Click(object sender, EventArgs e)
+        {
+            EarningsOverview earningsOverview = new EarningsOverview();
+            earningsOverview.FormClosed += new FormClosedEventHandler(startMenuFormClosed);
+            earningsOverview.Text = "Wages and Taxes";
+            earningsOverview.Show();
+            categories = new MySQLConnection().GetCategories();  // Reset the categories. This gets reset to zero after viewing the report form.
+            transactionDescriptionTextBox.Select();  // Set cursor to blinking in the description text box.
+            this.Hide();
+        }
     }
 }

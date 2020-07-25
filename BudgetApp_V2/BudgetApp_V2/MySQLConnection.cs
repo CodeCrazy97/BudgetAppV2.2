@@ -1,6 +1,8 @@
 ﻿using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
 
 namespace BudgetApp_V2
 {
@@ -32,6 +34,8 @@ namespace BudgetApp_V2
             }
             return newStr;
         }
+
+        
 
         public LinkedList<String[]> GetCurrentMonthsTransactions()
         {

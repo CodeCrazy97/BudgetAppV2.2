@@ -53,6 +53,7 @@
             this.checkBox = new System.Windows.Forms.CheckBox();
             this.charityBalanceLabel = new System.Windows.Forms.Label();
             this.amountCalculatedLabel = new System.Windows.Forms.Label();
+            this.wagesAndTaxesButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -293,12 +294,25 @@
             this.amountCalculatedLabel.TabIndex = 31;
             this.amountCalculatedLabel.Text = "label2";
             // 
+            // wagesAndTaxesButton
+            // 
+            this.wagesAndTaxesButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.wagesAndTaxesButton.Location = new System.Drawing.Point(1594, 823);
+            this.wagesAndTaxesButton.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.wagesAndTaxesButton.Name = "wagesAndTaxesButton";
+            this.wagesAndTaxesButton.Size = new System.Drawing.Size(223, 58);
+            this.wagesAndTaxesButton.TabIndex = 32;
+            this.wagesAndTaxesButton.Text = "Wages and Taxes";
+            this.wagesAndTaxesButton.UseVisualStyleBackColor = true;
+            this.wagesAndTaxesButton.Click += new System.EventHandler(this.wagesAndTaxesButton_Click);
+            // 
             // StartMenu
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.ClientSize = new System.Drawing.Size(1829, 894);
+            this.Controls.Add(this.wagesAndTaxesButton);
             this.Controls.Add(this.amountCalculatedLabel);
             this.Controls.Add(this.charityBalanceLabel);
             this.Controls.Add(this.checkBox);
@@ -350,6 +364,7 @@
         private System.Windows.Forms.CheckBox checkBox;
         private System.Windows.Forms.Label charityBalanceLabel;
         private System.Windows.Forms.Label amountCalculatedLabel;
+        private System.Windows.Forms.Button wagesAndTaxesButton;
     }
 }
 
