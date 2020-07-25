@@ -72,7 +72,7 @@
             // exitButton
             // 
             this.exitButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.exitButton.Location = new System.Drawing.Point(530, 96);
+            this.exitButton.Location = new System.Drawing.Point(469, 96);
             this.exitButton.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.exitButton.Name = "exitButton";
             this.exitButton.Size = new System.Drawing.Size(223, 58);
@@ -201,7 +201,7 @@
             // 
             // dataGridView1
             // 
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Consolas", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.dataGridView1.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             this.dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dataGridView1.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.DisplayedCells;
@@ -297,7 +297,7 @@
             // wagesAndTaxesButton
             // 
             this.wagesAndTaxesButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.wagesAndTaxesButton.Location = new System.Drawing.Point(1594, 823);
+            this.wagesAndTaxesButton.Location = new System.Drawing.Point(235, 162);
             this.wagesAndTaxesButton.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.wagesAndTaxesButton.Name = "wagesAndTaxesButton";
             this.wagesAndTaxesButton.Size = new System.Drawing.Size(223, 58);
