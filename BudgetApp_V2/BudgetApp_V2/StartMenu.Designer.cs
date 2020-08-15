@@ -273,6 +273,7 @@
             this.checkBox.Text = "Apply 10+% towards charity balance?";
             this.checkBox.UseVisualStyleBackColor = true;
             this.checkBox.Visible = false;
+            this.checkBox.CheckedChanged += new System.EventHandler(this.checkBox_CheckedChanged);
             // 
             // charityBalanceLabel
             // 

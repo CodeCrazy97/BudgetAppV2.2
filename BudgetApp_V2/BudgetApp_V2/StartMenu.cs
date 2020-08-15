@@ -330,6 +330,20 @@ namespace BudgetApp_V2
 
         private void CategoryComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
+            try
+            {
+                if (categoryComboBox.SelectedItem.ToString().Equals("Charity") && checkBox.Checked)
+                {  // round up for charity contributions on earnings
+                    amountCalculatedLabel.Text = "" + Math.Ceiling(getAmount());
+                }
+                else // not a charity increase
+                {
+                    amountCalculatedLabel.Text = "" + getAmount();
+                }
+            } catch (Exception e2)
+            {
+                Console.WriteLine("Exception: " + e2);
+            }
             if (categoryComboBox.SelectedItem.ToString().Equals("Other Earnings")|| categoryComboBox.SelectedItem.ToString().Equals("Charity"))
             {
                 checkBox.Visible = true;
@@ -394,6 +408,17 @@ namespace BudgetApp_V2
             categories = new MySQLConnection().GetCategories();  // Reset the categories. This gets reset to zero after viewing the report form.
             transactionDescriptionTextBox.Select();  // Set cursor to blinking in the description text box.
             this.Hide();
+        }
+
+        private void checkBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (categoryComboBox.SelectedItem.ToString().Equals("Charity") && checkBox.Checked)
+            {  // round up for charity contributions on earnings
+                amountCalculatedLabel.Text = "" + Math.Ceiling(getAmount());
+            } else  // charity decrease - use exact amount
+            {
+                amountCalculatedLabel.Text = "" + getAmount();
+            }
         }
     }
 }
