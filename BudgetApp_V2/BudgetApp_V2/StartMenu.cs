@@ -20,6 +20,7 @@
  * 04/05/2020 - Charity balance rounded to two decimal places.
  * 07/24/2020 - Calculate the amount in the amount text field if using mathematical expressions and display beside text field.
  * 07/25/2020 - Added tax and wage overview form.
+ * 09/03/2020 - Fixed bug with Submit button - if invalid amount is entered, first Submit click was throwing an error. 
  */
 
 using System.Data;
@@ -143,8 +144,17 @@ namespace BudgetApp_V2
         {
             // Calculate math expressions for the amount given. For example: users can enter 12.34+.87. The amount in this case would equal $13.21.
             DataTable dt = new DataTable();
-            double amount = Math.Round(Convert.ToDouble(dt.Compute(transactionAmountTextBox.Text, "")), 2);  // Round to two decimal places. Don't want an amount such as $4.5061 in the database. Would instead have $4.51.
+            double amount = 0.0;
+            try
+            {
+                amount = Math.Round(Convert.ToDouble(dt.Compute(transactionAmountTextBox.Text, "")), 2);  // Round to two decimal places. Don't want an amount such as $4.5061 in the database. Would instead have $4.51.
+            }
+            catch (SyntaxErrorException see)
+            {
+                throw see;
+            }
             return amount;
+
         }
 
         private void submitButton_Click(object sender, EventArgs e)
@@ -165,78 +175,91 @@ namespace BudgetApp_V2
                     MessageBox.Show("Invalid entry for amount.");
                     Clear();
                 }
+                catch (Exception e2)
+                {
+                    // show what the unknown exception was...
+                    amountCalculatedLabel.Visible = true;
+                    amountCalculatedLabel.Text = "ERROR: " + e2.Message;
+                }
             }
             else
             {
-                //Place the transaction in the database.
-                string connStr = new MySQLConnection().connection;
-
-                //Step 3: Create the SQL statement that deletes the notice.
-                string date = transactionDateTimePicker.Value.Year + "-" + transactionDateTimePicker.Value.Month + "-" + transactionDateTimePicker.Value.Day;
-                string description = new MySQLConnection().FixStringForMySQL(transactionDescriptionTextBox.Text);
-
-                // Calculate math expressions for the amount given. For example: users can enter 12.34+.87. The amount in this case would equal $13.21.
-                double amount = getAmount();
-                if (amount != 0.0)
+                try
                 {
-                    //Figure out which category this transaction fits in.
-                    bool[] vals = new bool[categories.Count];
-                    amount = Math.Abs(amount);  // make a positive number. The old version insisted that expenses be negative; however, under the new design, it is implied that anything in the expense table is negative
+                    //Place the transaction in the database.
+                    string connStr = new MySQLConnection().connection;
 
-                    //Build the INSERT string. Place each possible category into it.
-                    string sql = "";
-                    if (String.Equals(categoryComboBox.SelectedItem.ToString(), "Other Earnings"))  // Type = Other Earnings
+                    //Step 3: Create the SQL statement that deletes the notice.
+                    string date = transactionDateTimePicker.Value.Year + "-" + transactionDateTimePicker.Value.Month + "-" + transactionDateTimePicker.Value.Day;
+                    string description = new MySQLConnection().FixStringForMySQL(transactionDescriptionTextBox.Text);
+
+                    // Calculate math expressions for the amount given. For example: users can enter 12.34+.87. The amount in this case would equal $13.21.
+                    double amount = getAmount();
+                    if (amount != 0.0)
                     {
-                        sql = "INSERT INTO other_earnings (earning_date, description, amount) VALUES ('" + date + "', '" + description + "', " + amount + ");";
+                        //Figure out which category this transaction fits in.
+                        bool[] vals = new bool[categories.Count];
+                        amount = Math.Abs(amount);  // make a positive number. The old version insisted that expenses be negative; however, under the new design, it is implied that anything in the expense table is negative
 
-                        // Check if user wants to apply 10% (rounded up) towards charity balance.   
-                        if (checkBox.Checked)
+                        //Build the INSERT string. Place each possible category into it.
+                        string sql = "";
+                        if (String.Equals(categoryComboBox.SelectedItem.ToString(), "Other Earnings"))  // Type = Other Earnings
                         {
-                            amount = Math.Ceiling(amount * 0.1);
-                            new MySQLConnection().ModifyCharityBalance(date, description + " (10+% applied to charity)", amount);
+                            sql = "INSERT INTO other_earnings (earning_date, description, amount) VALUES ('" + date + "', '" + description + "', " + amount + ");";
+
+                            // Check if user wants to apply 10% (rounded up) towards charity balance.   
+                            if (checkBox.Checked)
+                            {
+                                amount = Math.Ceiling(amount * 0.1);
+                                new MySQLConnection().ModifyCharityBalance(date, description + " (10+% applied to charity)", amount);
+                            }
+
+                            executeSql(sql);
+                        }
+                        else if (String.Equals(categoryComboBox.SelectedItem.ToString(), "Charity"))  // Type = Charity
+                        {
+                            if (!checkBox.Checked)  // This is a decrease to the charity balance.
+                            {
+                                amount = -amount;  //make negative
+                            }
+                            // Increase to charity balance.
+                            else
+                            {
+                                amount = Math.Ceiling(amount);
+                            }
+                            // Will need to decrease charity balance, since used some of the charity.
+                            new MySQLConnection().ModifyCharityBalance(date, description, amount); // turn amount into a negative (decrease in charity balance)
+                        }
+                        else  // Some other expense type
+                        {
+                            sql = "INSERT INTO expenses (trans_date, description, amount, expense_type) VALUES ('" + date + "', '" + description + "', " + amount + ", '" + categoryComboBox.SelectedItem.ToString().ToLower() + "');";
+
+                            executeSql(sql);
                         }
 
-                        executeSql(sql);
-                    }
-                    else if (String.Equals(categoryComboBox.SelectedItem.ToString(), "Charity"))  // Type = Charity
-                    {
-                        if (!checkBox.Checked)  // This is a decrease to the charity balance.
+                        //Reset items.
+                        Clear();
+
+                        //Set cursor to blinking in the description text box.
+                        transactionDescriptionTextBox.Select();
+
+                        //Add this item to the last five transactions.                    
+                        DisplayMonthTransactions();
+
+                        if (categoryComboBox.SelectedItem.Equals("Charity") || categoryComboBox.SelectedItem.Equals("Other Earnings"))
                         {
-                            amount = -amount;  //make negative
+                            displayCharityBalanceMessage();
                         }
-                        // Increase to charity balance.
-                        else
-                        {
-                            amount = Math.Ceiling(amount);
-                        }
-                        // Will need to decrease charity balance, since used some of the charity.
-                        new MySQLConnection().ModifyCharityBalance(date, description, amount); // turn amount into a negative (decrease in charity balance)
                     }
-                    else  // Some other expense type
+                    else
                     {
-                        sql = "INSERT INTO expenses (trans_date, description, amount, expense_type) VALUES ('" + date + "', '" + description + "', " + amount + ", '" + categoryComboBox.SelectedItem.ToString().ToLower() + "');";
-
-                        executeSql(sql);
-                    }
-
-                    //Reset items.
-                    Clear();
-
-                    //Set cursor to blinking in the description text box.
-                    transactionDescriptionTextBox.Select();
-
-                    //Add this item to the last five transactions.                    
-                    DisplayMonthTransactions();
-
-                    if (categoryComboBox.SelectedItem.Equals("Charity") || categoryComboBox.SelectedItem.Equals("Other Earnings"))
-                    {
-                        displayCharityBalanceMessage();
+                        MessageBox.Show("Amount must be nonzero.");
                     }
                 }
-                else
+                catch (Exception e2)
                 {
-                    MessageBox.Show("Amount must be nonzero.");
-                }                
+                    MessageBox.Show("ERROR: " + e2.Message);
+                }        
             }
         }
 
@@ -412,12 +435,20 @@ namespace BudgetApp_V2
 
         private void checkBox_CheckedChanged(object sender, EventArgs e)
         {
-            if (categoryComboBox.SelectedItem.ToString().Equals("Charity") && checkBox.Checked)
-            {  // round up for charity contributions on earnings
-                amountCalculatedLabel.Text = "" + Math.Ceiling(getAmount());
-            } else  // charity decrease - use exact amount
+            try
             {
-                amountCalculatedLabel.Text = "" + getAmount();
+                if (categoryComboBox.SelectedItem.ToString().Equals("Charity") && checkBox.Checked)
+                {  // round up for charity contributions on earnings
+                    amountCalculatedLabel.Text = "" + Math.Ceiling(getAmount());
+                }
+                else  // charity decrease - use exact amount
+                {
+                    amountCalculatedLabel.Text = "" + getAmount();
+                }
+            }
+            catch (SyntaxErrorException see)
+            {
+                amountCalculatedLabel.Text = "Invalid amount!";
             }
         }
     }
