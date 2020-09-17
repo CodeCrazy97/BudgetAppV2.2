@@ -74,16 +74,18 @@ namespace BudgetApp_V2
             return transactions;
         }
 
-        
+
         public void ModifyCharityBalance(string transDate, string description, double amount)
         {
             //Place the transaction in the database.
             string connStr = new MySQLConnection().connection;
 
+            MySqlConnection connection = new MySqlConnection(connStr);    //create the new connection using the parameters of connStr
+
             string sql = "";
             //Build the INSERT string.
             sql = "INSERT INTO charity (trans_date, description, amount) VALUES ('" + transDate + "', '" + description + "', " + amount + ");";
-            MySqlConnection connection = new MySqlConnection(connStr);    //create the new connection using the parameters of connStr
+
             try
             {
                 connection.Open();                            //open the connection
@@ -94,7 +96,6 @@ namespace BudgetApp_V2
             {
                 Console.WriteLine(ex.ToString());
             }
-
             connection.Close();
         }
         

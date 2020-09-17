@@ -21,6 +21,7 @@
  * 07/24/2020 - Calculate the amount in the amount text field if using mathematical expressions and display beside text field.
  * 07/25/2020 - Added tax and wage overview form.
  * 09/03/2020 - Fixed bug with Submit button - if invalid amount is entered, first Submit click was throwing an error. 
+ * 09/17/2020 - Fixed bug with submitting a charity donation (was throwing System.InvalidCastException)
  */
 
 using System.Data;
@@ -31,6 +32,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
+using System.Linq.Expressions;
 
 namespace BudgetApp_V2
 {
@@ -152,6 +154,11 @@ namespace BudgetApp_V2
             catch (SyntaxErrorException see)
             {
                 throw see;
+            } 
+            catch (InvalidCastException ice) 
+            {
+                // this exception is usually thrown when Clear() method is called 
+                Console.WriteLine("Invalid cast exception (code 158): " + ice);
             }
             return amount;
 
@@ -179,7 +186,7 @@ namespace BudgetApp_V2
                 {
                     // show what the unknown exception was...
                     amountCalculatedLabel.Visible = true;
-                    amountCalculatedLabel.Text = "ERROR: " + e2.Message;
+                    amountCalculatedLabel.Text = "ERROR 182: " + e2.Message;
                 }
             }
             else
@@ -258,8 +265,8 @@ namespace BudgetApp_V2
                 }
                 catch (Exception e2)
                 {
-                    MessageBox.Show("ERROR: " + e2.Message);
-                }        
+                    MessageBox.Show("EXCEPTION CAUGHT (code 263): " + e2.Message);
+                }
             }
         }
 
