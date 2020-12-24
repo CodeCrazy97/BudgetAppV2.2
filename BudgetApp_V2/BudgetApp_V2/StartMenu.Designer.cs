@@ -54,6 +54,7 @@
             this.charityBalanceLabel = new System.Windows.Forms.Label();
             this.amountCalculatedLabel = new System.Windows.Forms.Label();
             this.wagesAndTaxesButton = new System.Windows.Forms.Button();
+            this.editTransactionButton1 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -307,12 +308,25 @@
             this.wagesAndTaxesButton.UseVisualStyleBackColor = true;
             this.wagesAndTaxesButton.Click += new System.EventHandler(this.wagesAndTaxesButton_Click);
             // 
+            // editTransactionButton1
+            // 
+            this.editTransactionButton1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.editTransactionButton1.Location = new System.Drawing.Point(469, 162);
+            this.editTransactionButton1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.editTransactionButton1.Name = "editTransactionButton1";
+            this.editTransactionButton1.Size = new System.Drawing.Size(223, 58);
+            this.editTransactionButton1.TabIndex = 33;
+            this.editTransactionButton1.Text = "Open DB";
+            this.editTransactionButton1.UseVisualStyleBackColor = true;
+            this.editTransactionButton1.Click += new System.EventHandler(this.editTransactionButton1_Click);
+            // 
             // StartMenu
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.ClientSize = new System.Drawing.Size(1829, 894);
+            this.Controls.Add(this.editTransactionButton1);
             this.Controls.Add(this.wagesAndTaxesButton);
             this.Controls.Add(this.amountCalculatedLabel);
             this.Controls.Add(this.charityBalanceLabel);
@@ -366,6 +380,7 @@
         private System.Windows.Forms.Label charityBalanceLabel;
         private System.Windows.Forms.Label amountCalculatedLabel;
         private System.Windows.Forms.Button wagesAndTaxesButton;
+        private System.Windows.Forms.Button editTransactionButton1;
     }
 }
 

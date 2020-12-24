@@ -22,6 +22,7 @@
  * 07/25/2020 - Added tax and wage overview form.
  * 09/03/2020 - Fixed bug with Submit button - if invalid amount is entered, first Submit click was throwing an error. 
  * 09/17/2020 - Fixed bug with submitting a charity donation (was throwing System.InvalidCastException)
+ * 12/24/2020 - Added Open DB button to allow me to quickly get into the database and edit a transaction.
  */
 
 using System.Data;
@@ -456,6 +457,20 @@ namespace BudgetApp_V2
             catch (SyntaxErrorException see)
             {
                 amountCalculatedLabel.Text = "Invalid amount!";
+            }
+        }
+
+        private void editTransactionButton1_Click(object sender, EventArgs e)
+        {
+            try  //Try to start heidisql
+            {
+                var mysqld = Process.Start("C:\\Program Files\\HeidiSQL\\heidisql.exe");
+            }
+            catch (System.ComponentModel.Win32Exception ex3)  //Unable to start the process (could be that the executable is located in a different folder path).
+            {
+                Console.WriteLine("Error message: " + ex3);
+                MessageBox.Show("Unable to start the process C:\\Program Files\\HeidiSQL\\heidisql.exe.");
+                Application.Exit();
             }
         }
     }
