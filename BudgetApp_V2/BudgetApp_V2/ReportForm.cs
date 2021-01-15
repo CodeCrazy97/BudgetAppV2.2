@@ -104,7 +104,7 @@ namespace BudgetApp_V2
                     {
                         //Calculate the percent weight of each transaction, put into format: XX.X%
                         string percent = ((totals.ElementAt(i) / total) * 100).ToString("#.#");
-                        if (Convert.ToDouble(percent) < 1)  //Add a zero in front.
+                        if (percent.Equals("") || Convert.ToDouble(percent) < 1)  //Add a zero in front.
                         {
                             percent = "0" + percent;
                         }
