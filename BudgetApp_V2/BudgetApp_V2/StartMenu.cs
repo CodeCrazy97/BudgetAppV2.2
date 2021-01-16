@@ -24,6 +24,7 @@
  * 09/17/2020 - Fixed bug with submitting a charity donation (was throwing System.InvalidCastException)
  * 12/24/2020 - Added Open DB button to allow me to quickly get into the database and edit a transaction.
  * 01/15/2021 - Fixed bug with really low amount spent on a category (causing it to register as empty string for percentage).
+ * 01/16/2021 - Fixed ReportForm datagridview to show a scrollbar for all categories. Also, set its max height so it doesn't overflow off the screen.
  */
 
 using System.Data;

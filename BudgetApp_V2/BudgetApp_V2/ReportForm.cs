@@ -124,16 +124,20 @@ namespace BudgetApp_V2
             }
 
             // Dynamically resize the data grid view, based on how many rows are in it (we don't want there to be unnecessary extra whitespace)
-            if (dataGridView1.RowCount > 3) // Need a smaller base multiple to make a larger number of rows fit better in the data grid view.
+            int size = (21 * dataGridView1.RowCount) + 7;
+            dataGridView1.SetBounds(260, 408, dataGridView1.Width, size);
+            if (dataGridView1.Height > 217) // Prevent the height from being more than 217 (otherwise, the datagridview will overlap)
             {
-                dataGridView1.SetBounds(260, 408, dataGridView1.Width, 23 * dataGridView1.RowCount);
-            } else
+                dataGridView1.Height = 217;
+                dataGridView1.ScrollBars = ScrollBars.Vertical;  // create vertical scrollbars so user can see all transaction overviews
+            } else  // remove the vertical scrollbars (may have been created earlier when there was need for them)
             {
-                dataGridView1.SetBounds(260, 408, dataGridView1.Width, 25 * dataGridView1.RowCount);
+                dataGridView1.ScrollBars = ScrollBars.None;
             }
-            
-            
-            
+
+
+
+
 
             //Sort the transactions according to amount, in descending order.
             this.dataGridView1.Sort(dataGridView1.Columns[1], ListSortDirection.Descending);
