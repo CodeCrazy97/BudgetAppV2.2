@@ -81,7 +81,7 @@ namespace BudgetApp_V2
             string connString = new MySQLConnection().connection;
             using (MySqlConnection con = new MySqlConnection(connString))
             {
-                using (MySqlCommand cmd = new MySqlCommand("SELECT gw.wage_year AS 'Year', SUM(gw.amount) + IFNULL(SUM(tr.amount), 0) + IFNULL(SUM(oe.amount), 0) AS 'Grand Total Earnings' FROM gross_wages gw LEFT JOIN ( SELECT tax_year, SUM(amount) AS 'amount' FROM tax_return GROUP BY tax_year) tr ON tr.tax_year = gw.wage_year LEFT JOIN ( SELECT YEAR(earning_date) AS 'year', SUM(amount) AS 'amount' FROM other_earnings GROUP BY YEAR(earning_date)) oe ON oe.year = gw.wage_year GROUP BY gw.wage_year;", con))
+                using (MySqlCommand cmd = new MySqlCommand("SELECT gw.wage_year AS 'Year', ROUND(SUM(gw.amount) + IFNULL(SUM(tr.amount), 0) + IFNULL(SUM(oe.amount), 0), 2) AS 'Grand Total Earnings' FROM gross_wages gw LEFT JOIN ( SELECT tax_year, SUM(amount) AS 'amount' FROM tax_return GROUP BY tax_year) tr ON tr.tax_year = gw.wage_year LEFT JOIN ( SELECT YEAR(earning_date) AS 'year', SUM(amount) AS 'amount' FROM other_earnings GROUP BY YEAR(earning_date)) oe ON oe.year = gw.wage_year GROUP BY gw.wage_year;", con))
                 {
                     con.Open();
                     MySqlDataReader reader = cmd.ExecuteReader();
