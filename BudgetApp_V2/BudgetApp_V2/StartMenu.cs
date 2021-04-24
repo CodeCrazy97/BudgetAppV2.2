@@ -26,6 +26,8 @@
  * 01/15/2021 - Fixed bug with really low amount spent on a category (causing it to register as empty string for percentage).
  * 01/16/2021 - Fixed ReportForm datagridview to show a scrollbar for all categories. Also, set its max height so it doesn't overflow off the screen.
  * 02/13/2021 - Round total earnings to 2 decimal places.
+ * 04/17/2021 - Better positioning for taxes, wages tables.
+ * 04/24/2021 - Show popup with previous and current charity balance updates when charity balance is changed.
  */
 
 using System.Data;
@@ -214,6 +216,8 @@ namespace BudgetApp_V2
 
                         //Build the INSERT string. Place each possible category into it.
                         string sql = "";
+                        double oldCharityBalance = 0.0;
+                        bool showCharityBalanceChanges = false;
                         if (String.Equals(categoryComboBox.SelectedItem.ToString(), "Other Earnings"))  // Type = Other Earnings
                         {
                             sql = "INSERT INTO other_earnings (earning_date, description, amount) VALUES ('" + date + "', '" + description + "', " + amount + ");";
@@ -229,6 +233,7 @@ namespace BudgetApp_V2
                         }
                         else if (String.Equals(categoryComboBox.SelectedItem.ToString(), "Charity"))  // Type = Charity
                         {
+                            oldCharityBalance = new MySQLConnection().GetCharityBalance();
                             if (!checkBox.Checked)  // This is a decrease to the charity balance.
                             {
                                 amount = -amount;  //make negative
@@ -240,6 +245,7 @@ namespace BudgetApp_V2
                             }
                             // Will need to decrease charity balance, since used some of the charity.
                             new MySQLConnection().ModifyCharityBalance(date, description, amount); // turn amount into a negative (decrease in charity balance)
+                            showCharityBalanceChanges = true;
                         }
                         else  // Some other expense type
                         {
@@ -250,6 +256,14 @@ namespace BudgetApp_V2
 
                         //Reset items.
                         Clear();
+
+                        //Show previous charity balance and new charity balance.
+                        if (showCharityBalanceChanges)
+                        {
+                            double charityBalance = new MySQLConnection().GetCharityBalance();
+                            MessageBox.Show("Old charity balance: " + Math.Round(oldCharityBalance, 2) +
+                                "\nNew charity balance: " + Math.Round(charityBalance, 2), "Charity Balance was Updated Successfully!");
+                        }
 
                         //Set cursor to blinking in the description text box.
                         transactionDescriptionTextBox.Select();
