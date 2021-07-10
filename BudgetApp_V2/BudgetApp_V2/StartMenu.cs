@@ -28,6 +28,7 @@
  * 02/13/2021 - Round total earnings to 2 decimal places.
  * 04/17/2021 - Better positioning for taxes, wages tables.
  * 04/24/2021 - Show popup with previous and current charity balance updates when charity balance is changed.
+ * 07/10/2021 - Bug fix for old and new charity balances not appearing after submitting other earnings.
  */
 
 using System.Data;
@@ -225,6 +226,9 @@ namespace BudgetApp_V2
                             // Check if user wants to apply 10% (rounded up) towards charity balance.   
                             if (checkBox.Checked)
                             {
+                                oldCharityBalance = new MySQLConnection().GetCharityBalance();
+                                showCharityBalanceChanges = true;
+
                                 amount = Math.Ceiling(amount * 0.1);
                                 new MySQLConnection().ModifyCharityBalance(date, description + " (10+% applied to charity)", amount);
                             }
