@@ -31,6 +31,8 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(StartMenu));
             this.budgetReportButton = new System.Windows.Forms.Button();
             this.exitButton = new System.Windows.Forms.Button();
@@ -49,12 +51,16 @@
             this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.id = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.label1 = new System.Windows.Forms.Label();
             this.checkBox = new System.Windows.Forms.CheckBox();
             this.charityBalanceLabel = new System.Windows.Forms.Label();
             this.amountCalculatedLabel = new System.Windows.Forms.Label();
             this.wagesAndTaxesButton = new System.Windows.Forms.Button();
             this.editTransactionButton1 = new System.Windows.Forms.Button();
+            this.updateDbButton = new System.Windows.Forms.Button();
+            this.cancelUpdateButton = new System.Windows.Forms.Button();
+            this.deleteTransactionButton1 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -202,6 +208,7 @@
             // 
             // dataGridView1
             // 
+            this.dataGridView1.AllowUserToOrderColumns = true;
             dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.dataGridView1.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             this.dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
@@ -218,40 +225,63 @@
             this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Column1,
             this.Column3,
-            this.Column2});
+            this.Column2,
+            this.id});
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridView1.DefaultCellStyle = dataGridViewCellStyle3;
             this.dataGridView1.Location = new System.Drawing.Point(932, 122);
             this.dataGridView1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.ReadOnly = true;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridView1.RowHeadersDefaultCellStyle = dataGridViewCellStyle4;
             this.dataGridView1.RowHeadersVisible = false;
             this.dataGridView1.RowHeadersWidth = 62;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.dataGridView1.RowsDefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle5.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.dataGridView1.RowsDefaultCellStyle = dataGridViewCellStyle5;
             this.dataGridView1.RowTemplate.Height = 24;
             this.dataGridView1.ScrollBars = System.Windows.Forms.ScrollBars.None;
             this.dataGridView1.Size = new System.Drawing.Size(705, 208);
             this.dataGridView1.TabIndex = 24;
+            this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
+            this.dataGridView1.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellValueChanged);
+            this.dataGridView1.SelectionChanged += new System.EventHandler(this.dataGridView1_SelectionChanged);
             // 
             // Column1
             // 
             this.Column1.HeaderText = "Date";
             this.Column1.MinimumWidth = 8;
             this.Column1.Name = "Column1";
-            this.Column1.ReadOnly = true;
             // 
             // Column3
             // 
             this.Column3.HeaderText = "Description";
             this.Column3.MinimumWidth = 8;
             this.Column3.Name = "Column3";
-            this.Column3.ReadOnly = true;
             // 
             // Column2
             // 
             this.Column2.HeaderText = "Amount";
             this.Column2.MinimumWidth = 8;
             this.Column2.Name = "Column2";
-            this.Column2.ReadOnly = true;
+            // 
+            // id
+            // 
+            this.id.HeaderText = "id";
+            this.id.MinimumWidth = 8;
+            this.id.Name = "id";
+            this.id.Visible = false;
             // 
             // label1
             // 
@@ -320,12 +350,54 @@
             this.editTransactionButton1.UseVisualStyleBackColor = true;
             this.editTransactionButton1.Click += new System.EventHandler(this.editTransactionButton1_Click);
             // 
+            // updateDbButton
+            // 
+            this.updateDbButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.updateDbButton.Location = new System.Drawing.Point(1643, 122);
+            this.updateDbButton.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.updateDbButton.Name = "updateDbButton";
+            this.updateDbButton.Size = new System.Drawing.Size(137, 58);
+            this.updateDbButton.TabIndex = 34;
+            this.updateDbButton.Text = "Update";
+            this.updateDbButton.UseVisualStyleBackColor = true;
+            this.updateDbButton.Visible = false;
+            this.updateDbButton.Click += new System.EventHandler(this.updateDbButton_Click);
+            // 
+            // cancelUpdateButton
+            // 
+            this.cancelUpdateButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cancelUpdateButton.Location = new System.Drawing.Point(1643, 188);
+            this.cancelUpdateButton.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.cancelUpdateButton.Name = "cancelUpdateButton";
+            this.cancelUpdateButton.Size = new System.Drawing.Size(137, 65);
+            this.cancelUpdateButton.TabIndex = 35;
+            this.cancelUpdateButton.Text = "Cancel Update";
+            this.cancelUpdateButton.UseVisualStyleBackColor = true;
+            this.cancelUpdateButton.Visible = false;
+            this.cancelUpdateButton.Click += new System.EventHandler(this.cancelUpdateButton_Click);
+            // 
+            // deleteTransactionButton1
+            // 
+            this.deleteTransactionButton1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.deleteTransactionButton1.Location = new System.Drawing.Point(1643, 261);
+            this.deleteTransactionButton1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.deleteTransactionButton1.Name = "deleteTransactionButton1";
+            this.deleteTransactionButton1.Size = new System.Drawing.Size(137, 58);
+            this.deleteTransactionButton1.TabIndex = 36;
+            this.deleteTransactionButton1.Text = "Delete";
+            this.deleteTransactionButton1.UseVisualStyleBackColor = true;
+            this.deleteTransactionButton1.Visible = false;
+            this.deleteTransactionButton1.Click += new System.EventHandler(this.deleteTransactionButton1_Click);
+            // 
             // StartMenu
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.ClientSize = new System.Drawing.Size(1829, 894);
+            this.Controls.Add(this.deleteTransactionButton1);
+            this.Controls.Add(this.cancelUpdateButton);
+            this.Controls.Add(this.updateDbButton);
             this.Controls.Add(this.editTransactionButton1);
             this.Controls.Add(this.wagesAndTaxesButton);
             this.Controls.Add(this.amountCalculatedLabel);
@@ -372,15 +444,19 @@
         private System.Windows.Forms.TextBox transactionDescriptionTextBox;
         private System.Windows.Forms.DateTimePicker transactionDateTimePicker;
         private System.Windows.Forms.DataGridView dataGridView1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column3;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.CheckBox checkBox;
         private System.Windows.Forms.Label charityBalanceLabel;
         private System.Windows.Forms.Label amountCalculatedLabel;
         private System.Windows.Forms.Button wagesAndTaxesButton;
         private System.Windows.Forms.Button editTransactionButton1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column3;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column2;
+        private System.Windows.Forms.DataGridViewTextBoxColumn id;
+        private System.Windows.Forms.Button updateDbButton;
+        private System.Windows.Forms.Button cancelUpdateButton;
+        private System.Windows.Forms.Button deleteTransactionButton1;
     }
 }
 

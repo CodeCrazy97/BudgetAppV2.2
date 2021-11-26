@@ -29,6 +29,7 @@
  * 04/17/2021 - Better positioning for taxes, wages tables.
  * 04/24/2021 - Show popup with previous and current charity balance updates when charity balance is changed.
  * 07/10/2021 - Bug fix for old and new charity balances not appearing after submitting other earnings.
+ * 11/26/2021 - Added ability to modify and delete entries.
  */
 
 using System.Data;
@@ -111,6 +112,8 @@ namespace BudgetApp_V2
             {
                 categoryComboBox.SelectedIndex = 1;
             }
+
+            unselectItems();
         }
 
         private void DisplayMonthTransactions()
@@ -135,7 +138,7 @@ namespace BudgetApp_V2
             dataGridView1.Height += monthsTransactions.Count * 21;
             for (int i = 0; i < monthsTransactions.Count; i++)  //Even though there should be five transactions in the linked list, there might not be if the database has been swiped of data.
             {
-                dataGridView1.Rows.Add(monthsTransactions.ElementAt(i)[0], monthsTransactions.ElementAt(i)[1], monthsTransactions.ElementAt(i)[2]);
+                dataGridView1.Rows.Add(monthsTransactions.ElementAt(i)[0], monthsTransactions.ElementAt(i)[1], monthsTransactions.ElementAt(i)[2], monthsTransactions.ElementAt(i)[3]);
             }
         }
 
@@ -493,6 +496,83 @@ namespace BudgetApp_V2
                 MessageBox.Show("Unable to start the process C:\\Program Files\\HeidiSQL\\heidisql.exe.");
                 Application.Exit();
             }
+        }
+
+        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            
+        }
+
+        private void dataGridView1_SelectionChanged(object sender, EventArgs e)
+        {
+            deleteTransactionButton1.Visible = true;
+        }
+
+        private void dataGridView1_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            cancelUpdateButton.Show();
+            updateDbButton.Show();
+        }
+
+        private void cancelUpdateButton_Click(object sender, EventArgs e)
+        {
+            cancelUpdateButton.Hide();
+            updateDbButton.Hide();
+            DisplayMonthTransactions();
+        }
+
+        private void updateDbButton_Click(object sender, EventArgs e)
+        {
+            foreach (DataGridViewRow row in dataGridView1.Rows)
+            {
+                try
+                {
+
+                    // check for invalid data
+                    if (dataGridView1.Rows[row.Index].Cells[0].Value?.ToString().Length == 0 ||
+                        dataGridView1.Rows[row.Index].Cells[1].Value?.ToString().Length == 0 ||
+                        dataGridView1.Rows[row.Index].Cells[2].Value?.ToString().Length == 0 ||
+                        dataGridView1.Rows[row.Index].Cells[3].Value?.ToString().Length == 0)
+                    {
+                        continue;
+                    }
+
+                    int trans_id = Int16.Parse(dataGridView1.Rows[row.Index].Cells[3].Value?.ToString());
+                    String trans_date = dataGridView1.Rows[row.Index].Cells[0].Value?.ToString();
+                    double amount = Double.Parse(dataGridView1.Rows[row.Index].Cells[2].Value?.ToString());
+                    String description = dataGridView1.Rows[row.Index].Cells[1].Value?.ToString();
+
+                    // TODO: Need more input validation
+                    
+                    
+                    new MySQLConnection().UpdateEntry(trans_date, description, amount, trans_id);
+                } catch (ArgumentNullException ane)
+                {
+                    Console.WriteLine("ArgumentNullException : " + ane.Message);
+                }
+            }
+        }
+
+        private void deleteTransactionButton1_Click(object sender, EventArgs e)
+        {
+            if (dataGridView1.SelectedCells.Count > 0)
+            {
+                int selectedrowindex = dataGridView1.SelectedCells[0].RowIndex;
+                DataGridViewRow selectedRow = dataGridView1.Rows[selectedrowindex];
+                int trans_id = Int16.Parse(Convert.ToString(selectedRow.Cells["id"].Value));
+                new MySQLConnection().DeleteTransaction(trans_id);
+
+                DisplayMonthTransactions();
+
+                unselectItems();
+            }
+        }
+
+        private void unselectItems()
+        {
+            // unselect items in datagridview
+            dataGridView1.ClearSelection();
+            deleteTransactionButton1.Visible = false;
         }
     }
 }
