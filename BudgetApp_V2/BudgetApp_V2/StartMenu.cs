@@ -140,6 +140,24 @@ namespace BudgetApp_V2
             {
                 dataGridView1.Rows.Add(monthsTransactions.ElementAt(i)[0], monthsTransactions.ElementAt(i)[1], monthsTransactions.ElementAt(i)[2], monthsTransactions.ElementAt(i)[3]);
             }
+
+
+
+            // Dynamically resize the data grid view, based on how many rows are in it (we don't want there to be unnecessary extra whitespace)
+            int size = (21 * dataGridView1.RowCount) + 7;
+            dataGridView1.SetBounds(610, 75, dataGridView1.Width, size);
+            if (dataGridView1.Height > 500) // Prevent the height from being more than 217 (otherwise, the datagridview will overlap)
+            {
+                dataGridView1.Height = 500;
+                dataGridView1.ScrollBars = ScrollBars.Vertical;  // create vertical scrollbars so user can see all transaction overviews
+            }
+            else  // remove the vertical scrollbars (may have been created earlier when there was need for them)
+            {
+                dataGridView1.ScrollBars = ScrollBars.None;
+            }
+
+            //TODO: Sort the transactions according to date, desc
+            //this.dataGridView1.Sort(dataGridView1.Columns[1], ListSortDirection.Descending);
         }
 
         void startMenuFormClosed(object sender, FormClosedEventArgs e)
@@ -293,6 +311,7 @@ namespace BudgetApp_V2
                     MessageBox.Show("EXCEPTION CAUGHT (code 263): " + e2.Message);
                 }
             }
+            unselectItems();
         }
 
         private void executeSql(string sql)
