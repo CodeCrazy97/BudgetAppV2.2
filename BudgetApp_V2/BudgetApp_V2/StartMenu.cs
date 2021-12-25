@@ -30,6 +30,8 @@
  * 04/24/2021 - Show popup with previous and current charity balance updates when charity balance is changed.
  * 07/10/2021 - Bug fix for old and new charity balances not appearing after submitting other earnings.
  * 11/26/2021 - Added ability to modify and delete entries.
+ * 11/28/2021 - Resize transaction gridview on start menu.
+ * 12/25/2021 - Show success message popups after deleting/updating transactions.
  */
 
 using System.Data;
@@ -113,6 +115,8 @@ namespace BudgetApp_V2
                 categoryComboBox.SelectedIndex = 1;
             }
 
+            updateDbButton.Visible = false;
+            cancelUpdateButton.Visible = false;
             unselectItems();
         }
 
@@ -542,6 +546,7 @@ namespace BudgetApp_V2
 
         private void updateDbButton_Click(object sender, EventArgs e)
         {
+            bool success = false;
             foreach (DataGridViewRow row in dataGridView1.Rows)
             {
                 try
@@ -564,11 +569,15 @@ namespace BudgetApp_V2
                     // TODO: Need more input validation
                     
                     
-                    new MySQLConnection().UpdateEntry(trans_date, description, amount, trans_id);
+                    success = new MySQLConnection().UpdateEntry(trans_date, description, amount, trans_id);
                 } catch (ArgumentNullException ane)
                 {
                     Console.WriteLine("ArgumentNullException : " + ane.Message);
                 }
+            }
+            if (success)
+            {
+                MessageBox.Show("Transaction(s) were successfully updated.");
             }
         }
 
@@ -579,11 +588,20 @@ namespace BudgetApp_V2
                 int selectedrowindex = dataGridView1.SelectedCells[0].RowIndex;
                 DataGridViewRow selectedRow = dataGridView1.Rows[selectedrowindex];
                 int trans_id = Int16.Parse(Convert.ToString(selectedRow.Cells["id"].Value));
-                new MySQLConnection().DeleteTransaction(trans_id);
+                string description = Convert.ToString(selectedRow.Cells["description"].Value);
+                bool successful = new MySQLConnection().DeleteTransaction(trans_id);
 
                 DisplayMonthTransactions();
 
                 unselectItems();
+
+                if (successful)
+                {
+                    MessageBox.Show("The transaction \"" + description + "\" was successfully deleted.");
+                } else
+                {
+                    MessageBox.Show("There was an error deleting the transaction \"" + description + "\"");
+                }
             }
         }
 

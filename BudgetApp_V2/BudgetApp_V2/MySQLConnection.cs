@@ -102,7 +102,7 @@ namespace BudgetApp_V2
         }
 
 
-        public void UpdateEntry(String trans_date, String description, double amount, int trans_id)
+        public bool UpdateEntry(String trans_date, String description, double amount, int trans_id)
         {
             string connStr = new MySQLConnection().connection;
 
@@ -149,7 +149,8 @@ namespace BudgetApp_V2
 
             string sql = "UPDATE expenses SET trans_date = @trans_date, amount = @amount, description = @description WHERE trans_id = @trans_id;";
             connection = new MySqlConnection(connStr);    //create the new connection using the parameters of connStr
-            
+
+            bool success = true;
             try
             {
                 connection.Open();                            //open the connection
@@ -162,12 +163,15 @@ namespace BudgetApp_V2
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.ToString());
+                success = false;
+                MessageBox.Show("Error trying to update transaction(s): " + ex.Message);
             }
             finally
             {
                 connection.Close();
             }
+
+            return success;
         }
 
 
@@ -237,6 +241,7 @@ namespace BudgetApp_V2
         public bool DeleteTransaction(int trans_id)
         {
 
+            int count = 0;
             string connStr = new MySQLConnection().connection;
 
             MySqlConnection connection = new MySqlConnection(connStr);
@@ -249,7 +254,7 @@ namespace BudgetApp_V2
                 connection.Open();                            //open the connection
                 var cmd = new MySqlCommand(sql, connection);  //create an executable command
                 cmd.Parameters.AddWithValue("@trans_id", trans_id);
-                var reader = cmd.ExecuteNonQuery();
+                count = cmd.ExecuteNonQuery();
             }
             catch (Exception ex)
             {
@@ -257,7 +262,13 @@ namespace BudgetApp_V2
                 return false;
             }
             connection.Close();
-            return true;
+            if (count > 0)
+            {
+                return true;
+            } else
+            {
+                return false;
+            }
         }
 
         public LinkedList<string> GetBudgetReportCategories()
