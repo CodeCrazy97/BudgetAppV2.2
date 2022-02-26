@@ -32,6 +32,7 @@
  * 11/26/2021 - Added ability to modify and delete entries.
  * 11/28/2021 - Resize transaction gridview on start menu.
  * 12/25/2021 - Show success message popups after deleting/updating transactions.
+ * 02/25/2022 - Added category column to current month's transactions table.
  */
 
 using System.Data;
@@ -79,6 +80,7 @@ namespace BudgetApp_V2
 
         private void StartMenu_Load(object sender, EventArgs e)
         {
+
             dataGridView1.Visible = false;
             label1.Visible = false;
             amountCalculatedLabel.Visible = false;
@@ -100,6 +102,16 @@ namespace BudgetApp_V2
             dataGridView1.Columns[1].Width = 450;
             dataGridView1.Columns[1].Width = dataGridView1.Width - dataGridView1.Columns[0].Width - dataGridView1.Columns[0].Width;
 
+            // Fill in category column
+            DataGridViewComboBoxColumn col = new DataGridViewComboBoxColumn();
+            //col.ValueMember = "Value";
+            //col.DisplayMember = "Name";
+            col.DataPropertyName = "5";
+            col.HeaderText = "Category";
+            col.DataSource = GetChoices();
+            col.MaxDropDownItems = 3;
+            dataGridView1.Columns.Add(col);
+            
             //Show the current month's transactions.
             DisplayMonthTransactions();
 
@@ -118,6 +130,18 @@ namespace BudgetApp_V2
             updateDbButton.Visible = false;
             cancelUpdateButton.Visible = false;
             unselectItems();
+        }
+
+        public static List<string> GetChoices()
+        {
+            List<string> categories = new List<string>();
+            LinkedList<string> categoriesLinkedList = new MySQLConnection().GetCategories();
+            foreach (var item in categoriesLinkedList)
+            {
+                string itemLowercased = item.ToLower();
+                categories.Add(itemLowercased);
+            }
+            return categories;
         }
 
         private void DisplayMonthTransactions()
@@ -143,25 +167,24 @@ namespace BudgetApp_V2
             for (int i = 0; i < monthsTransactions.Count; i++)  //Even though there should be five transactions in the linked list, there might not be if the database has been swiped of data.
             {
                 dataGridView1.Rows.Add(monthsTransactions.ElementAt(i)[0], monthsTransactions.ElementAt(i)[1], monthsTransactions.ElementAt(i)[2], monthsTransactions.ElementAt(i)[3]);
+                (dataGridView1.Rows[i].Cells[4] as DataGridViewComboBoxCell).Value = monthsTransactions.ElementAt(i)[4];
             }
 
 
 
             // Dynamically resize the data grid view, based on how many rows are in it (we don't want there to be unnecessary extra whitespace)
             int size = (21 * dataGridView1.RowCount) + 7;
+            Console.WriteLine("Height: " + dataGridView1.Height);
             dataGridView1.SetBounds(610, 75, dataGridView1.Width, size);
-            if (dataGridView1.Height > 500) // Prevent the height from being more than 217 (otherwise, the datagridview will overlap)
+            if (dataGridView1.Height > 420) // Prevent the height from being more than 217 (otherwise, the datagridview will overlap)
             {
-                dataGridView1.Height = 500;
+                dataGridView1.Height = 420;
                 dataGridView1.ScrollBars = ScrollBars.Vertical;  // create vertical scrollbars so user can see all transaction overviews
             }
             else  // remove the vertical scrollbars (may have been created earlier when there was need for them)
             {
                 dataGridView1.ScrollBars = ScrollBars.None;
             }
-
-            //TODO: Sort the transactions according to date, desc
-            //this.dataGridView1.Sort(dataGridView1.Columns[1], ListSortDirection.Descending);
         }
 
         void startMenuFormClosed(object sender, FormClosedEventArgs e)
@@ -565,11 +588,12 @@ namespace BudgetApp_V2
                     String trans_date = dataGridView1.Rows[row.Index].Cells[0].Value?.ToString();
                     double amount = Double.Parse(dataGridView1.Rows[row.Index].Cells[2].Value?.ToString());
                     String description = dataGridView1.Rows[row.Index].Cells[1].Value?.ToString();
+                    String expense_type = dataGridView1.Rows[row.Index].Cells[4].Value?.ToString();
 
                     // TODO: Need more input validation
                     
                     
-                    success = new MySQLConnection().UpdateEntry(trans_date, description, amount, trans_id);
+                    success = new MySQLConnection().UpdateEntry(trans_date, description, amount, trans_id, expense_type);
                 } catch (ArgumentNullException ane)
                 {
                     Console.WriteLine("ArgumentNullException : " + ane.Message);
@@ -577,6 +601,8 @@ namespace BudgetApp_V2
             }
             if (success)
             {
+                cancelUpdateButton.Hide();
+                updateDbButton.Hide();
                 MessageBox.Show("Transaction(s) were successfully updated.");
             }
         }

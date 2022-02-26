@@ -47,7 +47,7 @@ namespace BudgetApp_V2
 
             MySqlConnection connection = new MySqlConnection(connStr);
 
-            string sql = "SELECT trans_date, description, amount, trans_id FROM expenses WHERE YEAR(trans_date) = YEAR(NOW()) AND MONTH(trans_date) = MONTH(NOW()) ORDER BY trans_date DESC; ";
+            string sql = "SELECT trans_date, description, amount, trans_id, expense_type FROM expenses WHERE YEAR(trans_date) = YEAR(NOW()) AND MONTH(trans_date) = MONTH(NOW()) ORDER BY trans_date DESC; ";
 
             connection = new MySqlConnection(connStr);    //create the new connection using the parameters of connStr
             try
@@ -58,13 +58,14 @@ namespace BudgetApp_V2
 
                 while (reader.Read())
                 {
-                    String[] currentTransaction = new String[4];
+                    String[] currentTransaction = new String[5];
                     DateTime dt = reader.GetDateTime(0);  //Get the date.
                     string dtString = dt.Month + "/" + dt.Day + "/" + dt.Year;
                     currentTransaction[0] = dtString;
                     currentTransaction[1] = reader.GetString(1);  //Get the description.
                     currentTransaction[2] = reader.GetString(2);  //Get the amount.
                     currentTransaction[3] = reader.GetString(3);   //Get the trans_id.
+                    currentTransaction[4] = reader.GetString(4);   //Get the expense_type.
                     transactions.AddLast(currentTransaction);
                 }
             }
@@ -102,7 +103,7 @@ namespace BudgetApp_V2
         }
 
 
-        public bool UpdateEntry(String trans_date, String description, double amount, int trans_id)
+        public bool UpdateEntry(String trans_date, String description, double amount, int trans_id, String expense_type)
         {
             string connStr = new MySQLConnection().connection;
 
@@ -147,7 +148,7 @@ namespace BudgetApp_V2
                 MessageBox.Show("The date " + trans_date + " could not be converted to a MySQL date.");
             }
 
-            string sql = "UPDATE expenses SET trans_date = @trans_date, amount = @amount, description = @description WHERE trans_id = @trans_id;";
+            string sql = "UPDATE expenses SET trans_date = @trans_date, amount = @amount, description = @description, expense_type = @expense_type WHERE trans_id = @trans_id;";
             connection = new MySqlConnection(connStr);    //create the new connection using the parameters of connStr
 
             bool success = true;
@@ -159,6 +160,7 @@ namespace BudgetApp_V2
                 cmd.Parameters.AddWithValue("@amount", amount);
                 cmd.Parameters.AddWithValue("@description", description);
                 cmd.Parameters.AddWithValue("@trans_id", trans_id);
+                cmd.Parameters.AddWithValue("@expense_type", expense_type);
                 var reader = cmd.ExecuteNonQuery();
             }
             catch (Exception ex)
