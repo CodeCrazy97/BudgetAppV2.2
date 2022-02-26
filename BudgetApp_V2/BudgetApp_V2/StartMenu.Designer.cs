@@ -48,6 +48,10 @@
             this.transactionDescriptionTextBox = new System.Windows.Forms.TextBox();
             this.transactionDateTimePicker = new System.Windows.Forms.DateTimePicker();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.description = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.id = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.label1 = new System.Windows.Forms.Label();
             this.checkBox = new System.Windows.Forms.CheckBox();
             this.charityBalanceLabel = new System.Windows.Forms.Label();
@@ -57,10 +61,6 @@
             this.updateDbButton = new System.Windows.Forms.Button();
             this.cancelUpdateButton = new System.Windows.Forms.Button();
             this.deleteTransactionButton1 = new System.Windows.Forms.Button();
-            this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.description = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.id = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -258,6 +258,31 @@
             this.dataGridView1.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellValueChanged);
             this.dataGridView1.SelectionChanged += new System.EventHandler(this.dataGridView1_SelectionChanged);
             // 
+            // Column1
+            // 
+            this.Column1.HeaderText = "Date";
+            this.Column1.MinimumWidth = 8;
+            this.Column1.Name = "Column1";
+            // 
+            // description
+            // 
+            this.description.HeaderText = "Description";
+            this.description.MinimumWidth = 8;
+            this.description.Name = "description";
+            // 
+            // Column2
+            // 
+            this.Column2.HeaderText = "Amount";
+            this.Column2.MinimumWidth = 8;
+            this.Column2.Name = "Column2";
+            // 
+            // id
+            // 
+            this.id.HeaderText = "id";
+            this.id.MinimumWidth = 8;
+            this.id.Name = "id";
+            this.id.Visible = false;
+            // 
             // label1
             // 
             this.label1.AutoSize = true;
@@ -363,31 +388,6 @@
             this.deleteTransactionButton1.UseVisualStyleBackColor = true;
             this.deleteTransactionButton1.Visible = false;
             this.deleteTransactionButton1.Click += new System.EventHandler(this.deleteTransactionButton1_Click);
-            // 
-            // Column1
-            // 
-            this.Column1.HeaderText = "Date";
-            this.Column1.MinimumWidth = 8;
-            this.Column1.Name = "Column1";
-            // 
-            // description
-            // 
-            this.description.HeaderText = "Description";
-            this.description.MinimumWidth = 8;
-            this.description.Name = "description";
-            // 
-            // Column2
-            // 
-            this.Column2.HeaderText = "Amount";
-            this.Column2.MinimumWidth = 8;
-            this.Column2.Name = "Column2";
-            // 
-            // id
-            // 
-            this.id.HeaderText = "id";
-            this.id.MinimumWidth = 8;
-            this.id.Name = "id";
-            this.id.Visible = false;
             // 
             // StartMenu
             // 
