@@ -562,9 +562,8 @@ namespace BudgetApp_V2
 
         private void cancelUpdateButton_Click(object sender, EventArgs e)
         {
-            cancelUpdateButton.Hide();
-            updateDbButton.Hide();
             DisplayMonthTransactions();
+            unselectItems();
         }
 
         private void updateDbButton_Click(object sender, EventArgs e)
@@ -636,6 +635,9 @@ namespace BudgetApp_V2
             // unselect items in datagridview
             dataGridView1.ClearSelection();
             deleteTransactionButton1.Visible = false;
+            updateDbButton.Hide();
+            cancelUpdateButton.Hide();
+            deleteTransactionButton1.Hide();
         }
     }
 }
