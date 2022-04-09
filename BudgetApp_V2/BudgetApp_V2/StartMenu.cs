@@ -162,28 +162,25 @@ namespace BudgetApp_V2
                 label1.Visible = true;
             }
 
-            dataGridView1.Height = 28;
-            dataGridView1.Height += monthsTransactions.Count * 21;
             for (int i = 0; i < monthsTransactions.Count; i++)  //Even though there should be five transactions in the linked list, there might not be if the database has been swiped of data.
             {
                 dataGridView1.Rows.Add(monthsTransactions.ElementAt(i)[0], monthsTransactions.ElementAt(i)[1], monthsTransactions.ElementAt(i)[2], monthsTransactions.ElementAt(i)[3]);
                 (dataGridView1.Rows[i].Cells[4] as DataGridViewComboBoxCell).Value = monthsTransactions.ElementAt(i)[4];
             }
 
-
-
-            // Dynamically resize the data grid view, based on how many rows are in it (we don't want there to be unnecessary extra whitespace)
-            int size = (21 * dataGridView1.RowCount) + 7;
             Console.WriteLine("Height: " + dataGridView1.Height);
-            dataGridView1.SetBounds(610, 75, dataGridView1.Width, size);
-            if (dataGridView1.Height > 420) // Prevent the height from being more than 217 (otherwise, the datagridview will overlap)
+            // Show the first 10 transactions. If fewer, then resize the gridview so a bunch of empty space isn't shown at bottom.
+            if (dataGridView1.RowCount >= 10)
             {
-                dataGridView1.Height = 420;
-                dataGridView1.ScrollBars = ScrollBars.Vertical;  // create vertical scrollbars so user can see all transaction overviews
-            }
-            else  // remove the vertical scrollbars (may have been created earlier when there was need for them)
+                if (dataGridView1.RowCount == 10)  // Last row can be displayed without need for scrollbar.
+                {
+                    dataGridView1.ScrollBars = ScrollBars.None;
+                }
+                dataGridView1.Height = 285;
+            } else
             {
                 dataGridView1.ScrollBars = ScrollBars.None;
+                dataGridView1.Height = 28 + (int)(25.7 * dataGridView1.RowCount);
             }
         }
 
