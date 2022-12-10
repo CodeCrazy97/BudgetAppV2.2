@@ -48,3 +48,12 @@ C:\Users\Ethan\Documents\Projects\C#\BudgetApp\BudgetApp_V2\BudgetApp_V2\obj\Deb
 C:\Users\Ethan\Documents\Projects\C#\BudgetApp\BudgetApp_V2\BudgetApp_V2\obj\Debug\BudgetApp_V2.pdb
 C:\Users\Ethan\Documents\Projects\C#\BudgetApp\BudgetApp_V2\BudgetApp_V2\obj\Debug\BudgetApp_V2.csprojAssemblyReference.cache
 C:\Users\Ethan\Documents\Projects\C#\BudgetApp\BudgetApp_V2\BudgetApp_V2\obj\Debug\BudgetApp_V2.EarningsOverview.resources
+C:\Users\Ethan\Documents\Projects\C#\BudgetApp\BudgetApp_V2\BudgetApp_V2\bin\Debug\BudgetApp_V2.exe.config
+C:\Users\Ethan\Documents\Projects\C#\BudgetApp\BudgetApp_V2\BudgetApp_V2\bin\Debug\EntityFramework.dll
+C:\Users\Ethan\Documents\Projects\C#\BudgetApp\BudgetApp_V2\BudgetApp_V2\bin\Debug\EntityFramework.SqlServer.dll
+C:\Users\Ethan\Documents\Projects\C#\BudgetApp\BudgetApp_V2\BudgetApp_V2\bin\Debug\System.Data.SQLite.dll
+C:\Users\Ethan\Documents\Projects\C#\BudgetApp\BudgetApp_V2\BudgetApp_V2\bin\Debug\System.Data.SQLite.EF6.dll
+C:\Users\Ethan\Documents\Projects\C#\BudgetApp\BudgetApp_V2\BudgetApp_V2\bin\Debug\System.Data.SQLite.Linq.dll
+C:\Users\Ethan\Documents\Projects\C#\BudgetApp\BudgetApp_V2\BudgetApp_V2\bin\Debug\EntityFramework.xml
+C:\Users\Ethan\Documents\Projects\C#\BudgetApp\BudgetApp_V2\BudgetApp_V2\bin\Debug\EntityFramework.SqlServer.xml
+C:\Users\Ethan\Documents\Projects\C#\BudgetApp\BudgetApp_V2\BudgetApp_V2\bin\Debug\System.Data.SQLite.xml

@@ -33,6 +33,7 @@
  * 11/28/2021 - Resize transaction gridview on start menu.
  * 12/25/2021 - Show success message popups after deleting/updating transactions.
  * 02/25/2022 - Added category column to current month's transactions table.
+ * 12/9/2022  - Migrating over to SQLite database.
  */
 
 using System.Data;
@@ -44,17 +45,23 @@ using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 using System.Linq.Expressions;
+using System.IO;
+using System.ServiceProcess;
+using System.Data.SQLite;
 
 namespace BudgetApp_V2
 {
     public partial class StartMenu : Form
     {
-        public string connStr = new MySQLConnection().connection;
+        //public string connStr = new MySQLConnection().connection;
         LinkedList<string> categories = new LinkedList<string>();   //Holds the categories of spending.
-
+        Database db;
 
         public StartMenu()
         {
+
+            this.db = new Database();
+
             //Start mysqld
             if (!isMysqldRunning())
             {
@@ -72,6 +79,7 @@ namespace BudgetApp_V2
                     MessageBox.Show("Unable to start the process mysqld.exe.");
                     Application.Exit();
                 }
+
             }
 
             InitializeComponent();
@@ -86,7 +94,7 @@ namespace BudgetApp_V2
             amountCalculatedLabel.Visible = false;
             this.Text = "Budget App, Version 2.3";
             WindowState = FormWindowState.Maximized;
-            categories = new MySQLConnection().GetCategories();
+            categories = db.GetCategories();
 
             categoryComboBox.Items.Add("Charity");
             //Fill combo box with the categories.
@@ -132,10 +140,10 @@ namespace BudgetApp_V2
             unselectItems();
         }
 
-        public static List<string> GetChoices()
+        public List<string> GetChoices()
         {
             List<string> categories = new List<string>();
-            LinkedList<string> categoriesLinkedList = new MySQLConnection().GetCategories();
+            LinkedList<string> categoriesLinkedList = this.db.GetCategories();
             foreach (var item in categoriesLinkedList)
             {
                 string itemLowercased = item.ToLower();
@@ -149,7 +157,7 @@ namespace BudgetApp_V2
             //Remove the previous showing of this month's transactions (necessary because this method could be called after submitting a new transaction, which would then need to be added to the transactions list)
             dataGridView1.Rows.Clear();
 
-            LinkedList<String[]> monthsTransactions = new MySQLConnection().GetCurrentMonthsTransactions();
+            LinkedList<String[]> monthsTransactions = db.GetCurrentMonthsTransactions();
 
             if(monthsTransactions.Count == 0)  // No transactions for the current month.
             {
@@ -246,11 +254,11 @@ namespace BudgetApp_V2
                 try
                 {
                     //Place the transaction in the database.
-                    string connStr = new MySQLConnection().connection;
+                    //string connStr = new MySQLConnection().connection;
 
                     //Step 3: Create the SQL statement that deletes the notice.
                     string date = transactionDateTimePicker.Value.Year + "-" + transactionDateTimePicker.Value.Month + "-" + transactionDateTimePicker.Value.Day;
-                    string description = new MySQLConnection().FixStringForMySQL(transactionDescriptionTextBox.Text);
+                    string description = db.FixStringForMySQL(transactionDescriptionTextBox.Text);
 
                     // Calculate math expressions for the amount given. For example: users can enter 12.34+.87. The amount in this case would equal $13.21.
                     double amount = getAmount();
@@ -271,18 +279,18 @@ namespace BudgetApp_V2
                             // Check if user wants to apply 10% (rounded up) towards charity balance.   
                             if (checkBox.Checked)
                             {
-                                oldCharityBalance = new MySQLConnection().GetCharityBalance();
+                                oldCharityBalance = db.GetCharityBalance();
                                 showCharityBalanceChanges = true;
 
                                 amount = Math.Ceiling(amount * 0.1);
-                                new MySQLConnection().ModifyCharityBalance(date, description + " (10+% applied to charity)", amount);
+                                db.ModifyCharityBalance(date, description + " (10+% applied to charity)", amount);
                             }
 
                             executeSql(sql);
                         }
                         else if (String.Equals(categoryComboBox.SelectedItem.ToString(), "Charity"))  // Type = Charity
                         {
-                            oldCharityBalance = new MySQLConnection().GetCharityBalance();
+                            oldCharityBalance = db.GetCharityBalance();
                             if (!checkBox.Checked)  // This is a decrease to the charity balance.
                             {
                                 amount = -amount;  //make negative
@@ -293,7 +301,7 @@ namespace BudgetApp_V2
                                 amount = Math.Ceiling(amount);
                             }
                             // Will need to decrease charity balance, since used some of the charity.
-                            new MySQLConnection().ModifyCharityBalance(date, description, amount); // turn amount into a negative (decrease in charity balance)
+                            db.ModifyCharityBalance(date, description, amount); // turn amount into a negative (decrease in charity balance)
                             showCharityBalanceChanges = true;
                         }
                         else  // Some other expense type
@@ -309,7 +317,7 @@ namespace BudgetApp_V2
                         //Show previous charity balance and new charity balance.
                         if (showCharityBalanceChanges)
                         {
-                            double charityBalance = new MySQLConnection().GetCharityBalance();
+                            double charityBalance = db.GetCharityBalance();
                             MessageBox.Show("Old charity balance: " + Math.Round(oldCharityBalance, 2) +
                                 "\nNew charity balance: " + Math.Round(charityBalance, 2), "Charity Balance was Updated Successfully!");
                         }
@@ -340,18 +348,18 @@ namespace BudgetApp_V2
 
         private void executeSql(string sql)
         {
-            MySqlConnection connection = new MySqlConnection(connStr);    //create the new connection using the parameters of connStr
+            //MySqlConnection connection = new MySqlConnection(connStr);    //create the new connection using the parameters of connStr
             try
             {
-                connection.Open();                            //open the connection
-                var cmd = new MySqlCommand(sql, connection);  //create an executable command
-                var reader = cmd.ExecuteNonQuery();             //execute the command
+                SQLiteCommand sqlite_cmd;
+                sqlite_cmd = db.sqliteconnection.CreateCommand();
+                var reader = sqlite_cmd.ExecuteNonQuery();             //execute the command
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.ToString());
             }
-            connection.Close();
+            db.sqliteconnection.Close();
         }
 
         
@@ -391,7 +399,7 @@ namespace BudgetApp_V2
             reportForm.categories = categories;  // the report will show spending based on the different categories of spending
             reportForm.Text = "Report";
             reportForm.Show();
-            categories = new MySQLConnection().GetCategories();  // Reset the categories. This gets reset to zero after viewing the report form.
+            categories = db.GetCategories();  // Reset the categories. This gets reset to zero after viewing the report form.
             transactionDescriptionTextBox.Select();  // Set cursor to blinking in the description text box.
             this.Hide();
         }
@@ -417,7 +425,7 @@ namespace BudgetApp_V2
             try
             {
                 // Show the charity budget.
-                double charityBalance = new MySQLConnection().GetCharityBalance();
+                double charityBalance = db.GetCharityBalance();
                 charityBalanceLabel.Text = "Current charity balance: $" + Math.Round(charityBalance, 2);
             }
             catch (Exception e2)
@@ -503,7 +511,7 @@ namespace BudgetApp_V2
             earningsOverview.FormClosed += new FormClosedEventHandler(startMenuFormClosed);
             earningsOverview.Text = "Wages and Taxes";
             earningsOverview.Show();
-            categories = new MySQLConnection().GetCategories();  // Reset the categories. This gets reset to zero after viewing the report form.
+            categories = db.GetCategories();  // Reset the categories. This gets reset to zero after viewing the report form.
             transactionDescriptionTextBox.Select();  // Set cursor to blinking in the description text box.
             this.Hide();
         }
@@ -589,7 +597,7 @@ namespace BudgetApp_V2
                     // TODO: Need more input validation
                     
                     
-                    success = new MySQLConnection().UpdateEntry(trans_date, description, amount, trans_id, expense_type);
+                    success = db.UpdateEntry(trans_date, description, amount, trans_id, expense_type);
                 } catch (ArgumentNullException ane)
                 {
                     Console.WriteLine("ArgumentNullException : " + ane.Message);
@@ -611,7 +619,7 @@ namespace BudgetApp_V2
                 DataGridViewRow selectedRow = dataGridView1.Rows[selectedrowindex];
                 int trans_id = Int16.Parse(Convert.ToString(selectedRow.Cells["id"].Value));
                 string description = Convert.ToString(selectedRow.Cells["description"].Value);
-                bool successful = new MySQLConnection().DeleteTransaction(trans_id);
+                bool successful = db.DeleteTransaction(trans_id);
 
                 DisplayMonthTransactions();
 
