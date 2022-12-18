@@ -1,5 +1,4 @@
-﻿using MySql.Data.MySqlClient;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -20,7 +19,7 @@ namespace BudgetApp_V2
             {
                 SQLiteConnection sqlite_conn;
                 this.CreateConnection();
-                this.CheckTables();
+                //this.CheckTables();
             }
         }
 
@@ -28,6 +27,39 @@ namespace BudgetApp_V2
         {
             SQLiteCommand sqlite_cmd;
             string createsql = "CREATE TABLE IF NOT EXISTS `charity` (`trans_date` date DEFAULT NULL, `description` text DEFAULT NULL, `amount` double DEFAULT NULL, `trans_id` INTEGER PRIMARY KEY); ";
+            this.sqliteconnection.Open();
+            sqlite_cmd = this.sqliteconnection.CreateCommand();
+            sqlite_cmd.CommandText = createsql;
+            sqlite_cmd.ExecuteNonQuery();
+            this.sqliteconnection.Close();
+        }
+
+        public void CreateTaxLiabilityTable()
+        {
+            SQLiteCommand sqlite_cmd;
+            string createsql = "CREATE TABLE IF NOT EXISTS `tax_liability` (  `id` INTEGER PRIMARY KEY,  `tax_year` int(4) NOT NULL,  `amount` double NOT NULL,  `description` varchar(1000) DEFAULT NULL,  `tax_type` varchar(20) NOT NULL,  FOREIGN KEY(`tax_type`) REFERENCES `tax_types` (`name`)); ";
+            this.sqliteconnection.Open();
+            sqlite_cmd = this.sqliteconnection.CreateCommand();
+            sqlite_cmd.CommandText = createsql;
+            sqlite_cmd.ExecuteNonQuery();
+            this.sqliteconnection.Close();
+        }
+
+        public void CreateTaxationTable()
+        {
+            SQLiteCommand sqlite_cmd;
+            string createsql = "CREATE TABLE IF NOT EXISTS `taxation` (  `id` INTEGER PRIMARY KEY,  `job` varchar(30) NOT NULL,  `transaction_year` int(4) NOT NULL,  `tax_type_name` varchar(20) NOT NULL,  `amount` double NOT NULL,  FOREIGN KEY(`job`) REFERENCES `jobs` (`name`),  FOREIGN KEY(`tax_type_name`) REFERENCES `tax_types` (`name`)); ";
+            this.sqliteconnection.Open();
+            sqlite_cmd = this.sqliteconnection.CreateCommand();
+            sqlite_cmd.CommandText = createsql;
+            sqlite_cmd.ExecuteNonQuery();
+            this.sqliteconnection.Close();
+        }
+
+        public void CreateGrossWagesTable()
+        {
+            SQLiteCommand sqlite_cmd;
+            string createsql = "CREATE TABLE IF NOT EXISTS `gross_wages` (  `wage_year` int(4) NOT NULL,  `job` varchar(30) NOT NULL,  `amount` double NOT NULL,  PRIMARY KEY(`wage_year`,`job`),  FOREIGN KEY(`job`) REFERENCES `jobs` (`name`)); ";
             this.sqliteconnection.Open();
             sqlite_cmd = this.sqliteconnection.CreateCommand();
             sqlite_cmd.CommandText = createsql;
@@ -43,6 +75,11 @@ namespace BudgetApp_V2
             this.CheckAndCreateTable("jobs");
             this.CheckAndCreateTable("tax_types");
             this.CheckAndCreateTable("other_earnings");
+            this.CheckAndCreateTable("tax_liability");
+            this.CheckAndCreateTable("gross_wages");
+            this.CheckAndCreateTable("taxation");
+            this.CheckAndCreateTable("tax_return");
+
 
         }
 
@@ -60,10 +97,10 @@ namespace BudgetApp_V2
                 while (sqlite_datareader.Read())
                 {
                     int cnt = sqlite_datareader.GetInt16(0);
+                    sqlite_datareader.Close();
+                    this.sqliteconnection.Close();
                     if (cnt == 0)
                     {
-                        sqlite_datareader.Close();
-                        this.sqliteconnection.Close();
                         switch (table)
                         {
                             case "expense_types":
@@ -83,6 +120,18 @@ namespace BudgetApp_V2
                                 break;
                             case "other_earnings":
                                 this.CreateOtherEarningsTable();
+                                break;
+                            case "tax_liability":
+                                this.CreateTaxLiabilityTable();
+                                break;
+                            case "gross_wages":
+                                this.CreateGrossWagesTable();
+                                break;
+                            case "taxation":
+                                this.CreateTaxationTable();
+                                break;
+                            case "tax_return":
+                                this.CreateTaxReturnTable();
                                 break;
                             default:
                                 throw new Exception("Table type not implemented.");
@@ -105,6 +154,16 @@ namespace BudgetApp_V2
         {
             SQLiteCommand sqlite_cmd;
             string createsql = "CREATE TABLE IF NOT EXISTS `expenses` (  `trans_date` date NOT NULL,  `description` text NOT NULL,  `amount` double NOT NULL,  `trans_id` INTEGER PRIMARY KEY,  `expense_type` varchar(25) DEFAULT NULL, FOREIGN KEY(`expense_type`) REFERENCES `expense_types` (`type_name`))";
+            this.sqliteconnection.Open();
+            SQLiteCommand command = new SQLiteCommand(createsql, this.sqliteconnection);
+            command.ExecuteNonQuery();
+            this.sqliteconnection.Close();
+        }
+
+        public void CreateTaxReturnTable()
+        {
+            SQLiteCommand sqlite_cmd;
+            string createsql = "CREATE TABLE IF NOT EXISTS `tax_return` (  `id` INTEGER PRIMARY KEY,  `tax_year` int(4) NOT NULL,  `amount` double NOT NULL,  `description` varchar(1000) DEFAULT NULL,  `tax_type` varchar(20) NOT NULL,  FOREIGN KEY(`tax_type`) REFERENCES `tax_types` (`name`)); ";
             this.sqliteconnection.Open();
             SQLiteCommand command = new SQLiteCommand(createsql, this.sqliteconnection);
             command.ExecuteNonQuery();
@@ -226,7 +285,7 @@ namespace BudgetApp_V2
                 SQLiteCommand sqlite_cmd;
                 this.sqliteconnection.Open();
                 sqlite_cmd = this.sqliteconnection.CreateCommand();
-                sqlite_cmd.CommandText = "SELECT trans_date, description, amount, trans_id, expense_type FROM expenses WHERE YEAR(trans_date) = YEAR(NOW()) AND MONTH(trans_date) = MONTH(NOW()) ORDER BY trans_date DESC; ";
+                sqlite_cmd.CommandText = "SELECT trans_date, description, amount, trans_id, expense_type FROM expenses WHERE strftime('%Y', trans_date) = strftime('%Y', DATE('now')) AND strftime('%m', trans_date) = strftime('%m', DATE('now')) ORDER BY trans_date DESC; ";
 
                 sqlite_datareader = sqlite_cmd.ExecuteReader();
                 while (sqlite_datareader.Read())
@@ -235,11 +294,12 @@ namespace BudgetApp_V2
                     DateTime dt = sqlite_datareader.GetDateTime(0);  //Get the date.
                     string dtString = dt.Month + "/" + dt.Day + "/" + dt.Year;
                     currentTransaction[1] = sqlite_datareader.GetString(1);
-                    currentTransaction[2] = sqlite_datareader.GetString(2);
-                    currentTransaction[3] = sqlite_datareader.GetString(3);
+                    currentTransaction[2] = sqlite_datareader.GetDouble(2).ToString();
+                    currentTransaction[3] = sqlite_datareader.GetInt16(3).ToString();
                     currentTransaction[4] = sqlite_datareader.GetString(4);
                     transactions.AddLast(currentTransaction);
                 }
+                sqlite_datareader.Close();
             }
             catch (System.Data.SQLite.SQLiteException ex)
             {
@@ -351,7 +411,9 @@ namespace BudgetApp_V2
                 sqlite_datareader = sqlite_cmd.ExecuteReader();
                 while (sqlite_datareader.Read())
                 {
-                    return sqlite_datareader.GetDouble(0);
+                    double amount = sqlite_datareader.GetDouble(0);
+                    sqlite_datareader.Close();
+                    return amount;
                 }
             }
             catch (Exception ex)
@@ -384,6 +446,7 @@ namespace BudgetApp_V2
                     currentCategory = currentCategory.Substring(0, 1).ToUpper() + currentCategory.Substring(1); //Make the first character of the category in upper case.
                     categories.AddLast(currentCategory);
                 }
+                sqlite_datareader.Close();
 
             }
             catch (Exception ex)
@@ -442,6 +505,7 @@ namespace BudgetApp_V2
                     currentCategory = currentCategory.Substring(0, 1).ToUpper() + currentCategory.Substring(1); //Make the first character of the category in upper case.
                     categories.AddLast(currentCategory);
                 }
+                sqlite_datareader.Close();
 
             }
             catch (System.Data.SQLite.SQLiteException ex)

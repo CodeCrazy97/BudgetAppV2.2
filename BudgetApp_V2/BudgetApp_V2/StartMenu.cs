@@ -37,7 +37,6 @@
  */
 
 using System.Data;
-using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -62,6 +61,7 @@ namespace BudgetApp_V2
 
             this.db = new Database();
 
+            /*
             //Start mysqld
             if (!isMysqldRunning())
             {
@@ -81,6 +81,7 @@ namespace BudgetApp_V2
                 }
 
             }
+            */
 
             InitializeComponent();
 
@@ -351,13 +352,20 @@ namespace BudgetApp_V2
             //MySqlConnection connection = new MySqlConnection(connStr);    //create the new connection using the parameters of connStr
             try
             {
-                SQLiteCommand sqlite_cmd;
-                sqlite_cmd = db.sqliteconnection.CreateCommand();
-                var reader = sqlite_cmd.ExecuteNonQuery();             //execute the command
+
+                SQLiteCommand command = new SQLiteCommand(sql, db.sqliteconnection);
+                command.Connection.Open();
+                command.ExecuteNonQuery();
+                
+
+                //db.sqliteconnection.Open();
+                //SQLiteCommand sqlite_cmd;
+                //sqlite_cmd = db.sqliteconnection.CreateCommand();
+                //var reader = sqlite_cmd.ExecuteNonQuery();             //execute the command
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.ToString());
+                MessageBox.Show("Failed to create expense entry: " + ex.Message);
             }
             db.sqliteconnection.Close();
         }

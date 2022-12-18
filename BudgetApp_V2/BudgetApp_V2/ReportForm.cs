@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.Data.SQLite;
 using System.Linq;
 using System.Windows.Forms;
-using MySql.Data.MySqlClient;
 
 namespace BudgetApp_V2
 {
