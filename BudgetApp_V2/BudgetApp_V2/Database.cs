@@ -293,6 +293,7 @@ namespace BudgetApp_V2
                     String[] currentTransaction = new String[5];
                     DateTime dt = sqlite_datareader.GetDateTime(0);  //Get the date.
                     string dtString = dt.Month + "/" + dt.Day + "/" + dt.Year;
+                    currentTransaction[0] = dtString;
                     currentTransaction[1] = sqlite_datareader.GetString(1);
                     currentTransaction[2] = sqlite_datareader.GetDouble(2).ToString();
                     currentTransaction[3] = sqlite_datareader.GetInt16(3).ToString();

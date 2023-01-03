@@ -34,6 +34,7 @@
  * 12/25/2021 - Show success message popups after deleting/updating transactions.
  * 02/25/2022 - Added category column to current month's transactions table.
  * 12/9/2022  - Migrating over to SQLite database.
+ * 1/2/2023   - Fixed issue with not inserting date correctly into SQLite.
  */
 
 using System.Data;
@@ -258,7 +259,26 @@ namespace BudgetApp_V2
                     //string connStr = new MySQLConnection().connection;
 
                     //Step 3: Create the SQL statement that deletes the notice.
-                    string date = transactionDateTimePicker.Value.Year + "-" + transactionDateTimePicker.Value.Month + "-" + transactionDateTimePicker.Value.Day;
+                    // month / day less than 10 - pad with zer
+                    string month = "";
+                    string day = "";
+                    if (transactionDateTimePicker.Value.Month < 10)
+                    {
+                        month = "0" + transactionDateTimePicker.Value.Month;
+                    } else
+                    {
+                        month = transactionDateTimePicker.Value.Month.ToString();
+                    }
+                    
+                    if (transactionDateTimePicker.Value.Day < 10)
+                    {
+                        day = "0" + transactionDateTimePicker.Value.Day;
+                    }
+                    else
+                    {
+                        day = transactionDateTimePicker.Value.Day.ToString();
+                    }
+                    string date = transactionDateTimePicker.Value.Year + "-" + month + "-" + day;
                     string description = db.FixStringForMySQL(transactionDescriptionTextBox.Text);
 
                     // Calculate math expressions for the amount given. For example: users can enter 12.34+.87. The amount in this case would equal $13.21.
