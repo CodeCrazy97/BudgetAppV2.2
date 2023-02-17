@@ -323,7 +323,17 @@ namespace BudgetApp_V2
             SQLiteCommand sqlite_cmd;
             this.sqliteconnection.Open();
             sqlite_cmd = this.sqliteconnection.CreateCommand();
-            sqlite_cmd.CommandText = "INSERT INTO charity (trans_date, description, amount) VALUES ('" + transDate + "', '" + description + "', " + amount + ");";
+            description = FixStringForMySQL(description);
+            SQLiteParameter p1 = new SQLiteParameter(transDate);
+            SQLiteParameter p2 = new SQLiteParameter(description);
+            SQLiteParameter p3 = new SQLiteParameter(amount.ToString());
+            description = description.Replace("'", "''");
+            sqlite_cmd.CommandText = "INSERT INTO charity (trans_date, description, amount) VALUES (@trans_date, @description, @amount);";
+            sqlite_cmd.Parameters.Add(new SQLiteParameter("@trans_date", transDate));
+            sqlite_cmd.Parameters.Add(new SQLiteParameter("@description", description));
+            sqlite_cmd.Parameters.Add(new SQLiteParameter("@amount", amount));
+
+            //sqlite_cmd.Parameters.AddWithValue("description", description);
             sqlite_cmd.ExecuteNonQuery();
             this.sqliteconnection.Close();
         }
