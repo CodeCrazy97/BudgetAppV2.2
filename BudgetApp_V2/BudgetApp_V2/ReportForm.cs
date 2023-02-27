@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data.SQLite;
 using System.Linq;
 using System.Windows.Forms;
+using MySql.Data.MySqlClient;
 
 namespace BudgetApp_V2
 {
@@ -38,7 +38,7 @@ namespace BudgetApp_V2
         private void DisplayTransactionsSummary()
         {
             categories.Clear();
-            categories = new Database().GetBudgetReportCategories();
+            categories = new MySQLConnection().GetBudgetReportCategories();
             totals.Clear();
             dataGridView1.Rows.Clear();
 
@@ -58,37 +58,36 @@ namespace BudgetApp_V2
             {
                 warningLabel.Visible = false;
 
-                Database connection = new Database();
+                string connStr = new MySQLConnection().connection;
+                MySqlConnection conn = new MySqlConnection(connStr);
                 try
                 {
+                    conn.Open();
                     for (int i = 0; i < categories.Count; i++)  //Loop through all categories, getting totals for each.
                     {
-
-                        SQLiteDataReader sqlite_datareader;
-                        SQLiteCommand sqlite_cmd;
-                        sqlite_cmd = connection.sqliteconnection.CreateCommand();
-                        sqlite_cmd.CommandText = "SELECT SUM(amount) FROM expenses WHERE expense_type = '" + categories.ElementAt(i) + "' AND trans_date BETWEEN '" + date1 + "' AND '" + date2 + "'; ";
-
-                        sqlite_datareader = sqlite_cmd.ExecuteReader();
-                        while (sqlite_datareader.Read())
+                        string sql = "SELECT SUM(amount) FROM expenses WHERE expense_type = '" + categories.ElementAt(i) + "' AND trans_date BETWEEN '" + date1 + "' AND '" + date2 + "'; ";
+                        MySqlCommand cmd = new MySqlCommand(sql, conn);
+                        var reader = cmd.ExecuteReader();             //execute the command
+                        while (reader.Read())
                         {
-                            if (sqlite_datareader.IsDBNull(0))
+                            if (reader.IsDBNull(0))
                             {
                                 totals.AddLast(0);
                             }
                             else
                             {
-                                totals.AddLast(Math.Abs(sqlite_datareader.GetDouble(0)));
+                                totals.AddLast(Math.Abs(reader.GetDouble(0)));
                             }
                         }
-                        sqlite_datareader.Close();
+                        reader.Close();
                     }
                 }
+                
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex.ToString());
                 }
-                connection.sqliteconnection.Close();
+                conn.Close();
                                 
                 
                 //Get the total amount spent.
