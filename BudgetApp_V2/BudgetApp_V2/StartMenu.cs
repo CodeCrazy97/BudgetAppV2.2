@@ -33,6 +33,8 @@
  * 11/28/2021 - Resize transaction gridview on start menu.
  * 12/25/2021 - Show success message popups after deleting/updating transactions.
  * 02/25/2022 - Added category column to current month's transactions table.
+ * 03/04/2023 - After having some major issues with MySQL, trying out the budget app with SQLite, and running into more issues with that, I reverted back to MySQL. I created a scheduled task on my computer to backup the MySQL db. 
+ * 03/04/2023 - Ordering by wage year on the wages & taxes screen.
  */
 
 using System.Data;
