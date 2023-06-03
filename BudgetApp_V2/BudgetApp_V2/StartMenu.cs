@@ -35,6 +35,7 @@
  * 02/25/2022 - Added category column to current month's transactions table.
  * 03/04/2023 - After having some major issues with MySQL, trying out the budget app with SQLite, and running into more issues with that, I reverted back to MySQL. I created a scheduled task on my computer to backup the MySQL db. 
  * 03/04/2023 - Ordering by wage year on the wages & taxes screen.
+ * 06/03/2023 - Create backups of the db when project is started. Delete backups older than 1 year old.
  */
 
 using System.Data;
@@ -45,7 +46,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
-using System.Linq.Expressions;
+using System.IO;
 
 namespace BudgetApp_V2
 {
@@ -78,6 +79,120 @@ namespace BudgetApp_V2
 
             InitializeComponent();
 
+            backupDB();
+        }
+
+        /*
+         * backupDB - backs up the budget database
+         */
+        private void backupDB()
+        {
+            // get the current project directory
+            string workingDirectory = Environment.CurrentDirectory;
+            string backupsDirectory = Directory.GetParent(workingDirectory).Parent.Parent.Parent.FullName + "\\backups\\"; // need "Parent" folder listed three times since we are executing from in the bin directory
+
+            if (Directory.Exists(backupsDirectory))
+            {
+                deleteOldBackups(backupsDirectory);
+                if (checkForRecentBackups(backupsDirectory))
+                {
+                    return;
+                }
+            }
+            else
+            {
+                Directory.CreateDirectory(backupsDirectory);
+            }
+
+            DateTime currentDateTime = DateTime.Now;
+            string currentDateTimeString = currentDateTime.ToString("yyyyMMddHHmm");
+
+            string server = "localhost";
+            string database = "budget";
+            string user = "root";
+            string password = "";
+
+            // place the backup in the backups folder, located at the project root
+            string backupFile = @"" + backupsDirectory + currentDateTimeString + "backup.sql";
+
+            // see if a backup has been made for the past week
+
+            string command = $"mysqldump --user={user} --password={password} --host={server} {database} > \"{backupFile}\"";
+
+            try
+            {
+                ProcessStartInfo psi = new ProcessStartInfo("cmd.exe")
+                {
+                    RedirectStandardInput = true,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+
+                Process process = new Process
+                {
+                    StartInfo = psi
+                };
+
+                process.Start();
+                process.StandardInput.WriteLine(command);
+                process.StandardInput.Close();
+                process.WaitForExit();
+
+                Console.WriteLine("Database backup complete.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred: {ex.Message}");
+            }
+        }
+
+        /*
+         * checkForRecentBackups - checks if there have been any budget db backups made in the past week
+         */
+        private bool checkForRecentBackups(string folderPath)
+        {
+            DirectoryInfo directory = new DirectoryInfo(folderPath);
+
+            // Get the current date and time
+            DateTime currentDate = DateTime.Now;
+
+            // Calculate the date one week ago
+            DateTime oneWeekAgo = currentDate.AddDays(-7);
+
+            // Get all the files in the folder
+            FileInfo[] files = directory.GetFiles();
+
+            // Loop through each file and check its creation time
+            foreach (FileInfo file in files)
+            {
+                if (file.CreationTime > oneWeekAgo)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /*
+         * deleteOldBackups - deletes all backups older than 1 year old
+         */
+        private void deleteOldBackups(string backupsDirectory)
+        {
+            string directoryPath = @backupsDirectory;
+            DateTime oneYearAgo = DateTime.Now.AddYears(-1);
+
+            string[] files = Directory.GetFiles(directoryPath);
+
+            foreach (string file in files)
+            {
+                FileInfo fileInfo = new FileInfo(file);
+                if (fileInfo.LastWriteTime < oneYearAgo)
+                {
+                    File.Delete(file);
+                }
+            }
         }
 
         private void StartMenu_Load(object sender, EventArgs e)
@@ -98,7 +213,7 @@ namespace BudgetApp_V2
             }
             // add the other earnings and charity categories (these are not in the database
             categoryComboBox.Items.Add("Other Earnings");
-            
+
             //Set the width of the grid view columns.
             dataGridView1.Columns[0].Width = 90;
             dataGridView1.Columns[1].Width = 450;
@@ -113,7 +228,7 @@ namespace BudgetApp_V2
             col.DataSource = GetChoices();
             col.MaxDropDownItems = 3;
             dataGridView1.Columns.Add(col);
-            
+
             //Show the current month's transactions.
             DisplayMonthTransactions();
 
@@ -122,7 +237,7 @@ namespace BudgetApp_V2
 
             //Set the cursor to blinking in the text box.
             transactionDescriptionTextBox.Select();
-            
+
             // don't want to display charity balance when program starts (privacy concern)
             if (categoryComboBox.Items.Count > 1 && categoryComboBox.SelectedItem.Equals("Charity"))
             {
@@ -153,7 +268,7 @@ namespace BudgetApp_V2
 
             LinkedList<String[]> monthsTransactions = new MySQLConnection().GetCurrentMonthsTransactions();
 
-            if(monthsTransactions.Count == 0)  // No transactions for the current month.
+            if (monthsTransactions.Count == 0)  // No transactions for the current month.
             {
                 dataGridView1.Visible = false;
                 label1.Visible = false;
@@ -179,7 +294,8 @@ namespace BudgetApp_V2
                     dataGridView1.ScrollBars = ScrollBars.None;
                 }
                 dataGridView1.Height = 285;
-            } else
+            }
+            else
             {
                 dataGridView1.ScrollBars = ScrollBars.None;
                 dataGridView1.Height = 28 + (int)(25.7 * dataGridView1.RowCount);
@@ -208,8 +324,8 @@ namespace BudgetApp_V2
             catch (SyntaxErrorException see)
             {
                 throw see;
-            } 
-            catch (InvalidCastException ice) 
+            }
+            catch (InvalidCastException ice)
             {
                 // this exception is usually thrown when Clear() method is called 
                 Console.WriteLine("Invalid cast exception (code 158): " + ice);
@@ -356,7 +472,7 @@ namespace BudgetApp_V2
             connection.Close();
         }
 
-        
+
 
         private void clearButton_Click(object sender, EventArgs e)
         {
@@ -440,11 +556,12 @@ namespace BudgetApp_V2
                 {
                     amountCalculatedLabel.Text = "" + getAmount();
                 }
-            } catch (Exception e2)
+            }
+            catch (Exception e2)
             {
                 Console.WriteLine("Exception: " + e2);
             }
-            if (categoryComboBox.SelectedItem.ToString().Equals("Other Earnings")|| categoryComboBox.SelectedItem.ToString().Equals("Charity"))
+            if (categoryComboBox.SelectedItem.ToString().Equals("Other Earnings") || categoryComboBox.SelectedItem.ToString().Equals("Charity"))
             {
                 checkBox.Visible = true;
                 checkBox.Checked = false;
@@ -493,7 +610,8 @@ namespace BudgetApp_V2
                     amountCalculatedLabel.Visible = false;
                     Console.WriteLine(e2);
                 }
-            } else // not using any math expressions in text field - no point in displaying the amount, as user already sees it in the text field
+            }
+            else // not using any math expressions in text field - no point in displaying the amount, as user already sees it in the text field
             {
                 amountCalculatedLabel.Visible = false;
             }
@@ -545,7 +663,7 @@ namespace BudgetApp_V2
 
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-            
+
         }
 
         private void dataGridView1_SelectionChanged(object sender, EventArgs e)
@@ -589,10 +707,11 @@ namespace BudgetApp_V2
                     String expense_type = dataGridView1.Rows[row.Index].Cells[4].Value?.ToString();
 
                     // TODO: Need more input validation
-                    
-                    
+
+
                     success = new MySQLConnection().UpdateEntry(trans_date, description, amount, trans_id, expense_type);
-                } catch (ArgumentNullException ane)
+                }
+                catch (ArgumentNullException ane)
                 {
                     Console.WriteLine("ArgumentNullException : " + ane.Message);
                 }
@@ -622,7 +741,8 @@ namespace BudgetApp_V2
                 if (successful)
                 {
                     MessageBox.Show("The transaction \"" + description + "\" was successfully deleted.");
-                } else
+                }
+                else
                 {
                     MessageBox.Show("There was an error deleting the transaction \"" + description + "\"");
                 }
