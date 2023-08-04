@@ -73,5 +73,4 @@ C:\Users\Ethan\Documents\Projects\C#\BudgetApp\BudgetApp_V2\BudgetApp_V2\bin\Deb
 C:\Users\Ethan\Documents\Projects\C#\BudgetApp\BudgetApp_V2\BudgetApp_V2\bin\Debug\System.Numerics.Vectors.xml
 C:\Users\Ethan\Documents\Projects\C#\BudgetApp\BudgetApp_V2\BudgetApp_V2\bin\Debug\System.Runtime.CompilerServices.Unsafe.xml
 C:\Users\Ethan\Documents\Projects\C#\BudgetApp\BudgetApp_V2\BudgetApp_V2\bin\Debug\System.Threading.Tasks.Extensions.xml
-C:\Users\Ethan\Documents\Projects\C#\BudgetApp\BudgetApp_V2\BudgetApp_V2\obj\Debug\BudgetApp_V2.csproj.AssemblyReference.cache
-C:\Users\Ethan\Documents\Projects\C#\BudgetApp\BudgetApp_V2\BudgetApp_V2\obj\Debug\BudgetApp_V2.csproj.SuggestedBindingRedirects.cache
+C:\Users\Ethan\Documents\Projects\C#\BudgetApp\BudgetApp_V2\BudgetApp_V2\obj\Debug\BudgetApp_V2.csprojAssemblyReference.cache

@@ -32,8 +32,7 @@ C:\Users\Ethan\Documents\Projects\C#\BudgetApp\BudgetApp_V2\BudgetApp_V2\bin\Rel
 C:\Users\Ethan\Documents\Projects\C#\BudgetApp\BudgetApp_V2\BudgetApp_V2\bin\Release\System.Numerics.Vectors.xml
 C:\Users\Ethan\Documents\Projects\C#\BudgetApp\BudgetApp_V2\BudgetApp_V2\bin\Release\System.Runtime.CompilerServices.Unsafe.xml
 C:\Users\Ethan\Documents\Projects\C#\BudgetApp\BudgetApp_V2\BudgetApp_V2\bin\Release\System.Threading.Tasks.Extensions.xml
-C:\Users\Ethan\Documents\Projects\C#\BudgetApp\BudgetApp_V2\BudgetApp_V2\obj\Release\BudgetApp_V2.csproj.AssemblyReference.cache
-C:\Users\Ethan\Documents\Projects\C#\BudgetApp\BudgetApp_V2\BudgetApp_V2\obj\Release\BudgetApp_V2.csproj.SuggestedBindingRedirects.cache
 C:\Users\Ethan\Documents\Projects\C#\BudgetApp\BudgetApp_V2\BudgetApp_V2\obj\Release\BudgetApp_V2.csproj.CopyComplete
 C:\Users\Ethan\Documents\Projects\C#\BudgetApp\BudgetApp_V2\BudgetApp_V2\obj\Release\BudgetApp_V2.exe
 C:\Users\Ethan\Documents\Projects\C#\BudgetApp\BudgetApp_V2\BudgetApp_V2\obj\Release\BudgetApp_V2.pdb
+C:\Users\Ethan\Documents\Projects\C#\BudgetApp\BudgetApp_V2\BudgetApp_V2\obj\Release\BudgetApp_V2.csprojAssemblyReference.cache

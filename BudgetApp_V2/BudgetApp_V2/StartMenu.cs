@@ -36,6 +36,7 @@
  * 03/04/2023 - After having some major issues with MySQL, trying out the budget app with SQLite, and running into more issues with that, I reverted back to MySQL. I created a scheduled task on my computer to backup the MySQL db. 
  * 03/04/2023 - Ordering by wage year on the wages & taxes screen.
  * 06/03/2023 - Create backups of the db when project is started. Delete backups older than 1 year old.
+ * 08/04/2023 - Fixed not starting mysqld correctly.
  */
 
 using System.Data;
@@ -61,12 +62,9 @@ namespace BudgetApp_V2
             //Start mysqld
             if (!isMysqldRunning())
             {
-                // The below line of code may not be needed, as some users do not experience database connectivity issues due to the aria log file.
-                //var deleteAriaLogFile = Process.Start("C:\\Users\\Ethan\\Documents\\Projects\\Batch\\remove_aria_log_file.bat");
-
                 try  //Try to start mysqld.exe
                 {
-                    var mysqld = Process.Start("C:\\xampp\\mysql_start2.bat");
+                    var mysqld = Process.Start(getBaseDirectory() + "\\mysql_start2.bat");
                     Thread.Sleep(2000);  //Give mysqld.exe time to start.
                 }
                 catch (System.ComponentModel.Win32Exception ex3)  //Unable to start the process (could be that the executable is located in a different folder path).
@@ -75,11 +73,27 @@ namespace BudgetApp_V2
                     MessageBox.Show("Unable to start the process mysqld.exe.");
                     Application.Exit();
                 }
+
+                // if mysql still isn't running then try removing the aria log file and start it again
+                if (!isMysqldRunning())
+                {
+                    var deleteAriaLogFile = Process.Start(getBaseDirectory() + "\\remove_aria_log_file.bat");
+                    var mysqld = Process.Start(getBaseDirectory() + "\\mysql_start2.bat");
+                    Thread.Sleep(2000);  //Give mysqld.exe time to start.
+                }
             }
 
             InitializeComponent();
-
             backupDB();
+        }
+
+        /**
+         * Returns the base directory of the project.
+         */
+        public string getBaseDirectory()
+        {
+            string workingDirectory = Environment.CurrentDirectory;
+            return Directory.GetParent(workingDirectory).Parent.Parent.Parent.FullName;
         }
 
         /*
@@ -88,8 +102,7 @@ namespace BudgetApp_V2
         private void backupDB()
         {
             // get the current project directory
-            string workingDirectory = Environment.CurrentDirectory;
-            string backupsDirectory = Directory.GetParent(workingDirectory).Parent.Parent.Parent.FullName + "\\backups\\"; // need "Parent" folder listed three times since we are executing from in the bin directory
+            string backupsDirectory = getBaseDirectory() + "\\backups\\"; // need "Parent" folder listed three times since we are executing from in the bin directory
 
             if (Directory.Exists(backupsDirectory))
             {
