@@ -61,6 +61,7 @@
             this.updateDbButton = new System.Windows.Forms.Button();
             this.cancelUpdateButton = new System.Windows.Forms.Button();
             this.deleteTransactionButton1 = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -390,12 +391,25 @@
             this.deleteTransactionButton1.Visible = false;
             this.deleteTransactionButton1.Click += new System.EventHandler(this.deleteTransactionButton1_Click);
             // 
+            // button1
+            // 
+            this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button1.Location = new System.Drawing.Point(235, 228);
+            this.button1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(457, 72);
+            this.button1.TabIndex = 37;
+            this.button1.Text = "Pull in Transactions from Google Sheets";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // StartMenu
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.ClientSize = new System.Drawing.Size(1829, 894);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.deleteTransactionButton1);
             this.Controls.Add(this.cancelUpdateButton);
             this.Controls.Add(this.updateDbButton);
@@ -458,6 +472,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn description;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column2;
         private System.Windows.Forms.DataGridViewTextBoxColumn id;
+        private System.Windows.Forms.Button button1;
     }
 }
 

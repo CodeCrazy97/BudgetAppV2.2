@@ -304,5 +304,48 @@ namespace BudgetApp_V2
             connection.Close();
             return categories;
         }
+
+        public bool CheckIfTransactionExists(MySqlConnection connection, String trans_date, String description, double amount, String expense_type)
+        {
+            string sql = "";
+            if (expense_type == "charity")
+            {
+                sql = "SELECT COUNT(*) AS `count` FROM charity WHERE trans_date = @trans_date AND description = @description AND amount = @amount; ";
+            } else if (expense_type == "other earnings")
+            {
+                sql = "SELECT COUNT(*) AS `count` FROM other_earnings WHERE trans_date = @trans_date AND description = @description AND amount = @amount; ";
+            } else
+            {
+                sql = "SELECT COUNT(*) AS `count` FROM expenses WHERE trans_date = @trans_date AND description = @description AND amount = @amount; ";
+            }
+
+            int count = 0;
+            try
+            {
+                var cmd = new MySqlCommand(sql, connection);  //create an executable command
+                cmd.Parameters.AddWithValue("@trans_date", trans_date);
+                cmd.Parameters.AddWithValue("@description", description);
+                cmd.Parameters.AddWithValue("@amount", amount);
+                MySqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    count = reader.GetInt32(0);
+                }
+                reader.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Exception: " + ex.Message);
+                return false;
+            }
+            if (count > 0)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
     }
 }
