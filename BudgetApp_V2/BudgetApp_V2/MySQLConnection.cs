@@ -38,16 +38,15 @@ namespace BudgetApp_V2
 
         
 
-        public LinkedList<String[]> GetCurrentMonthsTransactions()
+        public LinkedList<String[]> GetTransactionsBetweenDates(DateTime startDate, DateTime endDate)
         {
             LinkedList<String[]> transactions = new LinkedList<String[]>();
-
 
             string connStr = new MySQLConnection().connection;
 
             MySqlConnection connection = new MySqlConnection(connStr);
 
-            string sql = "SELECT trans_date, description, amount, trans_id, expense_type FROM expenses WHERE YEAR(trans_date) = YEAR(NOW()) AND MONTH(trans_date) = MONTH(NOW()) ORDER BY trans_date DESC; ";
+            string sql = "SELECT trans_date, description, amount, trans_id, expense_type FROM expenses WHERE trans_date BETWEEN '" + startDate.ToString("yyyy-MM-dd") + "' AND '" + endDate.ToString("yyyy-MM-dd") + "' ORDER BY trans_date DESC; ";
 
             connection = new MySqlConnection(connStr);    //create the new connection using the parameters of connStr
             try
