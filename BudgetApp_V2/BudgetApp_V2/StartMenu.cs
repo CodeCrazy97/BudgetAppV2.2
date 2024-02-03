@@ -37,6 +37,7 @@
  * 03/04/2023 - Ordering by wage year on the wages & taxes screen.
  * 06/03/2023 - Create backups of the db when project is started. Delete backups older than 1 year old.
  * 08/04/2023 - Fixed not starting mysqld correctly.
+ * 02/02/2024 - Added two date pickers to start up page to allow user to specify dates for transaction table.
  */
 
 using System.Data;
@@ -48,7 +49,6 @@ using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 using System.IO;
-using System.Globalization;
 
 namespace BudgetApp_V2
 {
@@ -58,7 +58,7 @@ namespace BudgetApp_V2
         public string spreadsheetId = "1yFiOAbTqMP3MkLQ6JCrsZfTtN5AL9tcXFDapSIe1it4";
         public string apiKey = "AIzaSyAalz5U80thsiiGbHfTE7_ryjEKPU9rjCU";
         LinkedList<string> categories = new LinkedList<string>();   //Holds the categories of spending.
-
+        public bool initialLoad = true; //Keeps track of if the user is changing the date picker values or if they're being changed by the initial loading of the app. Don't want to trigger the built-in datepicker value changed events if the latter is true.
 
         public StartMenu()
         {
@@ -89,6 +89,12 @@ namespace BudgetApp_V2
 
             InitializeComponent();
             backupDB();
+
+            // Set the value of the date picker to be 1 month ago
+            DateTime currentDate = DateTime.Now;
+            DateTime oneMonthAgo = currentDate.AddMonths(-1);
+            fromDateTimePicker.Value = new DateTime(oneMonthAgo.Year, oneMonthAgo.Month, oneMonthAgo.Day, 0, 0, 0);
+            initialLoad = false;
         }
 
         /**
@@ -214,7 +220,10 @@ namespace BudgetApp_V2
 
         private void StartMenu_Load(object sender, EventArgs e)
         {
-
+            fromDateTimePicker.Visible = false;
+            toDateTimePicker.Visible = false;
+            toLabel.Visible = false;
+            fromLabel.Visible = false;
             dataGridView1.Visible = false;
             label1.Visible = false;
             amountCalculatedLabel.Visible = false;
@@ -283,18 +292,14 @@ namespace BudgetApp_V2
             //Remove the previous showing of this month's transactions (necessary because this method could be called after submitting a new transaction, which would then need to be added to the transactions list)
             dataGridView1.Rows.Clear();
 
-            LinkedList<String[]> monthsTransactions = new MySQLConnection().GetCurrentMonthsTransactions();
+            LinkedList<String[]> monthsTransactions = new MySQLConnection().GetTransactionsBetweenDates(fromDateTimePicker.Value, toDateTimePicker.Value);
 
-            if (monthsTransactions.Count == 0)  // No transactions for the current month.
-            {
-                dataGridView1.Visible = false;
-                label1.Visible = false;
-            }
-            else
-            {
-                dataGridView1.Visible = true;
-                label1.Visible = true;
-            }
+            fromDateTimePicker.Visible = true;
+            toDateTimePicker.Visible = true;
+            toLabel.Visible = true;
+            fromLabel.Visible = true;
+            dataGridView1.Visible = true;
+            label1.Visible = true;
 
             for (int i = 0; i < monthsTransactions.Count; i++)  //Even though there should be five transactions in the linked list, there might not be if the database has been swiped of data.
             {
@@ -302,7 +307,6 @@ namespace BudgetApp_V2
                 (dataGridView1.Rows[i].Cells[4] as DataGridViewComboBoxCell).Value = monthsTransactions.ElementAt(i)[4];
             }
 
-            Console.WriteLine("Height: " + dataGridView1.Height);
             // Show the first 10 transactions. If fewer, then resize the gridview so a bunch of empty space isn't shown at bottom.
             if (dataGridView1.RowCount >= 10)
             {
@@ -774,6 +778,24 @@ namespace BudgetApp_V2
             updateDbButton.Hide();
             cancelUpdateButton.Hide();
             deleteTransactionButton1.Hide();
+        }
+
+        private void fromDateTimePicker_ValueChanged(object sender, EventArgs e)
+        {
+            if (!initialLoad)
+            {
+                DisplayMonthTransactions();
+                unselectItems(); // selecting a new date and updating the table will trigger items to be selected and the udpate buttons to appear
+            }
+        }
+
+        private void toDateTimePicker_ValueChanged(object sender, EventArgs e)
+        {
+            if (!initialLoad)
+            {
+                DisplayMonthTransactions();
+                unselectItems(); // selecting a new date and updating the table will trigger items to be selected and the udpate buttons to appear
+            }
         }
     }
 }

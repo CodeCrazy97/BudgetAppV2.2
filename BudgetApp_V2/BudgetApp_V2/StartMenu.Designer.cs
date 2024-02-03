@@ -61,6 +61,10 @@
             this.updateDbButton = new System.Windows.Forms.Button();
             this.cancelUpdateButton = new System.Windows.Forms.Button();
             this.deleteTransactionButton1 = new System.Windows.Forms.Button();
+            this.fromDateTimePicker = new System.Windows.Forms.DateTimePicker();
+            this.toDateTimePicker = new System.Windows.Forms.DateTimePicker();
+            this.fromLabel = new System.Windows.Forms.Label();
+            this.toLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -236,7 +240,7 @@
             dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
             dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
             this.dataGridView1.DefaultCellStyle = dataGridViewCellStyle3;
-            this.dataGridView1.Location = new System.Drawing.Point(932, 122);
+            this.dataGridView1.Location = new System.Drawing.Point(947, 200);
             this.dataGridView1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.dataGridView1.Name = "dataGridView1";
             dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
@@ -288,11 +292,11 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(1072, 68);
+            this.label1.Location = new System.Drawing.Point(1177, 73);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(352, 29);
+            this.label1.Size = new System.Drawing.Size(252, 29);
             this.label1.TabIndex = 25;
-            this.label1.Text = "Current Month\'s Transactions";
+            this.label1.Text = "Recent Transactions";
             // 
             // checkBox
             // 
@@ -354,7 +358,7 @@
             // updateDbButton
             // 
             this.updateDbButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.updateDbButton.Location = new System.Drawing.Point(1643, 122);
+            this.updateDbButton.Location = new System.Drawing.Point(1658, 200);
             this.updateDbButton.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.updateDbButton.Name = "updateDbButton";
             this.updateDbButton.Size = new System.Drawing.Size(137, 58);
@@ -367,7 +371,7 @@
             // cancelUpdateButton
             // 
             this.cancelUpdateButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cancelUpdateButton.Location = new System.Drawing.Point(1643, 188);
+            this.cancelUpdateButton.Location = new System.Drawing.Point(1658, 266);
             this.cancelUpdateButton.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cancelUpdateButton.Name = "cancelUpdateButton";
             this.cancelUpdateButton.Size = new System.Drawing.Size(137, 65);
@@ -380,7 +384,7 @@
             // deleteTransactionButton1
             // 
             this.deleteTransactionButton1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.deleteTransactionButton1.Location = new System.Drawing.Point(1643, 261);
+            this.deleteTransactionButton1.Location = new System.Drawing.Point(1658, 339);
             this.deleteTransactionButton1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.deleteTransactionButton1.Name = "deleteTransactionButton1";
             this.deleteTransactionButton1.Size = new System.Drawing.Size(137, 58);
@@ -390,12 +394,56 @@
             this.deleteTransactionButton1.Visible = false;
             this.deleteTransactionButton1.Click += new System.EventHandler(this.deleteTransactionButton1_Click);
             // 
+            // fromDateTimePicker
+            // 
+            this.fromDateTimePicker.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.fromDateTimePicker.Location = new System.Drawing.Point(947, 161);
+            this.fromDateTimePicker.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.fromDateTimePicker.Name = "fromDateTimePicker";
+            this.fromDateTimePicker.Size = new System.Drawing.Size(355, 31);
+            this.fromDateTimePicker.TabIndex = 37;
+            this.fromDateTimePicker.ValueChanged += new System.EventHandler(this.fromDateTimePicker_ValueChanged);
+            // 
+            // toDateTimePicker
+            // 
+            this.toDateTimePicker.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.toDateTimePicker.Location = new System.Drawing.Point(1308, 161);
+            this.toDateTimePicker.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.toDateTimePicker.Name = "toDateTimePicker";
+            this.toDateTimePicker.Size = new System.Drawing.Size(355, 31);
+            this.toDateTimePicker.TabIndex = 38;
+            this.toDateTimePicker.ValueChanged += new System.EventHandler(this.toDateTimePicker_ValueChanged);
+            // 
+            // fromLabel
+            // 
+            this.fromLabel.AutoSize = true;
+            this.fromLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.fromLabel.Location = new System.Drawing.Point(942, 132);
+            this.fromLabel.Name = "fromLabel";
+            this.fromLabel.Size = new System.Drawing.Size(67, 25);
+            this.fromLabel.TabIndex = 39;
+            this.fromLabel.Text = "From:";
+            // 
+            // toLabel
+            // 
+            this.toLabel.AutoSize = true;
+            this.toLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.toLabel.Location = new System.Drawing.Point(1303, 132);
+            this.toLabel.Name = "toLabel";
+            this.toLabel.Size = new System.Drawing.Size(43, 25);
+            this.toLabel.TabIndex = 40;
+            this.toLabel.Text = "To:";
+            // 
             // StartMenu
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.ClientSize = new System.Drawing.Size(1829, 894);
+            this.Controls.Add(this.toLabel);
+            this.Controls.Add(this.fromLabel);
+            this.Controls.Add(this.toDateTimePicker);
+            this.Controls.Add(this.fromDateTimePicker);
             this.Controls.Add(this.deleteTransactionButton1);
             this.Controls.Add(this.cancelUpdateButton);
             this.Controls.Add(this.updateDbButton);
@@ -458,6 +506,10 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn description;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column2;
         private System.Windows.Forms.DataGridViewTextBoxColumn id;
+        private System.Windows.Forms.DateTimePicker fromDateTimePicker;
+        private System.Windows.Forms.DateTimePicker toDateTimePicker;
+        private System.Windows.Forms.Label fromLabel;
+        private System.Windows.Forms.Label toLabel;
     }
 }
 
