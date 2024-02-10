@@ -38,6 +38,7 @@
  * 06/03/2023 - Create backups of the db when project is started. Delete backups older than 1 year old.
  * 08/04/2023 - Fixed not starting mysqld correctly.
  * 02/02/2024 - Added two date pickers to start up page to allow user to specify dates for transaction table.
+ * 02/10/2024 - Migrating charity table onto expenses table (negative tithe will represent money out; positive is money in).
  */
 
 using System.Data;
@@ -456,8 +457,8 @@ namespace BudgetApp_V2
                         if (showCharityBalanceChanges)
                         {
                             double charityBalance = new MySQLConnection().GetTitheBalance();
-                            MessageBox.Show("Old charity balance: " + Math.Round(oldCharityBalance, 2) +
-                                "\nNew charity balance: " + Math.Round(charityBalance, 2), "Tithe Balance was Updated Successfully!");
+                            MessageBox.Show("Old tithe balance: " + Math.Round(oldCharityBalance, 2) +
+                                "\nNew tithe balance: " + Math.Round(charityBalance, 2), "Tithe Balance was Updated Successfully!");
                         }
 
                         //Set cursor to blinking in the description text box.

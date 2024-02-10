@@ -9,7 +9,7 @@ namespace BudgetApp_V2
 {
     public class MySQLConnection
     {
-        public string connection = "server=localhost;user=root;database=budget_copy_02092024;port=3306;password=;";
+        public string connection = "server=localhost;user=root;database=budget;port=3306;password=;";
 
 
         public string FixStringForMySQL(string str)
@@ -281,10 +281,7 @@ namespace BudgetApp_V2
         public bool CheckIfTransactionExists(MySqlConnection connection, String trans_date, String description, double amount, String expense_type)
         {
             string sql = "";
-            if (expense_type == "charity")
-            {
-                sql = "SELECT COUNT(*) AS `count` FROM charity WHERE trans_date = @trans_date AND description = @description AND amount = @amount; ";
-            } else if (expense_type == "other earnings")
+            if (expense_type == "other earnings")
             {
                 sql = "SELECT COUNT(*) AS `count` FROM other_earnings WHERE trans_date = @trans_date AND description = @description AND amount = @amount; ";
             } else
