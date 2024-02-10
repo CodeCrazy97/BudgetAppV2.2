@@ -76,32 +76,6 @@ namespace BudgetApp_V2
             return transactions;
         }
 
-
-        public void ModifyCharityBalance(string transDate, string description, double amount)
-        {
-            //Place the transaction in the database.
-            string connStr = new MySQLConnection().connection;
-
-            MySqlConnection connection = new MySqlConnection(connStr);    //create the new connection using the parameters of connStr
-
-            string sql = "";
-            //Build the INSERT string.
-            sql = "INSERT INTO charity (trans_date, description, amount) VALUES ('" + transDate + "', '" + description + "', " + amount + ");";
-
-            try
-            {
-                connection.Open();                            //open the connection
-                var cmd = new MySqlCommand(sql, connection);  //create an executable command
-                var reader = cmd.ExecuteNonQuery();             //execute the command
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-            }
-            connection.Close();
-        }
-
-
         public bool UpdateEntry(String trans_date, String description, double amount, int trans_id, String expense_type)
         {
             string connStr = new MySQLConnection().connection;
@@ -176,13 +150,13 @@ namespace BudgetApp_V2
         }
 
 
-        public double GetCharityBalance()
+        public double GetTitheBalance()
         {
             string connStr = new MySQLConnection().connection;
 
             MySqlConnection connection = new MySqlConnection(connStr);
 
-            string sql = "SELECT SUM(amount) FROM charity; ";
+            string sql = "SELECT SUM(amount) FROM expenses WHERE expense_type = 'tithe'; ";
 
             connection = new MySqlConnection(connStr);    //create the new connection using the parameters of connStr
             try
@@ -204,7 +178,7 @@ namespace BudgetApp_V2
             {
                 connection.Close();
             }
-            throw new Exception("Could not fetch amount from charity.");
+            throw new Exception("Could not fetch tithe amount.");
         }
 
         public LinkedList<string> GetCategories()
@@ -307,10 +281,7 @@ namespace BudgetApp_V2
         public bool CheckIfTransactionExists(MySqlConnection connection, String trans_date, String description, double amount, String expense_type)
         {
             string sql = "";
-            if (expense_type == "charity")
-            {
-                sql = "SELECT COUNT(*) AS `count` FROM charity WHERE trans_date = @trans_date AND description = @description AND amount = @amount; ";
-            } else if (expense_type == "other earnings")
+            if (expense_type == "other earnings")
             {
                 sql = "SELECT COUNT(*) AS `count` FROM other_earnings WHERE trans_date = @trans_date AND description = @description AND amount = @amount; ";
             } else
