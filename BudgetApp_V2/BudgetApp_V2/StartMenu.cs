@@ -55,8 +55,6 @@ namespace BudgetApp_V2
     public partial class StartMenu : Form
     {
         public string connStr = new MySQLConnection().connection;
-        public string spreadsheetId = "1yFiOAbTqMP3MkLQ6JCrsZfTtN5AL9tcXFDapSIe1it4";
-        public string apiKey = "AIzaSyAalz5U80thsiiGbHfTE7_ryjEKPU9rjCU";
         LinkedList<string> categories = new LinkedList<string>();   //Holds the categories of spending.
         public bool initialLoad = true; //Keeps track of if the user is changing the date picker values or if they're being changed by the initial loading of the app. Don't want to trigger the built-in datepicker value changed events if the latter is true.
 
@@ -231,7 +229,6 @@ namespace BudgetApp_V2
             WindowState = FormWindowState.Maximized;
             categories = new MySQLConnection().GetCategories();
 
-            categoryComboBox.Items.Add("Charity");
             //Fill combo box with the categories.
             for (int i = 0; i < categories.Count; i++)
             {
@@ -264,8 +261,7 @@ namespace BudgetApp_V2
             //Set the cursor to blinking in the text box.
             transactionDescriptionTextBox.Select();
 
-            // don't want to display charity balance when program starts (privacy concern)
-            if (categoryComboBox.Items.Count > 1 && categoryComboBox.SelectedItem.Equals("Charity"))
+            if (categoryComboBox.Items.Count > 1)
             {
                 categoryComboBox.SelectedIndex = 1;
             }
@@ -393,6 +389,7 @@ namespace BudgetApp_V2
 
                     // Calculate math expressions for the amount given. For example: users can enter 12.34+.87. The amount in this case would equal $13.21.
                     double amount = getAmount();
+                    bool createExpenseEntry = false;
                     if (amount != 0.0)
                     {
                         //Figure out which category this transaction fits in.
@@ -410,19 +407,20 @@ namespace BudgetApp_V2
                             // Check if user wants to apply 10% (rounded up) towards charity balance.   
                             if (checkBox.Checked)
                             {
-                                oldCharityBalance = new MySQLConnection().GetCharityBalance();
+                                oldCharityBalance = new MySQLConnection().GetTitheBalance();
                                 showCharityBalanceChanges = true;
 
                                 amount = Math.Ceiling(amount * 0.1);
-                                new MySQLConnection().ModifyCharityBalance(date, description + " (10+% applied to charity)", amount);
+                                description += " (10+% applied toward tithe)";
+                                createExpenseEntry = true;
                             }
 
                             executeSql(sql);
                         }
-                        else if (String.Equals(categoryComboBox.SelectedItem.ToString(), "Charity"))  // Type = Charity
+                        else if (String.Equals(categoryComboBox.SelectedItem.ToString(), "Tithe"))
                         {
-                            oldCharityBalance = new MySQLConnection().GetCharityBalance();
-                            if (!checkBox.Checked)  // This is a decrease to the charity balance.
+                            oldCharityBalance = new MySQLConnection().GetTitheBalance();
+                            if (!checkBox.Checked)  // This is a decrease to the tithe balance.
                             {
                                 amount = -amount;  //make negative
                             }
@@ -432,15 +430,24 @@ namespace BudgetApp_V2
                                 amount = Math.Ceiling(amount);
                             }
                             // Will need to decrease charity balance, since used some of the charity.
-                            new MySQLConnection().ModifyCharityBalance(date, description, amount); // turn amount into a negative (decrease in charity balance)
                             showCharityBalanceChanges = true;
+                            createExpenseEntry = true;
                         }
                         else  // Some other expense type
                         {
-                            sql = "INSERT INTO expenses (trans_date, description, amount, expense_type) VALUES ('" + date + "', '" + description + "', " + amount + ", '" + categoryComboBox.SelectedItem.ToString().ToLower() + "');";
-
-                            executeSql(sql);
+                            //sql = "INSERT INTO expenses (trans_date, description, amount, expense_type) VALUES ('" + date + "', '" + description + "', " + amount + ", '" + categoryComboBox.SelectedItem.ToString().ToLower() + "');";
+                            createExpenseEntry = true;
                         }
+
+                        if (createExpenseEntry)
+                        {
+                            Expense expense = new Expense(description, categoryComboBox.SelectedItem.ToString(), amount, transactionDateTimePicker.Value);
+                            if (!expense.save())
+                            {
+                                MessageBox.Show("There was an error saving the expense.");
+                            }
+                        }
+                        
 
                         //Reset items.
                         Clear();
@@ -448,9 +455,9 @@ namespace BudgetApp_V2
                         //Show previous charity balance and new charity balance.
                         if (showCharityBalanceChanges)
                         {
-                            double charityBalance = new MySQLConnection().GetCharityBalance();
+                            double charityBalance = new MySQLConnection().GetTitheBalance();
                             MessageBox.Show("Old charity balance: " + Math.Round(oldCharityBalance, 2) +
-                                "\nNew charity balance: " + Math.Round(charityBalance, 2), "Charity Balance was Updated Successfully!");
+                                "\nNew charity balance: " + Math.Round(charityBalance, 2), "Tithe Balance was Updated Successfully!");
                         }
 
                         //Set cursor to blinking in the description text box.
@@ -459,7 +466,7 @@ namespace BudgetApp_V2
                         //Add this item to the last five transactions.                    
                         DisplayMonthTransactions();
 
-                        if (categoryComboBox.SelectedItem.Equals("Charity") || categoryComboBox.SelectedItem.Equals("Other Earnings"))
+                        if (categoryComboBox.SelectedItem.Equals("Tithe") || categoryComboBox.SelectedItem.Equals("Other Earnings"))
                         {
                             displayCharityBalanceMessage();
                         }
@@ -513,8 +520,7 @@ namespace BudgetApp_V2
             checkBox.Checked = false;
             categoryComboBox.SelectedIndex = 0;
 
-            // don't want to display charity balance when program starts (privacy concern)
-            if (categoryComboBox.Items.Count > 1 && categoryComboBox.SelectedItem.Equals("Charity"))
+            if (categoryComboBox.Items.Count > 1)
             {
                 categoryComboBox.SelectedIndex = 1;
             }
@@ -556,8 +562,8 @@ namespace BudgetApp_V2
             try
             {
                 // Show the charity budget.
-                double charityBalance = new MySQLConnection().GetCharityBalance();
-                charityBalanceLabel.Text = "Current charity balance: $" + Math.Round(charityBalance, 2);
+                double charityBalance = new MySQLConnection().GetTitheBalance();
+                charityBalanceLabel.Text = "Current tithe balance: $" + Math.Round(charityBalance, 2);
             }
             catch (Exception e2)
             {
@@ -569,7 +575,7 @@ namespace BudgetApp_V2
         {
             try
             {
-                if (categoryComboBox.SelectedItem.ToString().Equals("Charity") && checkBox.Checked)
+                if (categoryComboBox.SelectedItem.ToString().Equals("Tithe") && checkBox.Checked)
                 {  // round up for charity contributions on earnings
                     amountCalculatedLabel.Text = "" + Math.Ceiling(getAmount());
                 }
@@ -582,7 +588,7 @@ namespace BudgetApp_V2
             {
                 Console.WriteLine("Exception: " + e2);
             }
-            if (categoryComboBox.SelectedItem.ToString().Equals("Other Earnings") || categoryComboBox.SelectedItem.ToString().Equals("Charity"))
+            if (categoryComboBox.SelectedItem.ToString().Equals("Other Earnings") || categoryComboBox.SelectedItem.ToString().Equals("Tithe"))
             {
                 checkBox.Visible = true;
                 checkBox.Checked = false;
@@ -593,11 +599,11 @@ namespace BudgetApp_V2
                 clearButton.SetBounds(clearButton.Location.X, 425, clearButton.Width, clearButton.Height);
                 if (categoryComboBox.SelectedItem.ToString().Equals("Other Earnings"))
                 {
-                    checkBox.Text = "Apply 10+% towards charity balance?";
+                    checkBox.Text = "Apply 10+% towards tithe balance?";
                 }
                 else
                 {
-                    checkBox.Text = "Select if this was a charity balance INCREASE";
+                    checkBox.Text = "Select if this was a tithe balance INCREASE";
                 }
             }
             else
@@ -653,7 +659,7 @@ namespace BudgetApp_V2
         {
             try
             {
-                if (categoryComboBox.SelectedItem.ToString().Equals("Charity") && checkBox.Checked)
+                if (categoryComboBox.SelectedItem.ToString().Equals("Tithe") && checkBox.Checked)
                 {  // round up for charity contributions on earnings
                     amountCalculatedLabel.Text = "" + Math.Ceiling(getAmount());
                 }
