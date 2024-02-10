@@ -16,15 +16,6 @@
 CREATE DATABASE IF NOT EXISTS `budget` /*!40100 DEFAULT CHARACTER SET latin1 */;
 USE `budget`;
 
--- Dumping structure for table budget.charity
-CREATE TABLE IF NOT EXISTS `charity` (
-  `trans_date` date DEFAULT NULL,
-  `description` text DEFAULT NULL,
-  `amount` double DEFAULT NULL,
-  `trans_id` int(11) NOT NULL AUTO_INCREMENT,
-  PRIMARY KEY (`trans_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=42 DEFAULT CHARSET=latin1;
-
 -- Data exporting was unselected.
 
 -- Dumping structure for table budget.expenses
@@ -76,7 +67,7 @@ CREATE TABLE IF NOT EXISTS `other_earnings` (
   `amount` double NOT NULL,
   `earning_id` int(11) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`earning_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=281 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=281 DEFAULT CHARSET=LATIN1 COMMENT='This is earnings other than W2 jobs.';
 
 -- Data exporting was unselected.
 
@@ -92,7 +83,7 @@ CREATE TABLE IF NOT EXISTS `taxation` (
   KEY `taxTypeName_fk` (`tax_type_name`),
   CONSTRAINT `job_fk` FOREIGN KEY (`job`) REFERENCES `jobs` (`name`),
   CONSTRAINT `taxTypeName_fk` FOREIGN KEY (`tax_type_name`) REFERENCES `tax_types` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=LATIN1 COMMENT='This is taxes paid on all paychecks for a year.';
 
 -- Data exporting was unselected.
 
@@ -106,7 +97,7 @@ CREATE TABLE IF NOT EXISTS `tax_liability` (
   PRIMARY KEY (`id`),
   KEY `taxType_fk3` (`tax_type`),
   CONSTRAINT `taxType_fk3` FOREIGN KEY (`tax_type`) REFERENCES `tax_types` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=LATIN1 COMMENT='This table holds taxes owed after doing taxes at the end of the year.';
 
 -- Data exporting was unselected.
 
@@ -120,7 +111,7 @@ CREATE TABLE IF NOT EXISTS `tax_return` (
   PRIMARY KEY (`id`),
   KEY `taxType_fk2` (`tax_type`),
   CONSTRAINT `taxType_fk2` FOREIGN KEY (`tax_type`) REFERENCES `tax_types` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=LATIN1 COMMENT='This is the tax money I get back after doing taxes.';
 
 -- Data exporting was unselected.
 
@@ -128,10 +119,30 @@ CREATE TABLE IF NOT EXISTS `tax_return` (
 CREATE TABLE IF NOT EXISTS `tax_types` (
   `name` varchar(20) NOT NULL,
   PRIMARY KEY (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=LATIN1 COMMENT='Tax types (e.g. federal, state, social security, etc.';
 
 -- Data exporting was unselected.
 
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
 /*!40014 SET FOREIGN_KEY_CHECKS=IF(@OLD_FOREIGN_KEY_CHECKS IS NULL, 1, @OLD_FOREIGN_KEY_CHECKS) */;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+
+
+INSERT INTO `expense_types` (`type_name`) VALUES ('clothing');
+INSERT INTO `expense_types` (`type_name`) VALUES ('fast food');
+INSERT INTO `expense_types` (`type_name`) VALUES ('gas');
+INSERT INTO `expense_types` (`type_name`) VALUES ('groceries');
+INSERT INTO `expense_types` (`type_name`) VALUES ('medical');
+INSERT INTO `expense_types` (`type_name`) VALUES ('other');
+INSERT INTO `expense_types` (`type_name`) VALUES ('phone');
+INSERT INTO `expense_types` (`type_name`) VALUES ('rent');
+INSERT INTO `expense_types` (`type_name`) VALUES ('tithe');
+INSERT INTO `expense_types` (`type_name`) VALUES ('vehicle');
+INSERT INTO `expense_types` (`type_name`) VALUES ('xmas_bday');
+
+INSERT INTO `tax_types` (`name`) VALUES ('Federal');
+INSERT INTO `tax_types` (`name`) VALUES ('Local');
+INSERT INTO `tax_types` (`name`) VALUES ('Medicare');
+INSERT INTO `tax_types` (`name`) VALUES ('Social Security');
+INSERT INTO `tax_types` (`name`) VALUES ('State');
+
