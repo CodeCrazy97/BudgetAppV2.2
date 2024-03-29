@@ -43,7 +43,7 @@
             this.monthCalendar2 = new System.Windows.Forms.MonthCalendar();
             this.warningLabel = new System.Windows.Forms.Label();
             this.totalSpentLabel = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
+            this.expendituresLabel = new System.Windows.Forms.Label();
             this.date1Label = new System.Windows.Forms.Label();
             this.date2Label = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -183,15 +183,15 @@
             this.totalSpentLabel.Size = new System.Drawing.Size(0, 29);
             this.totalSpentLabel.TabIndex = 23;
             // 
-            // label6
+            // expendituresLabel
             // 
-            this.label6.AutoSize = true;
-            this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.Location = new System.Drawing.Point(870, 695);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(160, 29);
-            this.label6.TabIndex = 22;
-            this.label6.Text = "Expenditures:";
+            this.expendituresLabel.AutoSize = true;
+            this.expendituresLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.expendituresLabel.Location = new System.Drawing.Point(870, 695);
+            this.expendituresLabel.Name = "expendituresLabel";
+            this.expendituresLabel.Size = new System.Drawing.Size(160, 29);
+            this.expendituresLabel.TabIndex = 22;
+            this.expendituresLabel.Text = "Expenditures:";
             // 
             // date1Label
             // 
@@ -222,7 +222,7 @@
             this.Controls.Add(this.date2Label);
             this.Controls.Add(this.date1Label);
             this.Controls.Add(this.totalSpentLabel);
-            this.Controls.Add(this.label6);
+            this.Controls.Add(this.expendituresLabel);
             this.Controls.Add(this.warningLabel);
             this.Controls.Add(this.monthCalendar2);
             this.Controls.Add(this.monthCalendar1);
@@ -255,7 +255,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Column2;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column3;
         private System.Windows.Forms.Label totalSpentLabel;
-        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label expendituresLabel;
         private System.Windows.Forms.Label date1Label;
         private System.Windows.Forms.Label date2Label;
     }
