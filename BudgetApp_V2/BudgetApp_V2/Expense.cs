@@ -24,7 +24,6 @@ namespace BudgetApp_V2
 
         public bool save()
         {
-            openConnection();
             try
             {
                 openConnection();
