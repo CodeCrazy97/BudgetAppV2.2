@@ -39,6 +39,7 @@
  * 08/04/2023 - Fixed not starting mysqld correctly.
  * 02/02/2024 - Added two date pickers to start up page to allow user to specify dates for transaction table.
  * 02/10/2024 - Migrating charity table onto expenses table (negative tithe will represent money out; positive is money in).
+ * 05/18/2024 - Fixed issue saving other earnings, adding tithe.
  */
 
 using System.Data;
@@ -442,7 +443,7 @@ namespace BudgetApp_V2
 
                         if (createExpenseEntry)
                         {
-                            Expense expense = new Expense(description, categoryComboBox.SelectedItem.ToString(), amount, transactionDateTimePicker.Value);
+                            Expense expense = new Expense(description, "tithe", amount, transactionDateTimePicker.Value);
                             if (!expense.save())
                             {
                                 MessageBox.Show("There was an error saving the expense.");
