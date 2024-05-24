@@ -402,6 +402,7 @@ namespace BudgetApp_V2
                         string sql = "";
                         double oldCharityBalance = 0.0;
                         bool showCharityBalanceChanges = false;
+                        string expenseType = "";
                         if (String.Equals(categoryComboBox.SelectedItem.ToString(), "Other Earnings"))  // Type = Other Earnings
                         {
                             sql = "INSERT INTO other_earnings (earning_date, description, amount) VALUES ('" + date + "', '" + description + "', " + amount + ");";
@@ -415,6 +416,7 @@ namespace BudgetApp_V2
                                 amount = Math.Ceiling(amount * 0.1);
                                 description += " (10+% applied toward tithe)";
                                 createExpenseEntry = true;
+                                expenseType = "tithe";
                             }
 
                             executeSql(sql);
@@ -434,16 +436,17 @@ namespace BudgetApp_V2
                             // Will need to decrease charity balance, since used some of the charity.
                             showCharityBalanceChanges = true;
                             createExpenseEntry = true;
+                            expenseType = "tithe";
                         }
                         else  // Some other expense type
                         {
-                            //sql = "INSERT INTO expenses (trans_date, description, amount, expense_type) VALUES ('" + date + "', '" + description + "', " + amount + ", '" + categoryComboBox.SelectedItem.ToString().ToLower() + "');";
+                            expenseType = categoryComboBox.SelectedItem.ToString().ToLower();
                             createExpenseEntry = true;
                         }
 
                         if (createExpenseEntry)
                         {
-                            Expense expense = new Expense(description, "tithe", amount, transactionDateTimePicker.Value);
+                            Expense expense = new Expense(description, expenseType, amount, transactionDateTimePicker.Value);
                             if (!expense.save())
                             {
                                 MessageBox.Show("There was an error saving the expense.");
