@@ -57,7 +57,7 @@
             this.charityBalanceLabel = new System.Windows.Forms.Label();
             this.amountCalculatedLabel = new System.Windows.Forms.Label();
             this.wagesAndTaxesButton = new System.Windows.Forms.Button();
-            this.editTransactionButton1 = new System.Windows.Forms.Button();
+            this.openDBButton1 = new System.Windows.Forms.Button();
             this.updateDbButton = new System.Windows.Forms.Button();
             this.cancelUpdateButton = new System.Windows.Forms.Button();
             this.deleteTransactionButton1 = new System.Windows.Forms.Button();
@@ -343,17 +343,17 @@
             this.wagesAndTaxesButton.UseVisualStyleBackColor = true;
             this.wagesAndTaxesButton.Click += new System.EventHandler(this.wagesAndTaxesButton_Click);
             // 
-            // editTransactionButton1
+            // openDBButton1
             // 
-            this.editTransactionButton1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.editTransactionButton1.Location = new System.Drawing.Point(469, 162);
-            this.editTransactionButton1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.editTransactionButton1.Name = "editTransactionButton1";
-            this.editTransactionButton1.Size = new System.Drawing.Size(223, 58);
-            this.editTransactionButton1.TabIndex = 33;
-            this.editTransactionButton1.Text = "Open DB";
-            this.editTransactionButton1.UseVisualStyleBackColor = true;
-            this.editTransactionButton1.Click += new System.EventHandler(this.editTransactionButton1_Click);
+            this.openDBButton1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.openDBButton1.Location = new System.Drawing.Point(469, 162);
+            this.openDBButton1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.openDBButton1.Name = "openDBButton1";
+            this.openDBButton1.Size = new System.Drawing.Size(223, 58);
+            this.openDBButton1.TabIndex = 33;
+            this.openDBButton1.Text = "Open DB";
+            this.openDBButton1.UseVisualStyleBackColor = true;
+            this.openDBButton1.Click += new System.EventHandler(this.openDBButton1_Click);
             // 
             // updateDbButton
             // 
@@ -447,7 +447,7 @@
             this.Controls.Add(this.deleteTransactionButton1);
             this.Controls.Add(this.cancelUpdateButton);
             this.Controls.Add(this.updateDbButton);
-            this.Controls.Add(this.editTransactionButton1);
+            this.Controls.Add(this.openDBButton1);
             this.Controls.Add(this.wagesAndTaxesButton);
             this.Controls.Add(this.amountCalculatedLabel);
             this.Controls.Add(this.charityBalanceLabel);
@@ -498,7 +498,7 @@
         private System.Windows.Forms.Label charityBalanceLabel;
         private System.Windows.Forms.Label amountCalculatedLabel;
         private System.Windows.Forms.Button wagesAndTaxesButton;
-        private System.Windows.Forms.Button editTransactionButton1;
+        private System.Windows.Forms.Button openDBButton1;
         private System.Windows.Forms.Button updateDbButton;
         private System.Windows.Forms.Button cancelUpdateButton;
         private System.Windows.Forms.Button deleteTransactionButton1;

@@ -679,7 +679,7 @@ namespace BudgetApp_V2
             }
         }
 
-        private void editTransactionButton1_Click(object sender, EventArgs e)
+        private void openDBButton1_Click(object sender, EventArgs e)
         {
             try  //Try to start heidisql
             {
