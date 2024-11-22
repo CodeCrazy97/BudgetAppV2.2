@@ -60,7 +60,6 @@
       <DependentUpon>EarningsOverview.cs</DependentUpon>
     </Compile>
     <Compile Include="Expense.cs" />
-    <Compile Include="MySQLConnection.cs" />
     <Compile Include="ReportForm.cs">
       <SubType>Form</SubType>
     </Compile>

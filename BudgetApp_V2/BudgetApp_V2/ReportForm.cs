@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Runtime.InteropServices.ComTypes;
 using System.Windows.Forms;
-using MySql.Data.MySqlClient;
 
 namespace BudgetApp_V2
 {
@@ -50,8 +48,7 @@ namespace BudgetApp_V2
             DateTime dt2 = Convert.ToDateTime(monthCalendar2.SelectionRange.Start.ToString());
 
             // Use the "yyyy-MM-dd" format to ensure zero-padding for month and day
-            string date1 = dt1.ToString("yyyy-MM-dd");
-            string date2 = dt2.ToString("yyyy-MM-dd");
+            string date1 = dt1.ToString("yyyy-MM-dd");string date2 = dt2.ToString("yyyy-MM-dd");
 
             // Display the date as text.
             date1Label.Text = dt1.Month + "/" + dt1.Day + "/" + dt1.Year;

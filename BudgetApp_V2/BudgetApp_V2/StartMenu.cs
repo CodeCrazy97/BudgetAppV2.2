@@ -44,12 +44,10 @@
  */
 
 using System.Data;
-using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading;
 using System.Windows.Forms;
 using System.IO;
 using SQLitePCL;
@@ -59,37 +57,12 @@ namespace BudgetApp_V2
 {
     public partial class StartMenu : Form
     {
-        public string connStr = new MySQLConnection().connection;
         LinkedList<string> categories = new LinkedList<string>();   //Holds the categories of spending.
         public bool initialLoad = true; //Keeps track of if the user is changing the date picker values or if they're being changed by the initial loading of the app. Don't want to trigger the built-in datepicker value changed events if the latter is true.
 
         public StartMenu()
         {
         
-            //Start mysqld
-            if (!isMysqldRunning())
-            {
-                try  //Try to start mysqld.exe
-                {
-                    var mysqld = Process.Start(getBaseDirectory() + "\\mysql_start2.bat");
-                    Thread.Sleep(2000);  //Give mysqld.exe time to start.
-                }
-                catch (System.ComponentModel.Win32Exception ex3)  //Unable to start the process (could be that the executable is located in a different folder path).
-                {
-                    Console.WriteLine("Error message: " + ex3);
-                    MessageBox.Show("Unable to start the process mysqld.exe.");
-                    Application.Exit();
-                }
-
-                // if mysql still isn't running then try removing the aria log file and start it again
-                if (!isMysqldRunning())
-                {
-                    var deleteAriaLogFile = Process.Start(getBaseDirectory() + "\\remove_aria_log_file.bat");
-                    var mysqld = Process.Start(getBaseDirectory() + "\\mysql_start2.bat");
-                    Thread.Sleep(2000);  //Give mysqld.exe time to start.
-                }
-            }
-
             InitializeComponent();
             backupDB();
 
@@ -102,6 +75,7 @@ namespace BudgetApp_V2
             //testDB();
         }
 
+        // Used just for debugging.
         public void testDB()
         {
             // Initialize SQLitePCL
@@ -186,48 +160,23 @@ namespace BudgetApp_V2
                 Directory.CreateDirectory(backupsDirectory);
             }
 
-            DateTime currentDateTime = DateTime.Now;
-            string currentDateTimeString = currentDateTime.ToString("yyyyMMddHHmm");
+            string fileToCopy = getBaseDirectory() + "\\budget.db";
+            string destinationDirectory = getBaseDirectory() + "\\backups\\";
 
-            string server = "localhost";
-            string database = "budget";
-            string user = "root";
-            string password = "";
+            // Get the current timestamp
+            string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
 
-            // place the backup in the backups folder, located at the project root
-            string backupFile = @"" + backupsDirectory + currentDateTimeString + "backup.sql";
+            // Get the original file name
+            string originalFileName = Path.GetFileName(fileToCopy);
 
-            // see if a backup has been made for the past week
+            // Create a new file name with the timestamp
+            string newFileName = timestamp + "_" + originalFileName;
 
-            string command = $"mysqldump --user={user} --password={password} --host={server} {database} > \"{backupFile}\"";
+            // Form the destination path
+            string destinationPath = Path.Combine(destinationDirectory, newFileName);
 
-            try
-            {
-                ProcessStartInfo psi = new ProcessStartInfo("cmd.exe")
-                {
-                    RedirectStandardInput = true,
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                    UseShellExecute = false,
-                    CreateNoWindow = true
-                };
-
-                Process process = new Process
-                {
-                    StartInfo = psi
-                };
-
-                process.Start();
-                process.StandardInput.WriteLine(command);
-                process.StandardInput.Close();
-                process.WaitForExit();
-
-                Console.WriteLine("Database backup complete.");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"An error occurred: {ex.Message}");
-            }
+            // Copy the file
+            File.Copy(fileToCopy, destinationPath);
         }
 
         /*
@@ -579,21 +528,6 @@ namespace BudgetApp_V2
             categories = new SQLite().GetCategories();  // Reset the categories. This gets reset to zero after viewing the report form.
             transactionDescriptionTextBox.Select();  // Set cursor to blinking in the description text box.
             this.Hide();
-        }
-
-
-        public bool isMysqldRunning()
-        {
-            //Loop over all running processes.
-            foreach (Process clsProcess in Process.GetProcesses())
-            {
-                if (clsProcess.ToString().Equals("System.Diagnostics.Process (mysqld)"))
-                {
-                    return true;
-                }
-            }
-            //Mysqld.exe is not running; return a false
-            return false;
         }
 
         // Show what the charity balance is.
