@@ -1,1 +1,4 @@
 backups/
+budget.db
+test.db
+migration_to_sqlite.sql

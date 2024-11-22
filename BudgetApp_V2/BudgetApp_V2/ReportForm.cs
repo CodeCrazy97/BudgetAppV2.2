@@ -38,7 +38,7 @@ namespace BudgetApp_V2
         private void DisplayTransactionsSummary()
         {
             categories.Clear();
-            categories = new MySQLConnection().GetBudgetReportCategories();
+            categories = new SQLite().GetCategories();
             totals.Clear();
             dataGridView1.Rows.Clear();
 

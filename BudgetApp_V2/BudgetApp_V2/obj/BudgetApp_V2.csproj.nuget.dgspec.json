@@ -1,0 +1,72 @@
+{
+  "format": 1,
+  "restore": {
+    "C:\\Users\\Ethan\\Documents\\Projects\\C#\\BudgetApp\\BudgetApp_V2\\BudgetApp_V2\\BudgetApp_V2.csproj": {}
+  },
+  "projects": {
+    "C:\\Users\\Ethan\\Documents\\Projects\\C#\\BudgetApp\\BudgetApp_V2\\BudgetApp_V2\\BudgetApp_V2.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\Ethan\\Documents\\Projects\\C#\\BudgetApp\\BudgetApp_V2\\BudgetApp_V2\\BudgetApp_V2.csproj",
+        "projectName": "BudgetApp_V2",
+        "projectPath": "C:\\Users\\Ethan\\Documents\\Projects\\C#\\BudgetApp\\BudgetApp_V2\\BudgetApp_V2\\BudgetApp_V2.csproj",
+        "packagesPath": "C:\\Users\\Ethan\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Ethan\\Documents\\Projects\\C#\\BudgetApp\\BudgetApp_V2\\BudgetApp_V2\\obj\\",
+        "projectStyle": "PackageReference",
+        "skipContentFileWrite": true,
+        "configFilePaths": [
+          "C:\\Users\\Ethan\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net48"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net48": {
+            "projectReferences": {}
+          }
+        }
+      },
+      "frameworks": {
+        "net48": {
+          "dependencies": {
+            "Google.Apis.Sheets.v4": {
+              "target": "Package",
+              "version": "[1.61.0.3113, )"
+            },
+            "Microsoft.Data.Sqlite.Core": {
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
+            "MySql.Data": {
+              "target": "Package",
+              "version": "[8.0.33, )"
+            },
+            "SQLitePCLRaw.bundle_e_sqlite3": {
+              "target": "Package",
+              "version": "[2.1.10, )"
+            }
+          }
+        }
+      },
+      "runtimes": {
+        "win": {
+          "#import": []
+        },
+        "win-arm64": {
+          "#import": []
+        },
+        "win-x64": {
+          "#import": []
+        },
+        "win-x86": {
+          "#import": []
+        }
+      }
+    }
+  }
+}
