@@ -1,148 +1,129 @@
 -- --------------------------------------------------------
--- Host:                         localhost
--- Server version:               10.3.16-MariaDB - mariadb.org binary distribution
--- Server OS:                    Win64
--- HeidiSQL Version:             10.2.0.5599
+-- Host:                         C:\Users\Ethan\Documents\Projects\C#\BudgetApp\budget.db
+-- Server version:               3.39.4
+-- Server OS:                    
+-- HeidiSQL Version:             12.3.0.6589
 -- --------------------------------------------------------
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET NAMES utf8 */;
-/*!50503 SET NAMES utf8mb4 */;
+/*!40101 SET NAMES  */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 
 -- Dumping database structure for budget
-CREATE DATABASE IF NOT EXISTS `budget` /*!40100 DEFAULT CHARACTER SET latin1 */;
-USE `budget`;
-
--- Data exporting was unselected.
+DROP DATABASE IF EXISTS "budget";
+CREATE DATABASE IF NOT EXISTS "budget";
+;
 
 -- Dumping structure for table budget.expenses
+DROP TABLE IF EXISTS "expenses";
 CREATE TABLE IF NOT EXISTS `expenses` (
   `trans_date` date NOT NULL,
   `description` text NOT NULL,
   `amount` double NOT NULL,
-  `trans_id` int(11) NOT NULL AUTO_INCREMENT,
-  `expense_type` varchar(25) DEFAULT NULL,
-  PRIMARY KEY (`trans_id`),
-  KEY `expensetype_fk` (`expense_type`),
-  CONSTRAINT `expensetype_fk` FOREIGN KEY (`expense_type`) REFERENCES `expense_types` (`type_name`)
-) ENGINE=InnoDB AUTO_INCREMENT=1060 DEFAULT CHARSET=latin1;
+  `trans_id` INTEGER PRIMARY KEY AUTOINCREMENT,
+  `expense_type` TEXT NOT NULL,
+  CONSTRAINT `expenses_ibfk_1` FOREIGN KEY (`expense_type`) REFERENCES `expense_types` (`type_name`)
+);
 
 -- Data exporting was unselected.
 
 -- Dumping structure for table budget.expense_types
+DROP TABLE IF EXISTS "expense_types";
 CREATE TABLE IF NOT EXISTS `expense_types` (
-  `type_name` varchar(25) NOT NULL,
-  PRIMARY KEY (`type_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+    `type_name` TEXT PRIMARY KEY
+);
 
 -- Data exporting was unselected.
 
 -- Dumping structure for table budget.gross_wages
+DROP TABLE IF EXISTS "gross_wages";
 CREATE TABLE IF NOT EXISTS `gross_wages` (
-  `wage_year` int(4) NOT NULL,
-  `job` varchar(30) NOT NULL,
-  `amount` double NOT NULL,
-  PRIMARY KEY (`wage_year`,`job`),
-  KEY `job_fk2` (`job`),
-  CONSTRAINT `job_fk2` FOREIGN KEY (`job`) REFERENCES `jobs` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='This holds the gross amount earned at a particular job for a particular year.';
+  `wage_year` int(11) NOT NULL,
+  `amount` double NOT NULL DEFAULT 0,
+  `job_name` varchar(50) NOT NULL DEFAULT 'PhishingBox',
+  `description` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`wage_year`,`job_name`),
+  CONSTRAINT `gross_wages_fk` FOREIGN KEY (`job_name`) REFERENCES `jobs` (`name`) ON DELETE NO ACTION ON UPDATE NO ACTION
+);
 
 -- Data exporting was unselected.
 
 -- Dumping structure for table budget.jobs
+DROP TABLE IF EXISTS "jobs";
 CREATE TABLE IF NOT EXISTS `jobs` (
   `name` varchar(20) NOT NULL,
   PRIMARY KEY (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+);
 
 -- Data exporting was unselected.
 
 -- Dumping structure for table budget.other_earnings
+DROP TABLE IF EXISTS "other_earnings";
 CREATE TABLE IF NOT EXISTS `other_earnings` (
   `earning_date` date NOT NULL,
   `description` text NOT NULL,
   `amount` double NOT NULL,
-  `earning_id` int(11) NOT NULL AUTO_INCREMENT,
-  PRIMARY KEY (`earning_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=281 DEFAULT CHARSET=LATIN1 COMMENT='This is earnings other than W2 jobs.';
+  `earning_id` INTEGER PRIMARY KEY AUTOINCREMENT
+);
 
 -- Data exporting was unselected.
 
 -- Dumping structure for table budget.taxation
+DROP TABLE IF EXISTS "taxation";
 CREATE TABLE IF NOT EXISTS `taxation` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` INTEGER PRIMARY KEY AUTOINCREMENT,
   `job` varchar(30) NOT NULL,
   `transaction_year` int(4) NOT NULL,
   `tax_type_name` varchar(20) NOT NULL,
   `amount` double NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `job_fk` (`job`),
-  KEY `taxTypeName_fk` (`tax_type_name`),
-  CONSTRAINT `job_fk` FOREIGN KEY (`job`) REFERENCES `jobs` (`name`),
-  CONSTRAINT `taxTypeName_fk` FOREIGN KEY (`tax_type_name`) REFERENCES `tax_types` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=LATIN1 COMMENT='This is taxes paid on all paychecks for a year.';
+  CONSTRAINT `taxation_ibfk_1` FOREIGN KEY (`job`) REFERENCES `jobs` (`name`),
+  CONSTRAINT `taxation_ibfk_2` FOREIGN KEY (`tax_type_name`) REFERENCES `tax_types` (`name`)
+);
 
 -- Data exporting was unselected.
 
 -- Dumping structure for table budget.tax_liability
+DROP TABLE IF EXISTS "tax_liability";
 CREATE TABLE IF NOT EXISTS `tax_liability` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `tax_year` int(4) NOT NULL,
+  `tax_year` int(11) NOT NULL,
   `amount` double NOT NULL,
-  `description` varchar(1000) DEFAULT NULL,
-  `tax_type` varchar(20) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `taxType_fk3` (`tax_type`),
-  CONSTRAINT `taxType_fk3` FOREIGN KEY (`tax_type`) REFERENCES `tax_types` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=LATIN1 COMMENT='This table holds taxes owed after doing taxes at the end of the year.';
+  `description` varchar(50) DEFAULT NULL,
+  `tax_type` varchar(50) NOT NULL DEFAULT 'Federal',
+  PRIMARY KEY (`tax_year`,`tax_type`),
+  CONSTRAINT `tax_liability_fk` FOREIGN KEY (`tax_type`) REFERENCES `tax_types` (`name`) ON DELETE NO ACTION ON UPDATE NO ACTION
+);
 
 -- Data exporting was unselected.
 
 -- Dumping structure for table budget.tax_return
+DROP TABLE IF EXISTS "tax_return";
 CREATE TABLE IF NOT EXISTS `tax_return` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `tax_year` int(4) NOT NULL,
-  `amount` double NOT NULL,
-  `description` varchar(1000) DEFAULT NULL,
-  `tax_type` varchar(20) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `taxType_fk2` (`tax_type`),
-  CONSTRAINT `taxType_fk2` FOREIGN KEY (`tax_type`) REFERENCES `tax_types` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=LATIN1 COMMENT='This is the tax money I get back after doing taxes.';
+  `tax_year` int(11) NOT NULL,
+  `amount` double NOT NULL DEFAULT 0,
+  `tax_type` varchar(50) NOT NULL DEFAULT 'Federal',
+  `description` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`tax_year`,`tax_type`),
+  CONSTRAINT `tax_types_fk` FOREIGN KEY (`tax_type`) REFERENCES `tax_types` (`name`) ON DELETE NO ACTION ON UPDATE NO ACTION
+);
 
 -- Data exporting was unselected.
 
 -- Dumping structure for table budget.tax_types
+DROP TABLE IF EXISTS "tax_types";
 CREATE TABLE IF NOT EXISTS `tax_types` (
   `name` varchar(20) NOT NULL,
   PRIMARY KEY (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=LATIN1 COMMENT='Tax types (e.g. federal, state, social security, etc.';
+);
 
 -- Data exporting was unselected.
 
+/*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
-/*!40014 SET FOREIGN_KEY_CHECKS=IF(@OLD_FOREIGN_KEY_CHECKS IS NULL, 1, @OLD_FOREIGN_KEY_CHECKS) */;
+/*!40014 SET FOREIGN_KEY_CHECKS=IFNULL(@OLD_FOREIGN_KEY_CHECKS, 1) */;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-
-
-INSERT INTO `expense_types` (`type_name`) VALUES ('clothing');
-INSERT INTO `expense_types` (`type_name`) VALUES ('fast food');
-INSERT INTO `expense_types` (`type_name`) VALUES ('gas');
-INSERT INTO `expense_types` (`type_name`) VALUES ('groceries');
-INSERT INTO `expense_types` (`type_name`) VALUES ('medical');
-INSERT INTO `expense_types` (`type_name`) VALUES ('other');
-INSERT INTO `expense_types` (`type_name`) VALUES ('phone');
-INSERT INTO `expense_types` (`type_name`) VALUES ('rent');
-INSERT INTO `expense_types` (`type_name`) VALUES ('tithe');
-INSERT INTO `expense_types` (`type_name`) VALUES ('vehicle');
-INSERT INTO `expense_types` (`type_name`) VALUES ('xmas_bday');
-
-INSERT INTO `tax_types` (`name`) VALUES ('Federal');
-INSERT INTO `tax_types` (`name`) VALUES ('Local');
-INSERT INTO `tax_types` (`name`) VALUES ('Medicare');
-INSERT INTO `tax_types` (`name`) VALUES ('Social Security');
-INSERT INTO `tax_types` (`name`) VALUES ('State');
-
+/*!40111 SET SQL_NOTES=IFNULL(@OLD_SQL_NOTES, 1) */;

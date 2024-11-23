@@ -181,36 +181,6 @@ namespace BudgetApp_V2
             return categories;
         }
 
-        public bool DeleteTransaction(int trans_id)
-        {
-            int count;
-
-            using (var selectCommand = this.connection_object.CreateCommand())
-            {
-                selectCommand.CommandText = @"DELETE FROM expenses WHERE trans_id = @trans_id; ";
-                selectCommand.Parameters.AddWithValue("@trans_id", trans_id);
-
-                try
-                {
-                    count = selectCommand.ExecuteNonQuery();
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("Exception trying to delete transaction " + trans_id + " : " + ex.ToString());
-                    return false;
-                }
-
-                if (count > 0)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-        }
-
         public bool AddToOtherEarnings(String date, String description, double amount)
         {
             int count;

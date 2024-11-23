@@ -49,7 +49,7 @@ SELECT tax_year, SUM(amount) AS 'amount'
 FROM tax_return
 GROUP BY tax_year) tr ON tr.tax_year = gw.wage_year
 LEFT JOIN (
-SELECT YEAR(earning_date) AS 'year', SUM(amount) AS 'amount'
+SELECT strftime('%Y', earning_date) AS 'year', SUM(amount) AS 'amount'
 FROM other_earnings
-GROUP BY YEAR(earning_date)) oe ON oe.year = gw.wage_year
+GROUP BY strftime('%Y', earning_date)) oe ON oe.year = gw.wage_year
 GROUP BY gw.wage_year;

@@ -677,7 +677,8 @@ namespace BudgetApp_V2
                 DataGridViewRow selectedRow = dataGridView1.Rows[selectedrowindex];
                 int trans_id = Int16.Parse(Convert.ToString(selectedRow.Cells["id"].Value));
                 string description = Convert.ToString(selectedRow.Cells["description"].Value);
-                bool successful = this.sqlite.DeleteTransaction(trans_id);
+                Expense expense = new Expense(trans_id);
+                bool successful = expense.delete();
 
                 DisplayMonthTransactions();
 
