@@ -1,1 +1,5 @@
 backups/
+BudgetApp_V2/.vs/
+budget.db
+migration_to_sqlite.sql
+test.db
