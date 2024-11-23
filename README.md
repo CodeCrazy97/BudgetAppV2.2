@@ -1,5 +1,5 @@
 # BudgetAppV2.2
-This helps me keep track of taxes, jobs, earnings, expenditures, and investments.
+This helps me keep track of taxes, earnings, and expenditures.
 Budget App, Version 2.2
 Ethan Vaughan
 
@@ -12,6 +12,4 @@ I can view a year-to-date report on my expenditures by clicking on “Budget Rep
 
 The database itself contains extra tables for taxation, tax returns/liabilities, and gross wages for each job I’ve worked. This is not reflected in the GUI because at the end of the year I will go to the database and manually enter this information. 
 
-To install this program, you need to be using a Windows computer, have Visual Studio, and MySQL. Run the createDatabase SQL script. You likely will need to change following line of text in StartMenu.cs: 
-var deleteAriaLogFile = Process.Start("C:\\Users\\Ethan_2\\Documents\\Projects\\Batch\\remove_aria_log_file.bat");
-Change it to the location of the remove_aria_log_file.bat. This batch script is used to delete a file that, on my computer at least, prevents the program from starting mysqld.exe (mysqld.exe starts MySQL so that I can use the program to query the database).
+To install this program, you need to be using a Windows computer and have Visual Studio. Run the createDatabase SQL script in SQLite.

@@ -34,21 +34,17 @@
       "frameworks": {
         "net48": {
           "dependencies": {
-            "Google.Apis.Sheets.v4": {
-              "target": "Package",
-              "version": "[1.61.0.3113, )"
-            },
             "Microsoft.Data.Sqlite.Core": {
               "target": "Package",
               "version": "[9.0.0, )"
             },
-            "MySql.Data": {
-              "target": "Package",
-              "version": "[8.0.33, )"
-            },
             "SQLitePCLRaw.bundle_e_sqlite3": {
               "target": "Package",
               "version": "[2.1.10, )"
+            },
+            "System.Memory": {
+              "target": "Package",
+              "version": "[4.6.0, )"
             }
           }
         }

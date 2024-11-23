@@ -1,11 +1,9 @@
-﻿using MySql.Data.MySqlClient;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using SQLitePCL;
 using Microsoft.Data.Sqlite;
 using System.IO;
-using System.Runtime.InteropServices.ComTypes;
 
 namespace BudgetApp_V2
 {
