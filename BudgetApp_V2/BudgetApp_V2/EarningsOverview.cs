@@ -97,6 +97,7 @@ namespace BudgetApp_V2
                 using (var reader = selectCommand.ExecuteReader())
                 {
                     dt.Load(reader);
+                    reader.Close();
                 }
             }
             return dt;

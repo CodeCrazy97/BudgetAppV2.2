@@ -59,10 +59,12 @@ namespace BudgetApp_V2
     {
         LinkedList<string> categories = new LinkedList<string>();   //Holds the categories of spending.
         public bool initialLoad = true; //Keeps track of if the user is changing the date picker values or if they're being changed by the initial loading of the app. Don't want to trigger the built-in datepicker value changed events if the latter is true.
+        private SQLite sqlite = null;
 
         public StartMenu()
         {
-        
+            sqlite = new SQLite();
+
             InitializeComponent();
             backupDB();
 
@@ -71,63 +73,6 @@ namespace BudgetApp_V2
             DateTime oneMonthAgo = currentDate.AddMonths(-1);
             fromDateTimePicker.Value = new DateTime(oneMonthAgo.Year, oneMonthAgo.Month, oneMonthAgo.Day, 0, 0, 0);
             initialLoad = false;
-
-            //testDB();
-        }
-
-        // Used just for debugging.
-        public void testDB()
-        {
-            // Initialize SQLitePCL
-            // Define the connection string
-            Batteries.Init();
-            string connectionString = "Data Source=" + getBaseDirectory() + "\\test.db";
-            // Open the SQLite connection
-            using (var connection = new SqliteConnection(connectionString))
-            {
-                connection.Open();
-                // Create the table if it doesn't already exist
-                using (var createCommand = connection.CreateCommand())
-                {
-                    createCommand.CommandText = @"
-                    CREATE TABLE IF NOT EXISTS user (
-                        id INTEGER PRIMARY KEY AUTOINCREMENT,
-                        name NVARCHAR(100)
-                    )";
-                    createCommand.ExecuteNonQuery();
-                }
-                // Insert data into the table for testing (optional)
-                using (var insertCommand = connection.CreateCommand())
-                {
-                    // Define the SQL command with a parameter placeholder
-                    insertCommand.CommandText = @"
-                    INSERT INTO user (name)
-                    VALUES (@name)";
-
-                    // Add a parameter and assign it a value
-                    insertCommand.Parameters.AddWithValue("@name", "HI 'hey& there!`");
-
-                    // Execute the command
-                    insertCommand.ExecuteNonQuery();
-                }
-
-                // Query the table
-                Console.WriteLine("Here0!");
-                using (var selectCommand = connection.CreateCommand())
-                {
-                    selectCommand.CommandText = @"SELECT name FROM user WHERE id = $id";
-                    selectCommand.Parameters.AddWithValue("$id", 1);
-                    using (var reader = selectCommand.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            Console.WriteLine($"Name: {reader["name"]}");
-                        }
-                    }
-                }
-
-                connection.Close();
-            }
         }
 
         /**
@@ -237,7 +182,7 @@ namespace BudgetApp_V2
             amountCalculatedLabel.Visible = false;
             this.Text = "Budget App, Version 2.3";
             WindowState = FormWindowState.Maximized;
-            categories = new SQLite().GetCategories();
+            categories = this.sqlite.GetCategories();
 
             //Fill combo box with the categories.
             for (int i = 0; i < categories.Count; i++)
@@ -281,10 +226,10 @@ namespace BudgetApp_V2
             unselectItems();
         }
 
-        public static List<string> GetChoices()
+        public List<string> GetChoices()
         {
             List<string> categories = new List<string>();
-            LinkedList<string> categoriesLinkedList = new SQLite().GetCategories();
+            LinkedList<string> categoriesLinkedList = this.sqlite.GetCategories();
             foreach (var item in categoriesLinkedList)
             {
                 string itemLowercased = item.ToLower();
@@ -298,7 +243,7 @@ namespace BudgetApp_V2
             //Remove the previous showing of this month's transactions (necessary because this method could be called after submitting a new transaction, which would then need to be added to the transactions list)
             dataGridView1.Rows.Clear();
 
-            LinkedList<String[]> monthsTransactions = new SQLite().GetTransactionsBetweenDates(fromDateTimePicker.Value, toDateTimePicker.Value);
+            LinkedList<String[]> monthsTransactions = this.sqlite.GetTransactionsBetweenDates(fromDateTimePicker.Value, toDateTimePicker.Value);
 
             fromDateTimePicker.Visible = true;
             toDateTimePicker.Visible = true;
@@ -412,7 +357,7 @@ namespace BudgetApp_V2
                             // Check if user wants to apply 10% (rounded up) towards charity balance.   
                             if (checkBox.Checked)
                             {
-                                oldCharityBalance = new SQLite().GetTitheBalance();
+                                oldCharityBalance = this.sqlite.GetTitheBalance();
                                 showCharityBalanceChanges = true;
 
                                 amount = Math.Ceiling(amount * 0.1);
@@ -421,11 +366,11 @@ namespace BudgetApp_V2
                                 expenseType = "tithe";
                             }
 
-                            new SQLite().AddToOtherEarnings(date, description, amount);
+                            this.sqlite.AddToOtherEarnings(date, description, amount);
                         }
                         else if (String.Equals(categoryComboBox.SelectedItem.ToString(), "Tithe"))
                         {
-                            oldCharityBalance = new SQLite().GetTitheBalance();
+                            oldCharityBalance = this.sqlite.GetTitheBalance();
                             if (!checkBox.Checked)  // This is a decrease to the tithe balance.
                             {
                                 amount = -amount;  //make negative
@@ -462,7 +407,7 @@ namespace BudgetApp_V2
                         //Show previous charity balance and new charity balance.
                         if (showCharityBalanceChanges)
                         {
-                            double charityBalance = new SQLite().GetTitheBalance();
+                            double charityBalance = this.sqlite.GetTitheBalance();
                             MessageBox.Show("Old tithe balance: " + Math.Round(oldCharityBalance, 2) +
                                 "\nNew tithe balance: " + Math.Round(charityBalance, 2), "Tithe Balance was Updated Successfully!");
                         }
@@ -525,7 +470,7 @@ namespace BudgetApp_V2
             reportForm.categories = categories;  // the report will show spending based on the different categories of spending
             reportForm.Text = "Report";
             reportForm.Show();
-            categories = new SQLite().GetCategories();  // Reset the categories. This gets reset to zero after viewing the report form.
+            categories = this.sqlite.GetCategories();  // Reset the categories. This gets reset to zero after viewing the report form.
             transactionDescriptionTextBox.Select();  // Set cursor to blinking in the description text box.
             this.Hide();
         }
@@ -536,7 +481,7 @@ namespace BudgetApp_V2
             try
             {
                 // Show the charity budget.
-                double charityBalance = new SQLite().GetTitheBalance();
+                double charityBalance = this.sqlite.GetTitheBalance();
                 charityBalanceLabel.Text = "Current tithe balance: $" + Math.Round(charityBalance, 2);
             }
             catch (Exception e2)
@@ -624,7 +569,7 @@ namespace BudgetApp_V2
             earningsOverview.FormClosed += new FormClosedEventHandler(startMenuFormClosed);
             earningsOverview.Text = "Wages and Taxes";
             earningsOverview.Show();
-            categories = new SQLite().GetCategories();  // Reset the categories. This gets reset to zero after viewing the report form.
+            categories = this.sqlite.GetCategories();  // Reset the categories. This gets reset to zero after viewing the report form.
             transactionDescriptionTextBox.Select();  // Set cursor to blinking in the description text box.
             this.Hide();
         }
@@ -709,8 +654,7 @@ namespace BudgetApp_V2
 
                     // TODO: Need more input validation
 
-
-                    success = new SQLite().UpdateEntry(trans_date, description, amount, trans_id, expense_type);
+                    success = this.sqlite.UpdateEntry(trans_date, description, amount, trans_id, expense_type);
                 }
                 catch (ArgumentNullException ane)
                 {
@@ -733,7 +677,7 @@ namespace BudgetApp_V2
                 DataGridViewRow selectedRow = dataGridView1.Rows[selectedrowindex];
                 int trans_id = Int16.Parse(Convert.ToString(selectedRow.Cells["id"].Value));
                 string description = Convert.ToString(selectedRow.Cells["description"].Value);
-                bool successful = new SQLite().DeleteTransaction(trans_id);
+                bool successful = this.sqlite.DeleteTransaction(trans_id);
 
                 DisplayMonthTransactions();
 
