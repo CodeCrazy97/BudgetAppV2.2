@@ -40,52 +40,30 @@
  * 02/02/2024 - Added two date pickers to start up page to allow user to specify dates for transaction table.
  * 02/10/2024 - Migrating charity table onto expenses table (negative tithe will represent money out; positive is money in).
  * 05/18/2024 - Fixed issue saving other earnings, adding tithe.
+ * 11/22/2024 - Changed over to using SQLite.
  */
 
 using System.Data;
-using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading;
 using System.Windows.Forms;
 using System.IO;
+using SQLitePCL;
+using Microsoft.Data.Sqlite;
 
 namespace BudgetApp_V2
 {
     public partial class StartMenu : Form
     {
-        public string connStr = new MySQLConnection().connection;
         LinkedList<string> categories = new LinkedList<string>();   //Holds the categories of spending.
         public bool initialLoad = true; //Keeps track of if the user is changing the date picker values or if they're being changed by the initial loading of the app. Don't want to trigger the built-in datepicker value changed events if the latter is true.
+        private SQLite sqlite = null;
 
         public StartMenu()
         {
-        
-            //Start mysqld
-            if (!isMysqldRunning())
-            {
-                try  //Try to start mysqld.exe
-                {
-                    var mysqld = Process.Start(getBaseDirectory() + "\\mysql_start2.bat");
-                    Thread.Sleep(2000);  //Give mysqld.exe time to start.
-                }
-                catch (System.ComponentModel.Win32Exception ex3)  //Unable to start the process (could be that the executable is located in a different folder path).
-                {
-                    Console.WriteLine("Error message: " + ex3);
-                    MessageBox.Show("Unable to start the process mysqld.exe.");
-                    Application.Exit();
-                }
-
-                // if mysql still isn't running then try removing the aria log file and start it again
-                if (!isMysqldRunning())
-                {
-                    var deleteAriaLogFile = Process.Start(getBaseDirectory() + "\\remove_aria_log_file.bat");
-                    var mysqld = Process.Start(getBaseDirectory() + "\\mysql_start2.bat");
-                    Thread.Sleep(2000);  //Give mysqld.exe time to start.
-                }
-            }
+            sqlite = new SQLite();
 
             InitializeComponent();
             backupDB();
@@ -127,48 +105,23 @@ namespace BudgetApp_V2
                 Directory.CreateDirectory(backupsDirectory);
             }
 
-            DateTime currentDateTime = DateTime.Now;
-            string currentDateTimeString = currentDateTime.ToString("yyyyMMddHHmm");
+            string fileToCopy = getBaseDirectory() + "\\budget.db";
+            string destinationDirectory = getBaseDirectory() + "\\backups\\";
 
-            string server = "localhost";
-            string database = "budget";
-            string user = "root";
-            string password = "";
+            // Get the current timestamp
+            string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
 
-            // place the backup in the backups folder, located at the project root
-            string backupFile = @"" + backupsDirectory + currentDateTimeString + "backup.sql";
+            // Get the original file name
+            string originalFileName = Path.GetFileName(fileToCopy);
 
-            // see if a backup has been made for the past week
+            // Create a new file name with the timestamp
+            string newFileName = timestamp + "_" + originalFileName;
 
-            string command = $"mysqldump --user={user} --password={password} --host={server} {database} > \"{backupFile}\"";
+            // Form the destination path
+            string destinationPath = Path.Combine(destinationDirectory, newFileName);
 
-            try
-            {
-                ProcessStartInfo psi = new ProcessStartInfo("cmd.exe")
-                {
-                    RedirectStandardInput = true,
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                    UseShellExecute = false,
-                    CreateNoWindow = true
-                };
-
-                Process process = new Process
-                {
-                    StartInfo = psi
-                };
-
-                process.Start();
-                process.StandardInput.WriteLine(command);
-                process.StandardInput.Close();
-                process.WaitForExit();
-
-                Console.WriteLine("Database backup complete.");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"An error occurred: {ex.Message}");
-            }
+            // Copy the file
+            File.Copy(fileToCopy, destinationPath);
         }
 
         /*
@@ -229,7 +182,7 @@ namespace BudgetApp_V2
             amountCalculatedLabel.Visible = false;
             this.Text = "Budget App, Version 2.3";
             WindowState = FormWindowState.Maximized;
-            categories = new MySQLConnection().GetCategories();
+            categories = this.sqlite.GetCategories();
 
             //Fill combo box with the categories.
             for (int i = 0; i < categories.Count; i++)
@@ -273,10 +226,10 @@ namespace BudgetApp_V2
             unselectItems();
         }
 
-        public static List<string> GetChoices()
+        public List<string> GetChoices()
         {
             List<string> categories = new List<string>();
-            LinkedList<string> categoriesLinkedList = new MySQLConnection().GetCategories();
+            LinkedList<string> categoriesLinkedList = this.sqlite.GetCategories();
             foreach (var item in categoriesLinkedList)
             {
                 string itemLowercased = item.ToLower();
@@ -290,7 +243,7 @@ namespace BudgetApp_V2
             //Remove the previous showing of this month's transactions (necessary because this method could be called after submitting a new transaction, which would then need to be added to the transactions list)
             dataGridView1.Rows.Clear();
 
-            LinkedList<String[]> monthsTransactions = new MySQLConnection().GetTransactionsBetweenDates(fromDateTimePicker.Value, toDateTimePicker.Value);
+            LinkedList<String[]> monthsTransactions = this.sqlite.GetTransactionsBetweenDates(fromDateTimePicker.Value, toDateTimePicker.Value);
 
             fromDateTimePicker.Visible = true;
             toDateTimePicker.Visible = true;
@@ -382,12 +335,9 @@ namespace BudgetApp_V2
             {
                 try
                 {
-                    //Place the transaction in the database.
-                    string connStr = new MySQLConnection().connection;
-
                     //Step 3: Create the SQL statement that deletes the notice.
                     string date = transactionDateTimePicker.Value.Year + "-" + transactionDateTimePicker.Value.Month + "-" + transactionDateTimePicker.Value.Day;
-                    string description = new MySQLConnection().FixStringForMySQL(transactionDescriptionTextBox.Text);
+                    string description = transactionDescriptionTextBox.Text;
 
                     // Calculate math expressions for the amount given. For example: users can enter 12.34+.87. The amount in this case would equal $13.21.
                     double amount = getAmount();
@@ -399,18 +349,15 @@ namespace BudgetApp_V2
                         amount = Math.Abs(amount);  // make a positive number. The old version insisted that expenses be negative; however, under the new design, it is implied that anything in the expense table is negative
 
                         //Build the INSERT string. Place each possible category into it.
-                        string sql = "";
                         double oldCharityBalance = 0.0;
                         bool showCharityBalanceChanges = false;
                         string expenseType = "";
                         if (String.Equals(categoryComboBox.SelectedItem.ToString(), "Other Earnings"))  // Type = Other Earnings
                         {
-                            sql = "INSERT INTO other_earnings (earning_date, description, amount) VALUES ('" + date + "', '" + description + "', " + amount + ");";
-
                             // Check if user wants to apply 10% (rounded up) towards charity balance.   
                             if (checkBox.Checked)
                             {
-                                oldCharityBalance = new MySQLConnection().GetTitheBalance();
+                                oldCharityBalance = this.sqlite.GetTitheBalance();
                                 showCharityBalanceChanges = true;
 
                                 amount = Math.Ceiling(amount * 0.1);
@@ -419,11 +366,11 @@ namespace BudgetApp_V2
                                 expenseType = "tithe";
                             }
 
-                            executeSql(sql);
+                            this.sqlite.AddToOtherEarnings(date, description, amount);
                         }
                         else if (String.Equals(categoryComboBox.SelectedItem.ToString(), "Tithe"))
                         {
-                            oldCharityBalance = new MySQLConnection().GetTitheBalance();
+                            oldCharityBalance = this.sqlite.GetTitheBalance();
                             if (!checkBox.Checked)  // This is a decrease to the tithe balance.
                             {
                                 amount = -amount;  //make negative
@@ -460,7 +407,7 @@ namespace BudgetApp_V2
                         //Show previous charity balance and new charity balance.
                         if (showCharityBalanceChanges)
                         {
-                            double charityBalance = new MySQLConnection().GetTitheBalance();
+                            double charityBalance = this.sqlite.GetTitheBalance();
                             MessageBox.Show("Old tithe balance: " + Math.Round(oldCharityBalance, 2) +
                                 "\nNew tithe balance: " + Math.Round(charityBalance, 2), "Tithe Balance was Updated Successfully!");
                         }
@@ -488,24 +435,6 @@ namespace BudgetApp_V2
             }
             unselectItems();
         }
-
-        private void executeSql(string sql)
-        {
-            MySqlConnection connection = new MySqlConnection(connStr);    //create the new connection using the parameters of connStr
-            try
-            {
-                connection.Open();                            //open the connection
-                var cmd = new MySqlCommand(sql, connection);  //create an executable command
-                var reader = cmd.ExecuteNonQuery();             //execute the command
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-            }
-            connection.Close();
-        }
-
-
 
         private void clearButton_Click(object sender, EventArgs e)
         {
@@ -541,24 +470,9 @@ namespace BudgetApp_V2
             reportForm.categories = categories;  // the report will show spending based on the different categories of spending
             reportForm.Text = "Report";
             reportForm.Show();
-            categories = new MySQLConnection().GetCategories();  // Reset the categories. This gets reset to zero after viewing the report form.
+            categories = this.sqlite.GetCategories();  // Reset the categories. This gets reset to zero after viewing the report form.
             transactionDescriptionTextBox.Select();  // Set cursor to blinking in the description text box.
             this.Hide();
-        }
-
-
-        public bool isMysqldRunning()
-        {
-            //Loop over all running processes.
-            foreach (Process clsProcess in Process.GetProcesses())
-            {
-                if (clsProcess.ToString().Equals("System.Diagnostics.Process (mysqld)"))
-                {
-                    return true;
-                }
-            }
-            //Mysqld.exe is not running; return a false
-            return false;
         }
 
         // Show what the charity balance is.
@@ -567,7 +481,7 @@ namespace BudgetApp_V2
             try
             {
                 // Show the charity budget.
-                double charityBalance = new MySQLConnection().GetTitheBalance();
+                double charityBalance = this.sqlite.GetTitheBalance();
                 charityBalanceLabel.Text = "Current tithe balance: $" + Math.Round(charityBalance, 2);
             }
             catch (Exception e2)
@@ -655,7 +569,7 @@ namespace BudgetApp_V2
             earningsOverview.FormClosed += new FormClosedEventHandler(startMenuFormClosed);
             earningsOverview.Text = "Wages and Taxes";
             earningsOverview.Show();
-            categories = new MySQLConnection().GetCategories();  // Reset the categories. This gets reset to zero after viewing the report form.
+            categories = this.sqlite.GetCategories();  // Reset the categories. This gets reset to zero after viewing the report form.
             transactionDescriptionTextBox.Select();  // Set cursor to blinking in the description text box.
             this.Hide();
         }
@@ -740,8 +654,7 @@ namespace BudgetApp_V2
 
                     // TODO: Need more input validation
 
-
-                    success = new MySQLConnection().UpdateEntry(trans_date, description, amount, trans_id, expense_type);
+                    success = this.sqlite.UpdateEntry(trans_date, description, amount, trans_id, expense_type);
                 }
                 catch (ArgumentNullException ane)
                 {
@@ -764,7 +677,7 @@ namespace BudgetApp_V2
                 DataGridViewRow selectedRow = dataGridView1.Rows[selectedrowindex];
                 int trans_id = Int16.Parse(Convert.ToString(selectedRow.Cells["id"].Value));
                 string description = Convert.ToString(selectedRow.Cells["description"].Value);
-                bool successful = new MySQLConnection().DeleteTransaction(trans_id);
+                bool successful = this.sqlite.DeleteTransaction(trans_id);
 
                 DisplayMonthTransactions();
 

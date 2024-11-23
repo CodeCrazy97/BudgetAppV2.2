@@ -1,9 +1,4 @@
-﻿using MySql.Data.MySqlClient;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
 
 namespace BudgetApp_V2
 {
@@ -14,7 +9,8 @@ namespace BudgetApp_V2
         private double amount;
         private DateTime trans_date;
         private int trans_id;
-        private MySqlConnection connection = null;
+        //private MySqlConnection connection = null;
+        private SQLite sqlite = null;
 
         public string Expense_type { get => expense_type; set => expense_type = value; }
         public string Descrption { get => description; set => description = value; }
@@ -24,22 +20,21 @@ namespace BudgetApp_V2
 
         public bool save()
         {
-            try
+            using (var selectCommand = this.sqlite.connection_object.CreateCommand())
             {
-                openConnection();
-                var cmd = new MySqlCommand("INSERT INTO expenses (trans_date, description, amount, expense_type) VALUES ('" + trans_date.ToString("yyyy-MM-dd HH:mm:ss") + "', '" + description + "', " + amount + ", '" + expense_type + "');", connection);
-                var reader = cmd.ExecuteNonQuery();
+                selectCommand.CommandText = @"INSERT INTO expenses(trans_date, description, amount, expense_type) VALUES(@trans_date, @description, @amount, @expense_type); ";
+                selectCommand.Parameters.AddWithValue("@trans_date", trans_date.ToString("yyyy-MM-dd"));
+                selectCommand.Parameters.AddWithValue("@description", description);
+                selectCommand.Parameters.AddWithValue("@amount", amount);
+                selectCommand.Parameters.AddWithValue("@expense_type", expense_type);
+                if (selectCommand.ExecuteNonQuery() > 0)
+                {
+                    return true;
+                } else
+                {
+                    return false;
+                }
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-                return false;
-            }
-            finally
-            {
-                connection.Close();
-            }
-            return true;
         }
 
         public bool update()
@@ -56,12 +51,13 @@ namespace BudgetApp_V2
         
         private void openConnection()
         {
-            connection = new MySqlConnection(new MySQLConnection().connection);
-            connection.Open();
+            this.sqlite = new SQLite();
         }
 
         public Expense(string description, string expense_type, double amount, DateTime trans_date)
         {
+            this.openConnection();
+
             Descrption = description;
             Expense_type = expense_type.ToLower();
             Amount = amount;
@@ -70,29 +66,25 @@ namespace BudgetApp_V2
 
         public Expense(int id)
         {
-            try
+            this.openConnection();
+
+            using (var selectCommand = this.sqlite.connection_object.CreateCommand())
             {
-                openConnection();
-                var cmd = new MySqlCommand("SELECT * FROM expenses WHERE trans_id = @trans_id", connection);  //create an executable command
-                cmd.Parameters.AddWithValue("@trans_id", id);
-                MySqlDataReader reader = cmd.ExecuteReader();
-                while (reader.Read())
+                selectCommand.CommandText = @"SELECT expense_type, description, trans_date, amount, trans_id FROM expenses WHERE trans_id = @trans_id";
+                selectCommand.Parameters.AddWithValue("@trans_id", id);
+
+                using (var reader = selectCommand.ExecuteReader())
                 {
-                    Expense_type = reader.GetString("expense_type");
-                    Descrption = reader.GetString("description");
-                    Trans_date= reader.GetDateTime("trans_date");
-                    Amount = reader.GetDouble("amount");
-                    Trans_id = reader.GetInt16("trans_id");
+                    while (reader.Read())
+                    {
+                        Expense_type = reader.GetString(0);
+                        Descrption = reader.GetString(1);
+                        Trans_date = reader.GetDateTime(2);
+                        Amount = reader.GetDouble(3);
+                        Trans_id = reader.GetInt16(4);
+                    }
+                    reader.Close();
                 }
-                reader.Close();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-            } 
-            finally
-            {
-                connection.Close();
             }
         }
     }
