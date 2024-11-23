@@ -58,6 +58,7 @@ namespace BudgetApp_V2
                         currentTransaction[4] = reader.GetString(4);   //Get the expense_type.
                         transactions.AddLast(currentTransaction);
                     }
+                    reader.Close();
                 }
             }
 
@@ -112,17 +113,20 @@ namespace BudgetApp_V2
                 using (var selectCommand = this.connection_object.CreateCommand())
                 {
                     selectCommand.CommandText = @"UPDATE expenses SET trans_date = @trans_date, amount = @amount, description = @description, expense_type = @expense_type WHERE trans_id = @trans_id;";
+                    selectCommand.Parameters.AddWithValue("@trans_date", mySqlFixedDate);
+                    selectCommand.Parameters.AddWithValue("@amount", amount);
+                    selectCommand.Parameters.AddWithValue("@description", description);
+                    selectCommand.Parameters.AddWithValue("@trans_id", trans_id);
+                    selectCommand.Parameters.AddWithValue("@expense_type", expense_type);
 
-                    using (var reader = selectCommand.ExecuteReader())
+                    try
                     {
-                        while (reader.Read())
-                        {
-                            selectCommand.Parameters.AddWithValue("@trans_date", mySqlFixedDate);
-                            selectCommand.Parameters.AddWithValue("@amount", amount);
-                            selectCommand.Parameters.AddWithValue("@description", description);
-                            selectCommand.Parameters.AddWithValue("@trans_id", trans_id);
-                            selectCommand.Parameters.AddWithValue("@expense_type", expense_type);
-                        }
+                        success = success && selectCommand.ExecuteNonQuery() >= 1;
+                    }
+                    catch (Exception ex)
+                    {
+                        success = false;
+                        MessageBox.Show("Error trying to update transaction(s): " + ex.Message);
                     }
                 }
             }
@@ -141,13 +145,15 @@ namespace BudgetApp_V2
             {
                 selectCommand.CommandText = @"SELECT SUM(amount) FROM expenses WHERE expense_type = 'tithe'; ";
 
+                double balance = 0;
                 using (var reader = selectCommand.ExecuteReader())
                 {
                     while (reader.Read())
                     {
-                        return reader.GetDouble(0);
+                        balance = reader.GetDouble(0);
                     }
-                    return 0;
+                    reader.Close();
+                    return balance;
                 }
             }
             throw new Exception("Could not fetch tithe amount.");
@@ -169,6 +175,7 @@ namespace BudgetApp_V2
                         currentCategory = currentCategory.Substring(0, 1).ToUpper() + currentCategory.Substring(1); //Make the first character of the category in upper case.
                         categories.AddLast(currentCategory);
                     }
+                    reader.Close();
                 }
             }
             return categories;
