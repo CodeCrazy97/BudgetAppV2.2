@@ -81,18 +81,19 @@ namespace BudgetApp_V2
         public bool UpdateEntry(String trans_date, String description, double amount, int trans_id, String expense_type)
         {
             String mySqlFixedDate = "";
+            DateTime newDate = DateTime.Now; // the now value won't actually be used
             try
             {
                 if (trans_date[1] == '/')  // Check m/dd/yyyy or m/d/yyyy
                 {
                     if (trans_date[4] == '/') // m/dd/yyyy
                     {
-                        DateTime newDate = DateTime.ParseExact(trans_date, "M/dd/yyyy", null);
+                        newDate = DateTime.ParseExact(trans_date, "M/dd/yyyy", null);
                         mySqlFixedDate = newDate.ToString("yyyy-MM-dd");
                     }
                     else if (trans_date[3] == '/') // m/d/yyyy
                     {
-                        DateTime newDate = DateTime.ParseExact(trans_date, "M/d/yyyy", null);
+                        newDate = DateTime.ParseExact(trans_date, "M/d/yyyy", null);
                         mySqlFixedDate = newDate.ToString("yyyy-MM-dd");
                     }
                 }
@@ -100,12 +101,12 @@ namespace BudgetApp_V2
                 {
                     if (trans_date[5] == '/') // mm/dd/yyyy
                     {
-                        DateTime newDate = DateTime.ParseExact(trans_date, "MM/dd/yyyy", null);
+                        newDate = DateTime.ParseExact(trans_date, "MM/dd/yyyy", null);
                         mySqlFixedDate = newDate.ToString("yyyy-MM-dd");
                     }
                     else if (trans_date[4] == '/') // mm/d/yyyy
                     {
-                        DateTime newDate = DateTime.ParseExact(trans_date, "MM/d/yyyy", null);
+                        newDate = DateTime.ParseExact(trans_date, "MM/d/yyyy", null);
                         mySqlFixedDate = newDate.ToString("yyyy-MM-dd");
                     }
                 }
@@ -120,36 +121,19 @@ namespace BudgetApp_V2
                 MessageBox.Show("The date " + trans_date + " could not be converted to a MySQL date.");
             }
 
-            bool success = true;
+            Expense expense = new Expense(trans_id);
+            expense.Trans_date = newDate;
+            expense.Amount = amount;
+            expense.Descrption = description;
+            expense.Expense_type = expense_type;
             try
             {
-                using (var selectCommand = this.connection_object.CreateCommand())
-                {
-                    selectCommand.CommandText = @"UPDATE expenses SET trans_date = @trans_date, amount = @amount, description = @description, expense_type = @expense_type WHERE trans_id = @trans_id;";
-                    selectCommand.Parameters.AddWithValue("@trans_date", mySqlFixedDate);
-                    selectCommand.Parameters.AddWithValue("@amount", amount);
-                    selectCommand.Parameters.AddWithValue("@description", description);
-                    selectCommand.Parameters.AddWithValue("@trans_id", trans_id);
-                    selectCommand.Parameters.AddWithValue("@expense_type", expense_type);
-
-                    try
-                    {
-                        success = success && selectCommand.ExecuteNonQuery() >= 1;
-                    }
-                    catch (Exception ex)
-                    {
-                        success = false;
-                        MessageBox.Show("Error trying to update transaction(s): " + ex.Message);
-                    }
-                }
-            }
-            catch (Exception ex)
+                return expense.save();
+            } catch (Exception ex)
             {
-                success = false;
                 MessageBox.Show("Error trying to update transaction(s): " + ex.Message);
+                return false;
             }
-
-            return success;
         }
 
         public double GetTitheBalance()
