@@ -41,6 +41,7 @@
  * 02/10/2024 - Migrating charity table onto expenses table (negative tithe will represent money out; positive is money in).
  * 05/18/2024 - Fixed issue saving other earnings, adding tithe.
  * 11/22/2024 - Changed over to using SQLite.
+ * 11/27/2024 - Added transaction type filter.
  */
 
 using System.Data;
@@ -60,6 +61,7 @@ namespace BudgetApp_V2
         LinkedList<string> categories = new LinkedList<string>();   //Holds the categories of spending.
         public bool initialLoad = true; //Keeps track of if the user is changing the date picker values or if they're being changed by the initial loading of the app. Don't want to trigger the built-in datepicker value changed events if the latter is true.
         private SQLite sqlite = null;
+        private int previousSelectedTransactionFilterIndex = -1;
 
         public StartMenu()
         {
@@ -185,9 +187,12 @@ namespace BudgetApp_V2
             categories = this.sqlite.GetCategories();
 
             //Fill combo box with the categories.
+            transactionTypeFilterComboBox.Items.Add("All");
+            transactionTypeFilterComboBox.SelectedIndex = 0;
             for (int i = 0; i < categories.Count; i++)
             {
                 categoryComboBox.Items.Add(categories.ElementAt(i));
+                transactionTypeFilterComboBox.Items.Add(categories.ElementAt(i));
             }
             // add the other earnings and charity categories (these are not in the database
             categoryComboBox.Items.Add("Other Earnings");
@@ -243,7 +248,7 @@ namespace BudgetApp_V2
             //Remove the previous showing of this month's transactions (necessary because this method could be called after submitting a new transaction, which would then need to be added to the transactions list)
             dataGridView1.Rows.Clear();
 
-            LinkedList<String[]> monthsTransactions = this.sqlite.GetTransactionsBetweenDates(fromDateTimePicker.Value, toDateTimePicker.Value);
+            LinkedList<String[]> monthsTransactions = this.sqlite.GetTransactionsBetweenDates(fromDateTimePicker.Value, toDateTimePicker.Value, transactionTypeFilterComboBox.SelectedItem.ToString());
 
             fromDateTimePicker.Visible = true;
             toDateTimePicker.Visible = true;
@@ -721,6 +726,18 @@ namespace BudgetApp_V2
                 DisplayMonthTransactions();
                 unselectItems(); // selecting a new date and updating the table will trigger items to be selected and the udpate buttons to appear
             }
+        }
+
+        private void transactionTypeFilterComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // Don't call DisplayMonthTransactions if this method is being called on the initial loading of the
+            // start menu.
+            if (previousSelectedTransactionFilterIndex != -1)
+            {
+                DisplayMonthTransactions();
+            }
+            previousSelectedTransactionFilterIndex = transactionTypeFilterComboBox.SelectedIndex;
+            unselectItems();
         }
     }
 }

@@ -29,18 +29,33 @@ namespace BudgetApp_V2
             return Directory.GetParent(workingDirectory).Parent.Parent.Parent.FullName;
         }
 
-        public LinkedList<String[]> GetTransactionsBetweenDates(DateTime startDate, DateTime endDate)
+        public LinkedList<String[]> GetTransactionsBetweenDates(DateTime startDate, DateTime endDate, string category)
         {
             LinkedList<String[]> transactions = new LinkedList<String[]>();
 
             using (var selectCommand = this.connection_object.CreateCommand())
             {
+
+                category = category.ToLower();
+                if (category == "all")
+                {
+                    category = "";
+                }
+                string extra_where = "";
+                if (category.Length > 0)
+                {
+                    extra_where = "AND expense_type = $expense_type ";
+                }
                 selectCommand.CommandText = @"SELECT trans_date, description, amount, trans_id, expense_type 
                     FROM expenses 
-                    WHERE trans_date BETWEEN $start_date AND $end_date
-                    ORDER BY trans_date DESC; ";
+                    WHERE trans_date BETWEEN $start_date AND $end_date " + extra_where +
+                    "ORDER BY trans_date DESC; ";
                 selectCommand.Parameters.AddWithValue("$start_date", startDate.ToString("yyyy-MM-dd"));
                 selectCommand.Parameters.AddWithValue("$end_date", endDate.ToString("yyyy-MM-dd"));
+                if (category.Length > 0)
+                {
+                    selectCommand.Parameters.AddWithValue("$expense_type", category);
+                }
 
                 using (var reader = selectCommand.ExecuteReader())
                 {
