@@ -11,7 +11,6 @@ C:\Users\Ethan\Documents\Projects\C#\BudgetApp\BudgetApp_V2\BudgetApp_V2\bin\Rel
 C:\Users\Ethan\Documents\Projects\C#\BudgetApp\BudgetApp_V2\BudgetApp_V2\bin\Release\System.Memory.dll
 C:\Users\Ethan\Documents\Projects\C#\BudgetApp\BudgetApp_V2\BudgetApp_V2\bin\Release\System.Numerics.Vectors.dll
 C:\Users\Ethan\Documents\Projects\C#\BudgetApp\BudgetApp_V2\BudgetApp_V2\bin\Release\System.Runtime.CompilerServices.Unsafe.dll
-C:\Users\Ethan\Documents\Projects\C#\BudgetApp\BudgetApp_V2\BudgetApp_V2\obj\Release\BudgetApp_V2.csproj.CopyComplete
 C:\Users\Ethan\Documents\Projects\C#\BudgetApp\BudgetApp_V2\BudgetApp_V2\obj\Release\BudgetApp_V2.exe
 C:\Users\Ethan\Documents\Projects\C#\BudgetApp\BudgetApp_V2\BudgetApp_V2\obj\Release\BudgetApp_V2.pdb
 C:\Users\Ethan\Documents\Projects\C#\BudgetApp\BudgetApp_V2\BudgetApp_V2\bin\Release\runtimes\win-x86\native\e_sqlite3.dll
@@ -24,3 +23,4 @@ C:\Users\Ethan\Documents\Projects\C#\BudgetApp\BudgetApp_V2\BudgetApp_V2\bin\Rel
 C:\Users\Ethan\Documents\Projects\C#\BudgetApp\BudgetApp_V2\BudgetApp_V2\obj\Release\BudgetApp_V2.csproj.AssemblyReference.cache
 C:\Users\Ethan\Documents\Projects\C#\BudgetApp\BudgetApp_V2\BudgetApp_V2\obj\Release\BudgetApp_V2.csproj.SuggestedBindingRedirects.cache
 C:\Users\Ethan\Documents\Projects\C#\BudgetApp\BudgetApp_V2\BudgetApp_V2\obj\Release\BudgetApp_V2.exe.config
+C:\Users\Ethan\Documents\Projects\C#\BudgetApp\BudgetApp_V2\BudgetApp_V2\obj\Release\BudgetAp.5B11E74F.Up2Date

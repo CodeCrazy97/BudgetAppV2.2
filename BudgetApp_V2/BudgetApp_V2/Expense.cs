@@ -22,11 +22,23 @@ namespace BudgetApp_V2
         {
             using (var selectCommand = this.sqlite.connection_object.CreateCommand())
             {
-                selectCommand.CommandText = @"INSERT INTO expenses(trans_date, description, amount, expense_type) VALUES(@trans_date, @description, @amount, @expense_type); ";
-                selectCommand.Parameters.AddWithValue("@trans_date", trans_date.ToString("yyyy-MM-dd"));
-                selectCommand.Parameters.AddWithValue("@description", description);
-                selectCommand.Parameters.AddWithValue("@amount", amount);
-                selectCommand.Parameters.AddWithValue("@expense_type", expense_type);
+                if (trans_id == 0) // Creating a new transaction.
+                {
+                    selectCommand.CommandText = @"INSERT INTO expenses(trans_date, description, amount, expense_type) VALUES(@trans_date, @description, @amount, @expense_type); ";
+                    selectCommand.Parameters.AddWithValue("@trans_date", trans_date.ToString("yyyy-MM-dd"));
+                    selectCommand.Parameters.AddWithValue("@description", description);
+                    selectCommand.Parameters.AddWithValue("@amount", amount);
+                    selectCommand.Parameters.AddWithValue("@expense_type", expense_type);
+                } else // Updating existing transaction.
+                {
+                    selectCommand.CommandText = @"UPDATE expenses SET trans_date = @trans_date, description = @description, amount = @amount, expense_type = @expense_type WHERE trans_id = @trans_id; ";
+                    selectCommand.Parameters.AddWithValue("@trans_date", trans_date.ToString("yyyy-MM-dd"));
+                    selectCommand.Parameters.AddWithValue("@description", description);
+                    selectCommand.Parameters.AddWithValue("@amount", amount);
+                    selectCommand.Parameters.AddWithValue("@expense_type", expense_type);
+                    selectCommand.Parameters.AddWithValue("@trans_id", trans_id);
+                }
+
                 if (selectCommand.ExecuteNonQuery() > 0)
                 {
                     return true;
@@ -35,12 +47,6 @@ namespace BudgetApp_V2
                     return false;
                 }
             }
-        }
-
-        public bool update()
-        {
-            // TODO
-            return true;
         }
 
         public bool delete()

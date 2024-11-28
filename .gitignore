@@ -3,5 +3,7 @@ budget.db
 test.db
 migration_to_sqlite.sql
 BudgetApp_V2/.vs/
-BudgetApp_V2/BudgetApp_V2/obj/Debug/
-BudgetApp_V2/BudgetApp_V2/bin/Debug/
+BudgetApp_V2/BudgetApp_V2/obj/
+BudgetApp_V2/BudgetApp_V2/bin/
+BudgetApp_V2/obj/
+BudgetApp_V2/bin/
