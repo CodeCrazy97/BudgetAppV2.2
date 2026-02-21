@@ -267,8 +267,11 @@ namespace BudgetApp_V2
                 if (dataGridView1.RowCount == 10)  // Last row can be displayed without need for scrollbar.
                 {
                     dataGridView1.ScrollBars = ScrollBars.None;
+                } else
+                {
+                    dataGridView1.ScrollBars = ScrollBars.Vertical;
                 }
-                dataGridView1.Height = 285;
+                    dataGridView1.Height = 285;
             }
             else
             {
