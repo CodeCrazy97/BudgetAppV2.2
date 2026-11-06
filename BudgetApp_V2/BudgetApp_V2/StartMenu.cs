@@ -261,13 +261,15 @@ namespace BudgetApp_V2
                 (dataGridView1.Rows[i].Cells[4] as DataGridViewComboBoxCell).Value = monthsTransactions.ElementAt(i)[4];
             }
 
-            // Show the first 10 transactions. If fewer, then resize the gridview so a bunch of empty space isn't shown at bottom.
-            if (dataGridView1.RowCount >= 10)
+            // Show the first 10 transactions. If fewer, resize the gridview so a bunch of empty space isn't shown at bottom.
+            if (dataGridView1.RowCount > 10)
             {
-                if (dataGridView1.RowCount == 10)  // Last row can be displayed without need for scrollbar.
-                {
-                    dataGridView1.ScrollBars = ScrollBars.None;
-                }
+                dataGridView1.ScrollBars = ScrollBars.Vertical;
+                dataGridView1.Height = 285;
+            }
+            else if (dataGridView1.RowCount == 10)
+            {
+                dataGridView1.ScrollBars = ScrollBars.None;
                 dataGridView1.Height = 285;
             }
             else
